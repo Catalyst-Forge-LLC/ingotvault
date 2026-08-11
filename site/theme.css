@@ -5,7 +5,11 @@
  * so we don't flash Essay tokens then swap in CDN faces.
  */
 
-:root {
+/*
+ * `:root:root` / `html body` / `header.site-header …` beat Essay's `:root` and
+ * `.site-id` even when Vite emits Essay CSS after this sheet.
+ */
+:root:root {
 	--font-serif: 'Newsreader Variable', Georgia, 'Iowan Old Style', 'Times New Roman', serif;
 	--font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
 	--font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -21,13 +25,14 @@
 	--accent-wash: color-mix(in srgb, var(--accent) 12%, transparent);
 	--copper-wash: color-mix(in srgb, var(--accent-strong) 14%, transparent);
 	--radius: 10px;
-	--measure: 40rem;
-	--measure-wide: 72rem;
+	/* One shared column: header, main, and footer share the same width. */
+	--measure: 48rem;
+	--measure-wide: 48rem;
 	--gap: clamp(1.25rem, 4vw, 2.75rem);
 }
 
 @media (prefers-color-scheme: dark) {
-	:root {
+	:root:root {
 		--bg: #eef1f4;
 		--surface: #ffffff;
 		--ink: #141a20;
@@ -40,7 +45,7 @@
 	}
 }
 
-body {
+html body {
 	-webkit-font-smoothing: antialiased;
 	color: var(--ink);
 	font-family: var(--font-sans);
@@ -55,75 +60,89 @@ body {
 	background-attachment: fixed;
 }
 
-.site-header {
+header.site-header {
 	border-bottom: 1px solid color-mix(in srgb, var(--rule) 80%, transparent);
 	background: color-mix(in srgb, var(--surface) 82%, transparent);
 	backdrop-filter: blur(12px);
 	margin-bottom: 0;
 }
 
-.site-header .wrap {
-	padding-top: 0.85rem;
-	padding-bottom: 0.85rem;
+header.site-header .wrap {
+	padding-top: 0.75rem;
+	padding-bottom: 0.75rem;
 	align-items: center;
+	flex-wrap: nowrap;
+	gap: 1rem 1.5rem;
 }
 
-/* Single header band: mark + wordmark + tagline on one baseline with nav */
-.site-id {
+/* Single header band: mark + wordmark + tagline share one row with nav */
+header.site-header .site-id {
+	display: flex;
 	flex-direction: row;
-	flex-wrap: wrap;
-	align-items: baseline;
-	gap: 0.55rem 1.1rem;
+	flex-wrap: nowrap;
+	align-items: center;
+	gap: 0.65rem 1rem;
+	min-width: 0;
+	flex: 1 1 auto;
 }
 
-.site-title {
+header.site-header .site-title {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.55rem;
+	flex: 0 0 auto;
+	gap: 0.5rem;
 	font-family: var(--font-sans);
 	font-weight: 700;
-	font-size: 1.25rem;
+	font-size: 1.2rem;
 	letter-spacing: -0.04em;
 	color: var(--ink);
 	text-decoration: none;
 }
 
-.site-title::after {
+header.site-header .site-title::after {
 	content: 'ingotvault';
 	line-height: 1;
 }
 
-.site-logo {
-	height: 2.5rem;
+header.site-header .site-logo {
+	height: 2.35rem;
 	max-height: none;
 	width: auto;
 	border-radius: 0;
 	box-shadow: none;
 }
 
-.site-tagline {
+header.site-header .site-tagline {
 	font-family: var(--font-mono);
-	font-size: 0.72rem;
+	font-size: 0.7rem;
 	font-style: normal;
-	letter-spacing: 0.04em;
+	letter-spacing: 0.03em;
 	color: var(--accent);
 	max-width: none;
 	margin: 0;
-	line-height: 1.3;
+	line-height: 1.25;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	min-width: 0;
 }
 
-.site-nav {
-	gap: 1.35rem;
-	font-size: 0.72rem;
-	letter-spacing: 0.16em;
+header.site-header .site-nav {
+	display: flex;
+	flex: 0 0 auto;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 1rem 1.25rem;
+	font-size: 0.7rem;
+	letter-spacing: 0.14em;
 }
 
-.site-nav a {
+header.site-header .site-nav a {
 	color: var(--ink-soft);
 	font-weight: 600;
 }
 
-.site-nav a:hover {
+header.site-header .site-nav a:hover {
 	color: var(--accent-strong);
 }
 
@@ -133,11 +152,48 @@ body {
 	margin-top: clamp(3rem, 8vw, 5rem);
 }
 
+/* All routes share the same centered column as the header */
+main.wrap {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+}
+
+.static-page,
+.home-page,
+main.wrap > article,
+main.wrap > header.post-header,
+main.wrap > ul.post-list,
+main.wrap > .featured,
+main.wrap > .hero {
+	width: 100%;
+	max-width: none;
+}
+
 .home-page {
-	width: min(42rem, 100%);
-	margin-inline: auto;
 	padding-top: clamp(1.5rem, 5vw, 3rem);
 	padding-bottom: clamp(2rem, 6vw, 4rem);
+}
+
+.static-page {
+	padding-top: clamp(1.25rem, 4vw, 2.25rem);
+	padding-bottom: clamp(2rem, 6vw, 3.5rem);
+}
+
+.static-page .page-header,
+.static-page .prose,
+.home-page .page-header,
+.home-page .prose {
+	max-width: none;
+}
+
+.prose {
+	max-width: none;
+}
+
+.prose table {
+	width: 100%;
+	font-size: 0.92rem;
 }
 
 .home-page .page-header {
@@ -392,20 +448,31 @@ pre {
 	padding: 0;
 }
 
+@media (width <= 52rem) {
+	/* Keep a single header band: drop the tagline before it wraps under the mark */
+	header.site-header .site-tagline {
+		display: none;
+	}
+}
+
 @media (width <= 40rem) {
-	.site-logo {
-		height: 2.25rem;
+	header.site-header .wrap {
+		flex-wrap: wrap;
 	}
 
-	.site-title {
-		font-size: 1.15rem;
-		gap: 0.45rem;
+	header.site-header .site-logo {
+		height: 2.15rem;
 	}
 
-	.site-id {
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 0.25rem;
+	header.site-header .site-title {
+		font-size: 1.1rem;
+		gap: 0.4rem;
+	}
+
+	header.site-header .site-nav {
+		width: 100%;
+		justify-content: flex-start;
+		gap: 0.85rem 1rem;
 	}
 
 	.home-page .page-header h1 {
