@@ -114,12 +114,13 @@ body {
 }
 
 .site-logo {
-	height: 6.25rem;
+	height: 6.75rem;
 	max-height: none;
 	width: auto;
-	border-radius: 16px;
-	/* Asset is already the mark — no extra frame or drop-shadow chrome */
+	/* Transparent PNG mark — no radius/shadow framing a phantom plate */
+	border-radius: 0;
 	box-shadow: none;
+	background: transparent;
 }
 
 .site-tagline {
