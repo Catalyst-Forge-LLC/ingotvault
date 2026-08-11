@@ -28,7 +28,6 @@
 	/* Wide chrome shell; reading column is centered inside it. */
 	--measure: 42rem;
 	--measure-wide: 72rem;
-	--measure-page: 56rem; /* Safety table and other dense pages */
 	--gap: clamp(1.25rem, 4vw, 2.75rem);
 }
 
@@ -166,12 +165,6 @@ main.wrap > article {
 	max-width: var(--measure);
 }
 
-/* Dense pages (Safety table) get a wider centered column */
-.static-page:has(table) {
-	width: min(var(--measure-page), 100%);
-	max-width: var(--measure-page);
-}
-
 .home-page {
 	padding-top: clamp(1.5rem, 5vw, 3rem);
 	padding-bottom: clamp(2rem, 6vw, 4rem);
@@ -195,12 +188,13 @@ main.wrap > article {
 	font-size: 0.95rem;
 }
 
-/* Writing index / post lists can use more of the shell */
+/* Writing index shares the same column as posts and pages */
 main.wrap > .hero,
 main.wrap > .featured,
 main.wrap > ul.post-list,
 main.wrap > header.post-header {
-	width: min(var(--measure-page), 100%);
+	width: min(var(--measure), 100%);
+	max-width: var(--measure);
 }
 
 .home-page .page-header {
