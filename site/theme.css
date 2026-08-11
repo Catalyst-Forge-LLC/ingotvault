@@ -176,8 +176,36 @@ main.wrap > article {
 }
 
 .prose table {
+	display: block;
 	width: 100%;
+	max-width: 100%;
+	overflow-x: auto;
 	font-size: 0.95rem;
+	border-collapse: collapse;
+}
+
+/* Safety guarantees: stack like a definition list (readable at 375px) */
+.static-page .prose > h3 {
+	font-family: var(--font-sans);
+	font-size: 0.92rem;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	margin: 1.35rem 0 0.35rem;
+	color: var(--ink);
+}
+
+.static-page .prose > h3:first-of-type {
+	margin-top: 1.5rem;
+}
+
+.static-page .prose > h3 + p {
+	margin-top: 0;
+	margin-bottom: 0;
+	color: var(--ink-soft);
+}
+
+.static-page .prose > h2 {
+	margin-top: clamp(2rem, 5vw, 2.75rem);
 }
 
 /* Writing index shares the same column and top offset as posts/pages */

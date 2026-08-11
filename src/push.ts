@@ -385,15 +385,13 @@ export async function syncMirrorHead(
   log.verbose(`${repo.relativePath}: mirror HEAD -> refs/heads/${branch}`);
 }
 
-async function pushNotesAndReplace(
+async function pushAuxRefspecs(
   repo: DiscoveredRepo,
   config: AppConfig,
   log: Logger,
+  specs: readonly string[],
 ): Promise<{ ok: true } | { ok: false; detail: string }> {
-  for (const spec of [
-    "refs/notes/*:refs/notes/*",
-    "refs/replace/*:refs/replace/*",
-  ] as const) {
+  for (const spec of specs) {
     const push = await pushWithSafeRetry(
       repo,
       config,
@@ -420,6 +418,28 @@ async function pushNotesAndReplace(
     }
   }
   return { ok: true };
+}
+
+async function pushNotesAndReplace(
+  repo: DiscoveredRepo,
+  config: AppConfig,
+  log: Logger,
+): Promise<{ ok: true } | { ok: false; detail: string }> {
+  return pushAuxRefspecs(repo, config, log, [
+    "refs/notes/*:refs/notes/*",
+    "refs/replace/*:refs/replace/*",
+  ]);
+}
+
+/** WIP snapshots, preforce rescues, and any other refs/ingotvault/* tips. */
+async function pushIngotvaultRefs(
+  repo: DiscoveredRepo,
+  config: AppConfig,
+  log: Logger,
+): Promise<{ ok: true } | { ok: false; detail: string }> {
+  return pushAuxRefspecs(repo, config, log, [
+    "refs/ingotvault/*:refs/ingotvault/*",
+  ]);
 }
 
 export async function processRepo(
@@ -538,6 +558,13 @@ export async function processRepo(
     if (wip.status === "ok") {
       wipNote = `; ${wip.detail}`;
     }
+  }
+
+  // Always sync refs/ingotvault/* (WIP, preforce rescues, …) onto the spare
+  // remote — not only when captureWorktree created new WIP tips this run.
+  const vaultRefs = await pushIngotvaultRefs(repo, config, log);
+  if (!vaultRefs.ok) {
+    return { ...base, status: "fail", detail: vaultRefs.detail };
   }
 
   await syncMirrorHead(repo, log);

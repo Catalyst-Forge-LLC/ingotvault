@@ -11,17 +11,17 @@ Coding agents fail differently than humans. They don't usually delete your proje
 
 The single most common agent-caused loss is **uncommitted** work: `git checkout .`, `git clean -fd`, `git reset --hard` on a dirty tree. Commits-only coverage misses all of it, and unlike a human, an agent can do it thirty seconds after you stepped away.
 
-ingotvault closes that without breaking the headline promise. Opt in with `--capture-worktree` (or `"captureWorktree": true` in config). Dirty index + worktree — including **untracked** files, including linked worktrees from `git worktree list` — become commits under:
+ingotvault closes that without breaking the headline promise. Opt in with `--capture-worktree` (or `"captureWorktree": true` in config). Dirty index + worktree — including untracked files that are **not** gitignored, including linked worktrees from `git worktree list` — become commits under:
 
 ```text
 refs/ingotvault/wip/<host>/<slug>/<timestamp>
 ```
 
-Those WIP refs are pushed with an explicit refspec (`refs/ingotvault/wip/*`) so they land on the mirror, not only on the laptop.
+Those WIP refs are part of `refs/ingotvault/*`, which is pushed to the spare remote with branches, tags, notes, and replace refs — so snapshots land on the drive you control, not only on the laptop.
 
 **.gitignore is respected.** Capture uses `git add -A` against a temporary index; ignored paths (`.env`, `service-account.json`, `.venv/`, …) are not swept into the snapshot. For anything further, set `wipExclude` pathspecs in config.
 
-Nothing in your working tree is mutated. **History refs are append-only; WIP snapshots are a rolling window** — newest `wipRetention` (default 20) are kept, older ones prune locally and on the mirror. That window is the only thing ingotvault ever deletes from a mirror. The default promise stays: every commit you've made lands in a second place you control. Optionally, a snapshot of your dirty tree too.
+Nothing in your working tree is mutated. **History refs are append-only; WIP snapshots are a rolling window** — newest `wipRetention` (default 20) are kept; older ones are pruned locally and on the mirror. That window is the only thing ingotvault ever deletes from a mirror. The default promise stays: every commit you've made lands in a second place you control. Optionally, a snapshot of your dirty tree too.
 
 ```bash
 ingotvault --capture-worktree
@@ -36,7 +36,7 @@ git fetch backup 'refs/ingotvault/wip/*:refs/ingotvault/wip/*'
 # overlay the snapshot onto the worktree (keeps HEAD where it is):
 git restore --source=refs/ingotvault/wip/<host>/<slug>/<timestamp> --worktree --staged .
 
-# or inspect without writing files:
+# inspect the snapshot commit without writing files:
 git show refs/ingotvault/wip/<host>/<slug>/<timestamp>
 ```
 
@@ -69,4 +69,4 @@ ingotvault verify --quiet-if-clean     # silent when clean; noise on drift
 
 `--quiet-if-clean` makes that cheap enough for a wrapper script or harness hook.
 
-The [Install](/install) page has the commands. Edge cases and what is deliberately not covered live on [Safety](/safety).
+The [Install](/install) page has the commands. Edge cases, exit codes, and what is deliberately not covered live on [Safety](/safety).

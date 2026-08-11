@@ -4,7 +4,7 @@
 
 A **spare remote** for a folder full of Git repos: push committed history into bare mirrors on a drive you control. **Never touches `origin`.**
 
-The promise is narrow on purpose: **every commit you've made lands in a second place you control.** Not uncommitted work (unless you opt in), not LFS objects — commits on every local branch and tag, plus `refs/notes/*` and `refs/replace/*` (default: `git push --all`, `--tags`, and those refspecs). Optionally, a snapshot of your dirty tree too (`captureWorktree`). Custom namespaces (e.g. Gerrit `refs/changes`) are not covered.
+The promise is narrow on purpose: **every commit you've made lands in a second place you control.** Not uncommitted work (unless you opt in), not LFS objects — commits on every local branch and tag, plus `refs/notes/*`, `refs/replace/*`, and `refs/ingotvault/*` (default: `git push --all`, `--tags`, and those refspecs). Optionally, a snapshot of your dirty tree too (`captureWorktree`). Custom namespaces (e.g. Gerrit `refs/changes`) are not covered.
 
 That gap is real even if you already have a forge **and** a file backup:
 
@@ -25,7 +25,7 @@ The product is the **guarantee set** below — what a late-night bash loop usual
 | Concern | Behavior |
 |---------|----------|
 | `origin` / other remotes | Never modified |
-| What gets pushed | All local branches + tags + `refs/notes/*` + `refs/replace/*` |
+| What gets pushed | All local branches + tags + `refs/notes/*` + `refs/replace/*` + `refs/ingotvault/*` (WIP snapshots and preforce rescues) |
 | Force update | Never by default. Opt-in `--force-with-lease` requires `--repo` or `--all-repos`. Uses `ls-remote` tips and explicit `--force-with-lease=<ref>:<oid>`; if a mirror tip is missing locally, fetches it into `refs/ingotvault/preforce/…` first so history is not orphaned |
 | Non-fast-forward (rebase/amend) | Fail that repo with `DIVERGED:` (branches and tags); other repos continue. **Do not delete** the stale mirror — move it under `mirrorRoot/_diverged/` |
 | Existing `backup` with wrong URL | Fail that repo; continue others |
@@ -184,7 +184,7 @@ ingotvault --capture-worktree
 # or "captureWorktree": true in config
 ```
 
-**.gitignore is respected** (`git add -A` on a temporary index). Ignored secrets stay out of the mirror; set `wipExclude` for additional pathspecs. WIP refs are pushed with `refs/ingotvault/wip/*` so they land on the spare remote.
+**.gitignore is respected** (`git add -A` on a temporary index). Ignored secrets stay out of the mirror; set `wipExclude` for additional pathspecs. WIP and preforce tips live under `refs/ingotvault/*`, which is pushed to the spare remote with the rest of each run.
 
 Restore a snapshot (fetch from the mirror first if needed):
 
