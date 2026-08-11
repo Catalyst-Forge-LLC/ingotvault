@@ -93,9 +93,9 @@ body {
 	height: 5.5rem;
 	max-height: none;
 	width: auto;
-	border-radius: 14px;
-	/* Photoreal mark already includes its steel plate — light lift only */
-	box-shadow: 0 8px 22px rgba(20, 26, 32, 0.18);
+	/* Transparent mark — no plate chrome */
+	border-radius: 0;
+	box-shadow: none;
 }
 
 .site-tagline {
