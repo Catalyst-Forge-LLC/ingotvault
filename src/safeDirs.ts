@@ -48,7 +48,7 @@ export async function cleanIngotSafeDirectories(
   return { removed, kept: keep.length };
 }
 
-export async function runUnsafeDirectory(
+export async function runSafeDirs(
   config: AppConfig,
   mode: "list" | "clean",
 ): Promise<number> {

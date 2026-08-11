@@ -32,6 +32,11 @@ export type AppConfig = {
   captureWorktree: boolean;
   /** Keep the newest N WIP refs per repo (local + prune on mirror push) */
   wipRetention: number;
+  /**
+   * Extra git pathspecs excluded from WIP snapshots (beyond .gitignore).
+   * Examples: `".env.local"`, `"secrets/**"`.
+   */
+  wipExclude: string[];
   concurrency: number;
   logDir: string;
   logRetentionDays: number;
@@ -40,7 +45,7 @@ export type AppConfig = {
 };
 
 export type CliOptions = {
-  command: "run" | "list" | "init" | "verify" | "unsafe-directory";
+  command: "run" | "list" | "init" | "verify" | "safe-dirs";
   dryRun: boolean;
   verbose: boolean;
   scheduled: boolean;
@@ -51,8 +56,8 @@ export type CliOptions = {
   captureWorktree: boolean;
   /** verify: stay silent when everything matches */
   quietIfClean: boolean;
-  /** unsafe-directory: list | clean */
-  unsafeMode: "list" | "clean" | null;
+  /** safe-dirs: list | clean */
+  safeDirsMode: "list" | "clean" | null;
   repoFilter: string | null;
   configPath: string | null;
   /** init: write to user config dir */
@@ -80,6 +85,7 @@ const fieldDefaults = {
   allowForceWithLease: false,
   captureWorktree: false,
   wipRetention: 20,
+  wipExclude: [] as string[],
   concurrency: 1,
   logDir: "~/.local/share/ingotvault/logs",
   logRetentionDays: 30,
@@ -204,6 +210,9 @@ export function loadConfig(cliPath: string | null): AppConfig {
       const n = fileConfig.wipRetention ?? fieldDefaults.wipRetention;
       return Number.isFinite(n) && n >= 1 ? n : fieldDefaults.wipRetention;
     })(),
+    wipExclude: Array.isArray(fileConfig.wipExclude)
+      ? fileConfig.wipExclude.filter((x: unknown): x is string => typeof x === "string")
+      : [...fieldDefaults.wipExclude],
     concurrency: fileConfig.concurrency ?? fieldDefaults.concurrency,
     logDir: normalizeSlashes(logDir),
     logRetentionDays:
@@ -237,7 +246,7 @@ export function parseCli(argv: string[]): CliOptions {
     allRepos: false,
     captureWorktree: false,
     quietIfClean: false,
-    unsafeMode: null,
+    safeDirsMode: null,
     repoFilter: null,
     configPath: null,
     global: false,
@@ -254,7 +263,7 @@ export function parseCli(argv: string[]): CliOptions {
       case "list":
       case "init":
       case "verify":
-      case "unsafe-directory":
+      case "safe-dirs":
         opts.command = arg;
         break;
       case "--dry-run":
@@ -280,14 +289,14 @@ export function parseCli(argv: string[]): CliOptions {
         opts.quietIfClean = true;
         break;
       case "--clean":
-        opts.unsafeMode = "clean";
+        opts.safeDirsMode = "clean";
         break;
       case "--global":
         opts.global = true;
         break;
       case "--list":
-        if (opts.command === "unsafe-directory") {
-          opts.unsafeMode = "list";
+        if (opts.command === "safe-dirs") {
+          opts.safeDirsMode = "list";
         } else {
           opts.command = "list";
         }
@@ -369,7 +378,7 @@ Usage:
   ingotvault list [--config <path>] [--repo <path|name>]
   ingotvault verify [--config <path>] [--repo <path|name>]
              [--verbose] [--quiet-if-clean]
-  ingotvault unsafe-directory [--config <path>] [--list|--clean]
+  ingotvault safe-dirs [--config <path>] [--list|--clean]
 
 Never modifies origin. Never force-pushes unless --force-with-lease.
 Force updates use ls-remote tips + explicit --force-with-lease=<ref>:<oid>,
@@ -377,7 +386,7 @@ preserving missing mirror tips under refs/ingotvault/preforce/… first.
 Requires --repo or --all-repos (aimed action).
 
 Optional --capture-worktree (or captureWorktree in config) snapshots dirty
-trees to refs/ingotvault/wip/… without mutating the worktree.
+trees to refs/ingotvault/wip/… (respects .gitignore; see wipExclude).
 
 Exit codes: 0 ok · 1 setup/config · 2 mirror unavailable · 3 repo/verify drift
 `);

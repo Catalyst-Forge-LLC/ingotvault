@@ -32,7 +32,7 @@ The product is the **guarantee set** below — what a late-night bash loop usual
 | Concurrent runs | Lock file `mirrorRoot/.ingotvault.lock` |
 | Mirror volume missing/locked | Exit `2` (scheduled: expected skip) |
 | Deleted local branches | **Not pruned** from the mirror — intentional ratchet: history only accumulates (valuable when an agent "cleans up" a branch) |
-| Uncommitted work / stashes | Not covered by default. Opt-in `captureWorktree` / `--capture-worktree` snapshots dirty trees (incl. untracked) to `refs/ingotvault/wip/<host>/…` without mutating the worktree; keeps newest `wipRetention` (default 20) |
+| Uncommitted work / stashes | Not covered by default. Opt-in `captureWorktree` / `--capture-worktree` snapshots dirty trees (incl. untracked that are **not** gitignored) to `refs/ingotvault/wip/<host>/…` without mutating the worktree; keeps newest `wipRetention` (default 20). That rolling window is the **only** thing ingotvault deletes from a mirror. Use `wipExclude` for extra pathspecs |
 | Git LFS | Not covered — bare push stores pointer files only; warned when `.gitattributes` has `filter=lfs` |
 | Linked worktrees | Discovery skips dirs whose `.git` is a file, but their **branches** live in the parent repo — `push --all` from the parent already covers committed work. With `captureWorktree`, dirty state is snapshotted for each path from `git worktree list` |
 | Submodules | Skipped (`.git` is a file). Parent stores only the gitlink SHA; submodule objects are not pushed. Restore needs each submodule's own remote (or its own ingotvault mirror) |
@@ -155,8 +155,8 @@ Removable volumes are often exFAT/FAT. Git may report “dubious ownership”. W
 Inspect or remove **only** entries under your `mirrorRoot`:
 
 ```bash
-ingotvault unsafe-directory --list
-ingotvault unsafe-directory --clean
+ingotvault safe-dirs --list
+ingotvault safe-dirs --clean
 ```
 
 Or selectively by hand:
@@ -184,7 +184,15 @@ ingotvault --capture-worktree
 # or "captureWorktree": true in config
 ```
 
-Restore a snapshot: `git show refs/ingotvault/wip/<host>/<slug>/<timestamp>` (or check out that ref from the mirror).
+**.gitignore is respected** (`git add -A` on a temporary index). Ignored secrets stay out of the mirror; set `wipExclude` for additional pathspecs. WIP refs are pushed with `refs/ingotvault/wip/*` so they land on the spare remote.
+
+Restore a snapshot (fetch from the mirror first if needed):
+
+```bash
+git fetch backup 'refs/ingotvault/wip/*:refs/ingotvault/wip/*'
+git restore --source=refs/ingotvault/wip/<host>/<slug>/<timestamp> --worktree --staged .
+# inspect only: git show refs/ingotvault/wip/<host>/<slug>/<timestamp>
+```
 
 `ingotvault verify` is a post-session **detector**: `diverged` on a repo you did not rebase yourself means something rewrote history. Use `--quiet-if-clean` in harness hooks so a clean vault stays silent.
 
@@ -214,7 +222,7 @@ ingotvault [run] [--config <path>] [--repo <path|name>] [--dry-run]
 ingotvault list  [--config <path>] [--repo <path|name>]
 ingotvault verify [--config <path>] [--repo <path|name>]
                 [--verbose] [--quiet-if-clean]
-ingotvault unsafe-directory [--config <path>] [--list|--clean]
+ingotvault safe-dirs [--config <path>] [--list|--clean]
 ```
 
 `--repo` matches the workspace-relative path (preferred), a unique path suffix, or a unique basename. If several repos share the same leaf name, the command fails and asks for the full relative path.

@@ -28,12 +28,17 @@ async function listWorktreePaths(repoPath: string): Promise<string[]> {
 }
 
 /**
- * Snapshot dirty index + worktree (including untracked) as a commit and store
- * at refs/ingotvault/wip/<host>/<slug>/<timestamp> without mutating the worktree.
+ * Snapshot dirty index + worktree (including untracked, excluding .gitignore
+ * and optional wipExclude pathspecs) as a commit at
+ * refs/ingotvault/wip/<host>/<slug>/<timestamp> without mutating the worktree.
+ *
+ * Uses `git add -A`, which respects ignore rules — secrets that stay gitignored
+ * are not swept into the append-only mirror.
  */
 async function createWipCommit(
   worktreePath: string,
   message: string,
+  wipExclude: string[],
 ): Promise<{ ok: true; oid: string } | { ok: false; detail: string }> {
   const gitDir = await runGit(["rev-parse", "--git-common-dir"], worktreePath);
   if (!gitDir.ok) {
@@ -58,7 +63,16 @@ async function createWipCommit(
       return { ok: false, detail: `read-tree: ${combinedOutput(read)}` };
     }
 
-    const add = await runGit(["add", "-A", "--"], worktreePath, env);
+    const addArgs = ["add", "-A", "--", "."];
+    for (const pattern of wipExclude) {
+      const p = pattern.trim();
+      if (!p) continue;
+      // Extra pathspec excludes beyond .gitignore / .git/info/exclude.
+      addArgs.push(
+        p.startsWith(":(") || p.startsWith(":!") ? p : `:(exclude)${p}`,
+      );
+    }
+    const add = await runGit(addArgs, worktreePath, env);
     if (!add.ok) {
       return { ok: false, detail: `add -A: ${combinedOutput(add)}` };
     }
@@ -165,7 +179,7 @@ export async function captureAndPushWip(
     );
     const ref = `refs/ingotvault/wip/${host}/${slug}/${stamp}`;
     const message = `ingotvault wip ${host} ${slug} ${stamp}`;
-    const commit = await createWipCommit(wt, message);
+    const commit = await createWipCommit(wt, message, config.wipExclude);
     if (!commit.ok) {
       return { status: "fail", detail: `WIP capture (${slug}): ${commit.detail}` };
     }

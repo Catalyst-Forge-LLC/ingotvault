@@ -1,6 +1,6 @@
 {
   "name": "ingotvault",
-  "version": "0.1.0",
+	"version": "0.1.0",
   "description": "Spare remotes for a workspace of Git repos: push all local branches and tags to bare mirrors on a drive you control. Never touches origin.",
   "type": "module",
   "license": "Apache-2.0",

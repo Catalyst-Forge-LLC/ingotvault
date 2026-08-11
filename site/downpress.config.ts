@@ -9,6 +9,7 @@ export default defineDownpressConfig({
 	url: 'https://ingotvault.dev',
 	author: 'Catalyst Forge LLC',
 	logo: '/logo.png',
+	ogImage: '/logo.png',
 	homePage: 'about',
 	topics: [
 		{ label: 'Guides', tag: 'guides' },
@@ -19,6 +20,7 @@ export default defineDownpressConfig({
 		{ label: 'Home', href: '/' },
 		{ label: 'Posts', href: '/writing' },
 		{ label: 'Install', href: '/install' },
+		{ label: 'Safety', href: '/safety' },
 		{ label: 'GitHub', href: 'https://github.com/Catalyst-Forge-LLC/ingotvault' }
 	]
 });

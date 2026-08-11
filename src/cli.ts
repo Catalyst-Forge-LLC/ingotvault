@@ -16,7 +16,7 @@ import { runInit } from "./init.js";
 import { acquireMirrorLock } from "./lock.js";
 import { createLogger, pruneOldLogs, timestampForFilename } from "./log.js";
 import { formatOutcome, processRepo, type RepoOutcome } from "./push.js";
-import { runUnsafeDirectory } from "./unsafeDirectory.js";
+import { runSafeDirs } from "./safeDirs.js";
 import { summarizeVerify, verifyAll } from "./verify.js";
 
 async function runMain(cli: CliOptions): Promise<number> {
@@ -45,9 +45,9 @@ async function runMain(cli: CliOptions): Promise<number> {
     return 1;
   }
 
-  if (cli.command === "unsafe-directory") {
-    const mode = cli.unsafeMode ?? "list";
-    return runUnsafeDirectory(config, mode);
+  if (cli.command === "safe-dirs") {
+    const mode = cli.safeDirsMode ?? "list";
+    return runSafeDirs(config, mode);
   }
 
   const dryRun = cli.dryRun || config.dryRun;

@@ -70,6 +70,7 @@ export async function runInit(cli: CliOptions): Promise<number> {
       allowForceWithLease: false,
       captureWorktree: false,
       wipRetention: 20,
+      wipExclude: [],
       concurrency: 1,
       logRetentionDays: 30,
     };

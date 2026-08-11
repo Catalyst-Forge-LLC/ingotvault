@@ -4,7 +4,7 @@ description: Push committed history to bare mirrors on a drive you control. Neve
 order: 1
 ---
 
-**ingotvault** scans a workspace, ensures a local `backup` remote, and pushes every branch and tag into bare mirrors on a path you choose — USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default.
+**ingotvault** scans a workspace, ensures a local `backup` remote, and pushes every local branch and tag — plus `refs/notes/*` and `refs/replace/*` — into bare mirrors on a path you choose: USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default.
 
 The promise is narrow on purpose: **every commit you've made lands in a second place you control.** Optionally, a snapshot of your dirty tree too.
 
@@ -14,6 +14,13 @@ The promise is narrow on purpose: **every commit you've made lands in a second p
 </div>
 
 <p class="kicker">npm · pnpm · Node 22+ · Apache-2.0</p>
+
+## For agents
+
+<div class="mesh-panel">
+  <p>Agents fail by <em>rewriting</em> — rebase, amend, reset, deleting a “stale” branch. An append-only spare remote is a ratchet that survives that class of failure. Opt-in WIP capture snapshots dirty trees (respecting <code>.gitignore</code>) before an unattended session can erase them.</p>
+  <p>Read the full argument: <a href="/posts/undo-layer-for-agents"><strong>An undo layer for autonomous edits</strong></a>.</p>
+</div>
 
 ## Why it exists
 
@@ -31,9 +38,11 @@ A push into a bare mirror is a **git** operation: validated on receipt, atomic a
 
 - Never touches `origin` or other remotes
 - Never force-pushes unless you aim `--force-with-lease` at a repo
-- Never prunes deleted branches from the mirror (history only accumulates)
+- Never prunes deleted **history** branches from the mirror (history only accumulates; WIP snapshots are a separate rolling window)
 - One repo fails; the others continue
 - Locked / missing vault → exit `2` (scheduled runs can skip quietly)
+
+The full coverage table — LFS, submodules, what is *not* covered — is on the [Safety](/safety) page.
 
 ## Quick start
 
@@ -47,15 +56,9 @@ ingotvault verify
 
 Full flags and restore notes live on the [install](/install) page and in the [README](https://github.com/Catalyst-Forge-LLC/ingotvault#readme).
 
-## For agents
-
-<div class="mesh-panel">
-  <p>Agents fail by <em>rewriting</em> — rebase, amend, reset, deleting a “stale” branch. An append-only spare remote is a ratchet that survives that class of failure. Opt-in WIP capture snapshots dirty trees before an unattended session can erase them.</p>
-  <p>Read the full argument: <a href="/posts/undo-layer-for-agents"><strong>An undo layer for autonomous edits</strong></a>.</p>
-</div>
-
 <div class="cta-row">
   <a class="cta cta-primary" href="/install">Get started →</a>
+  <a class="cta cta-secondary" href="/safety">Safety table</a>
   <a class="cta cta-secondary" href="/writing">Read the posts</a>
 </div>
 

@@ -21,6 +21,7 @@
   "allowForceWithLease": false,
   "captureWorktree": false,
   "wipRetention": 20,
+  "wipExclude": [],
   "concurrency": 1,
   "logDir": "~/.local/share/ingotvault/logs",
   "logRetentionDays": 30
