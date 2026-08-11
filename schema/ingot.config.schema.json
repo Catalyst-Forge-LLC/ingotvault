@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/example/git-ingot/schema/ingot.config.schema.json",
+  "title": "ingot config",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["workspaceRoot", "mirrorRoot"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "workspaceRoot": {
+      "type": "string",
+      "description": "Folder to scan for Git repositories. ~ is expanded."
+    },
+    "mirrorRoot": {
+      "type": "string",
+      "description": "Directory for bare mirror repos. ~ is expanded."
+    },
+    "remoteName": {
+      "type": "string",
+      "default": "backup",
+      "description": "Git remote name to manage. Never modifies other remotes."
+    },
+    "maxDepth": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 3
+    },
+    "excludeDirNames": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": ["__ARCHIVE", "node_modules", ".git", ".hg"]
+    },
+    "excludeRepoGlobs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [],
+      "description": "Glob patterns matched against repo paths relative to workspaceRoot."
+    },
+    "pushAllBranches": { "type": "boolean", "default": true },
+    "pushTags": { "type": "boolean", "default": true },
+    "dryRun": { "type": "boolean", "default": false },
+    "naming": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "style": {
+          "type": "string",
+          "const": "path-dash",
+          "default": "path-dash"
+        },
+        "prefix": { "type": "string", "default": "" },
+        "suffix": { "type": "string", "default": ".git" }
+      }
+    },
+    "safeDirectory": {
+      "type": "string",
+      "enum": ["per-mirror", "off"],
+      "default": "per-mirror",
+      "description": "Add git safe.directory entries for mirrors on filesystems without ownership (e.g. exFAT)."
+    },
+    "concurrency": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1
+    },
+    "logDir": {
+      "type": "string",
+      "description": "Directory for --scheduled log files. ~ is expanded."
+    }
+  }
+}

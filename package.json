@@ -1,0 +1,42 @@
+{
+  "name": "git-ingot",
+  "version": "0.1.0",
+  "description": "Local spare remotes for a folder full of Git repos. Push committed history to bare mirrors on another drive. Never touches origin.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "bin": {
+    "ingot": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "schema",
+    "config.example.json",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "tsx src/cli.ts",
+    "ingot": "tsx src/cli.ts",
+    "list": "tsx src/cli.ts list",
+    "dry-run": "tsx src/cli.ts --dry-run",
+    "prepublishOnly": "pnpm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "git",
+    "backup",
+    "mirror",
+    "bare-repository",
+    "local-first",
+    "workspace"
+  ],
+  "homepage": "https://github.com/example/git-ingot#readme",
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0"
+  }
+}

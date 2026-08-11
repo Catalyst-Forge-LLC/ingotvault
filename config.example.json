@@ -1,0 +1,23 @@
+{
+  "$schema": "./schema/ingot.config.schema.json",
+  "workspaceRoot": "~/code",
+  "mirrorRoot": "/Volumes/Backup/git-mirrors",
+  "remoteName": "backup",
+  "maxDepth": 3,
+  "excludeDirNames": ["__ARCHIVE", "node_modules", ".git", ".hg"],
+  "excludeRepoGlobs": [
+    "sandbox/**",
+    "**/vendor/**",
+    "test-project"
+  ],
+  "pushAllBranches": true,
+  "pushTags": true,
+  "naming": {
+    "style": "path-dash",
+    "prefix": "",
+    "suffix": ".git"
+  },
+  "safeDirectory": "per-mirror",
+  "concurrency": 1,
+  "logDir": "~/.local/share/ingot/logs"
+}
