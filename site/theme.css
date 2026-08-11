@@ -1,38 +1,14 @@
 /* ingotvault.dev — product landing on Downpress Essay chrome.
  * Cool steel vault + copper ingot accent. Light by default.
+ *
+ * Fonts reuse Essay's self-hosted Newsreader/Inter (bundled with Downpress)
+ * so we don't flash Essay tokens then swap in CDN faces.
  */
 
-@font-face {
-	font-family: 'DM Sans';
-	font-style: normal;
-	font-weight: 400 700;
-	font-display: swap;
-	src: url('https://cdn.jsdelivr.net/fontsource/fonts/dm-sans:vf@latest/latin-wght-normal.woff2')
-		format('woff2-variations');
-}
-
-@font-face {
-	font-family: 'Source Serif 4';
-	font-style: normal;
-	font-weight: 500 700;
-	font-display: swap;
-	src: url('https://cdn.jsdelivr.net/fontsource/fonts/source-serif-4:vf@latest/latin-wght-normal.woff2')
-		format('woff2-variations');
-}
-
-@font-face {
-	font-family: 'IBM Plex Mono';
-	font-style: normal;
-	font-weight: 400 600;
-	font-display: swap;
-	src: url('https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-mono@latest/latin-400-normal.woff2')
-		format('woff2');
-}
-
 :root {
-	--font-serif: 'Source Serif 4', Georgia, 'Iowan Old Style', 'Times New Roman', serif;
-	--font-sans: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-	--font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+	--font-serif: 'Newsreader Variable', Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+	--font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 	--bg: #eef1f4;
 	--surface: #ffffff;
 	--ink: #141a20;
@@ -114,13 +90,12 @@ body {
 }
 
 .site-logo {
-	height: 6.75rem;
+	height: 5.5rem;
 	max-height: none;
 	width: auto;
-	/* Transparent PNG mark — no radius/shadow framing a phantom plate */
-	border-radius: 0;
-	box-shadow: none;
-	background: transparent;
+	border-radius: 14px;
+	/* Photoreal mark already includes its steel plate — light lift only */
+	box-shadow: 0 8px 22px rgba(20, 26, 32, 0.18);
 }
 
 .site-tagline {

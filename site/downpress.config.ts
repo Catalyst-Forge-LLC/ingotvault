@@ -8,7 +8,7 @@ export default defineDownpressConfig({
 	lede: 'CLI · bare mirrors · never touches origin',
 	url: 'https://ingotvault.dev',
 	author: 'Catalyst Forge LLC',
-	logo: '/logo.svg',
+	logo: '/logo.png',
 	homePage: 'about',
 	topics: [
 		{ label: 'Guides', tag: 'guides' },
