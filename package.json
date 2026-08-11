@@ -34,7 +34,14 @@
     "workspace",
     "ingotvault"
   ],
-  "homepage": "https://github.com/example/ingotvault#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Catalyst-Forge-LLC/ingotvault.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Catalyst-Forge-LLC/ingotvault/issues"
+  },
+  "homepage": "https://github.com/Catalyst-Forge-LLC/ingotvault#readme",
   "devDependencies": {
     "@types/node": "^22.15.0",
     "tsx": "^4.19.0",

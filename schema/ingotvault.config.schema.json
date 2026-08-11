@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/example/ingotvault/schema/ingotvault.config.schema.json",
+  "$id": "https://github.com/Catalyst-Forge-LLC/ingotvault/schema/ingotvault.config.schema.json",
   "title": "ingotvault config",
   "type": "object",
   "additionalProperties": false,

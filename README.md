@@ -88,8 +88,6 @@ pnpm pack          # sanity-check tarball
 pnpm publish       # requires npm login; package name: ingotvault
 ```
 
-Update `homepage` in `package.json` to the real GitHub URL before the first public release.
-
 ## License
 
 Apache-2.0
