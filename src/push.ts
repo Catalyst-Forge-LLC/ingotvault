@@ -22,6 +22,7 @@ function isNonFastForward(result: Awaited<ReturnType<typeof runGit>>): boolean {
   return (
     text.includes("non-fast-forward") ||
     text.includes("fetch first") ||
+    text.includes("stale info") ||
     (text.includes("rejected") && text.includes("! [rejected]")) ||
     text.includes("failed to push some refs")
   );
@@ -29,12 +30,18 @@ function isNonFastForward(result: Awaited<ReturnType<typeof runGit>>): boolean {
 
 function divergedDetail(forceEnabled: boolean): string {
   if (forceEnabled) {
-    return "DIVERGED: push rejected even with --force-with-lease (remote tip moved unexpectedly). Inspect the bare mirror before deleting it.";
+    return (
+      "DIVERGED: push rejected even with --force-with-lease. " +
+      "Inspect the bare mirror; do not delete it (it may hold pre-rebase history). " +
+      "Rename it aside (e.g. mv foo.git foo.diverged-YYYY-MM-DD.git) and re-run to create a fresh mirror, " +
+      "or git fetch backup then recover old tips locally before retrying."
+    );
   }
   return (
     "DIVERGED: mirror rejected a non-fast-forward update (rebase/amend?). " +
-    "Mirror is stale. Re-run with --force-with-lease, set allowForceWithLease in config, " +
-    "or delete the bare mirror and re-run to recreate it."
+    "Mirror is stale and may hold history you no longer have locally — do not delete it. " +
+    "Re-run with --force-with-lease (fetches backup first), or rename the mirror aside " +
+    "(e.g. mv foo.git foo.diverged-YYYY-MM-DD.git) and re-run so a fresh mirror is created."
   );
 }
 
@@ -61,6 +68,62 @@ async function pushWithSafeRetry(
     result = await runGit(args, repo.repoPath);
   }
   return result;
+}
+
+/** Point bare mirror HEAD at the source repo's current branch so clone checks out cleanly. */
+export async function syncMirrorHead(
+  repo: DiscoveredRepo,
+  log: Logger,
+): Promise<void> {
+  const sym = await runGit(
+    ["symbolic-ref", "--short", "HEAD"],
+    repo.repoPath,
+  );
+  if (!sym.ok) {
+    log.verbose(
+      `${repo.relativePath}: skip mirror HEAD sync (detached HEAD or no symbolic ref)`,
+    );
+    return;
+  }
+  const branch = sym.stdout.trim();
+  if (!branch) return;
+
+  const set = await runGit(
+    ["symbolic-ref", "HEAD", `refs/heads/${branch}`],
+    repo.mirrorPath,
+  );
+  if (!set.ok) {
+    log.verbose(
+      `${repo.relativePath}: could not set mirror HEAD to ${branch}: ${combinedOutput(set)}`,
+    );
+    return;
+  }
+  log.verbose(`${repo.relativePath}: mirror HEAD -> refs/heads/${branch}`);
+}
+
+/**
+ * --force-with-lease needs up-to-date remote-tracking refs.
+ * Without a prior fetch, refs/remotes/<backup>/* is often missing and the lease fails oddly.
+ */
+async function fetchBackupForLease(
+  repo: DiscoveredRepo,
+  config: AppConfig,
+  log: Logger,
+): Promise<{ ok: true } | { ok: false; detail: string }> {
+  log.verbose(`${repo.relativePath}: fetch ${config.remoteName} before force-with-lease`);
+  const fetch = await pushWithSafeRetry(
+    repo,
+    config,
+    ["fetch", config.remoteName],
+    log,
+  );
+  if (!fetch.ok) {
+    return {
+      ok: false,
+      detail: `fetch ${config.remoteName} failed (needed for --force-with-lease): ${combinedOutput(fetch)}`,
+    };
+  }
+  return { ok: true };
 }
 
 export async function processRepo(
@@ -98,12 +161,21 @@ export async function processRepo(
   }
 
   if (dryRun) {
-    const forceNote = forceWithLease ? " --force-with-lease" : "";
+    const forceNote = forceWithLease
+      ? " fetch + push --force-with-lease"
+      : " push";
     return {
       ...base,
       status: "ok",
-      detail: `[dry-run] would push${forceNote} ${config.remoteName}`,
+      detail: `[dry-run] would${forceNote} ${config.remoteName}`,
     };
+  }
+
+  if (forceWithLease) {
+    const fetched = await fetchBackupForLease(repo, config, log);
+    if (!fetched.ok) {
+      return { ...base, status: "fail", detail: fetched.detail };
+    }
   }
 
   const forceArgs = forceWithLease ? ["--force-with-lease"] : [];
@@ -132,7 +204,7 @@ export async function processRepo(
   }
 
   if (config.pushTags) {
-    // Tags: --force-with-lease applies to branch updates; for tags use --force when opted in.
+    // Tags: lease applies to branch updates; for tags use --force when opted in.
     const tagForce = forceWithLease ? ["--force"] : [];
     const pushTags = await pushWithSafeRetry(
       repo,
@@ -160,6 +232,8 @@ export async function processRepo(
       }
     }
   }
+
+  await syncMirrorHead(repo, log);
 
   return { ...base, status: "ok", detail: `-> ${repo.mirrorPath}` };
 }

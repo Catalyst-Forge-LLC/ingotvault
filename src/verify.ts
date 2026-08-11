@@ -132,14 +132,11 @@ export async function verifyRepo(
     }
     if (tip === branch.sha) continue;
 
+    // Only count "behind" when the mirror tip is a known ancestor of local.
+    // Otherwise report diverged — do not rev-list across unrelated histories
+    // (mirror tip may not even be in the local object store after a rebase).
     const ancestor = await isAncestor(repo.repoPath, tip, branch.sha);
     if (!ancestor) {
-      const reverse = await isAncestor(repo.repoPath, branch.sha, tip);
-      if (reverse) {
-        // Mirror is ahead of local — unusual for a backup; treat as diverged-ish.
-        divergedBranches.push(branch.name);
-        continue;
-      }
       divergedBranches.push(branch.name);
       continue;
     }
@@ -148,7 +145,7 @@ export async function verifyRepo(
     if (behind != null && behind > 0) {
       maxBehind = Math.max(maxBehind, behind);
       behindNotes.push(`${branch.name}: ${behind} commit(s) behind`);
-    } else if (behind === 0 && tip !== branch.sha) {
+    } else if (behind === null) {
       divergedBranches.push(branch.name);
     }
   }
@@ -212,5 +209,6 @@ export async function verifyAll(
   const bad = outcomes.filter((o) =>
     ["behind", "diverged", "missing-mirror", "fail"].includes(o.status),
   );
-  return { outcomes, exitCode: bad.length > 0 ? 1 : 0 };
+  // 3 = drift / partial failure (distinct from config errors = 1)
+  return { outcomes, exitCode: bad.length > 0 ? 3 : 0 };
 }

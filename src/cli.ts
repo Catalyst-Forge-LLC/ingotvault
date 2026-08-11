@@ -129,7 +129,8 @@ async function runMain(cli: CliOptions): Promise<number> {
   log.line(`${ok} ok, ${skip} skip, ${fail} fail  (${seconds}s)`);
 
   maybeWriteScheduledLog(cli, config.logDir, config.logRetentionDays, log);
-  return fail > 0 ? 1 : 0;
+  // 3 = one or more repos failed (setup/config errors use 1; vault absent uses 2)
+  return fail > 0 ? 3 : 0;
 }
 
 function maybeWriteScheduledLog(

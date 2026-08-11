@@ -329,9 +329,10 @@ Usage:
   ingotvault verify [--config <path>] [--repo <path|name>] [--verbose]
 
 Never modifies origin. Never force-pushes unless --force-with-lease (or
-allowForceWithLease in config).
+allowForceWithLease in config). With --force-with-lease, fetches the backup
+remote first so the lease has remote-tracking refs to compare.
 
-Exit codes: 0 ok · 1 error/repo failure · 2 mirror root unavailable
+Exit codes: 0 ok · 1 setup/config · 2 mirror unavailable · 3 repo/verify drift
 `);
 }
 
