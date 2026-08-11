@@ -2,8 +2,7 @@
 	// Cloudflare Pages — static output only (no Worker script).
 	// Deploy:  pnpm deploy   (= build + wrangler pages deploy build --project-name=ingotvault)
 	//
-	// Prefer one pipeline: local `pnpm deploy` until downpress is a public git pin,
-	// then Pages Git with root directory `site`.
+	// Prefer one pipeline until Pages Git is wired (root directory: site).
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "ingotvault",
 	"compatibility_date": "2026-08-11",

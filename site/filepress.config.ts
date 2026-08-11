@@ -1,6 +1,6 @@
-import { defineDownpressConfig } from 'downpress';
+import { defineFilepressConfig } from 'getfilepress';
 
-export default defineDownpressConfig({
+export default defineFilepressConfig({
 	title: 'IngotVault',
 	description:
 		'Spare remotes for a workspace of Git repos. Push committed history to bare mirrors on a drive you control — never touches origin.',

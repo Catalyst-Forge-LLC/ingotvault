@@ -1,7 +1,7 @@
-/* IngotVault.dev — product landing on Downpress Essay chrome.
+/* IngotVault.dev — product landing on FilePress Essay chrome.
  * Cool steel vault + copper ingot accent. Light by default.
  *
- * Fonts reuse Essay's self-hosted Newsreader/Inter (bundled with Downpress)
+ * Fonts reuse Essay's self-hosted Newsreader/Inter (bundled with FilePress)
  * so we don't flash Essay tokens then swap in CDN faces.
  */
 
@@ -425,7 +425,7 @@ a:hover {
 	color: var(--ink);
 }
 
-/* Downpress Essay sets .post-card / .featured .post-card to vertical-only or
+/* FilePress Essay sets .post-card / .featured .post-card to vertical-only or
    zero padding (borderless list). When we paint cards, restore full padding —
    .featured is more specific, so it must set horizontal padding too. */
 .post-card,
