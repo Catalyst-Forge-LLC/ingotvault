@@ -114,13 +114,12 @@ body {
 }
 
 .site-logo {
-	height: 4.5rem;
+	height: 6.25rem;
 	max-height: none;
 	width: auto;
-	border-radius: 14px;
-	box-shadow:
-		0 1px 0 rgba(255, 255, 255, 0.55) inset,
-		0 10px 28px rgba(20, 26, 32, 0.14);
+	border-radius: 16px;
+	/* Asset is already the mark — no extra frame or drop-shadow chrome */
+	box-shadow: none;
 }
 
 .site-tagline {
@@ -350,15 +349,25 @@ a:hover {
 	color: var(--ink);
 }
 
-.post-card {
+/* Downpress Essay sets .post-card / .featured .post-card to vertical-only or
+   zero padding (borderless list). When we paint cards, restore full padding —
+   .featured is more specific, so it must set horizontal padding too. */
+.post-card,
+.featured .post-card {
 	background: var(--surface);
 	border: 1px solid var(--rule);
 	border-radius: var(--radius);
-	padding: 1.25rem 1.35rem;
+	padding: 1.35rem 1.5rem;
+	border-bottom: 1px solid var(--rule);
 }
 
 .featured .post-card {
 	box-shadow: 0 12px 32px rgba(20, 26, 32, 0.07);
+	padding: 1.5rem 1.65rem;
+}
+
+.post-list > .post-card:first-child {
+	padding-top: 1.35rem;
 }
 
 .eyebrow,
@@ -397,7 +406,7 @@ pre {
 
 @media (width <= 40rem) {
 	.site-logo {
-		height: 3.5rem;
+		height: 4.75rem;
 	}
 
 	.site-title {
@@ -407,5 +416,10 @@ pre {
 
 	.home-page .page-header h1 {
 		max-width: none;
+	}
+
+	.post-card,
+	.featured .post-card {
+		padding: 1.15rem 1.2rem;
 	}
 }
