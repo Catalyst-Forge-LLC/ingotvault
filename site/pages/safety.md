@@ -18,7 +18,7 @@ All local branches + tags + `refs/notes/*` + `refs/replace/*` + `refs/ingotvault
 
 ### Force update
 
-Never by default. Opt-in `--force-with-lease` requires `--repo` or `--all-repos`. Uses `ls-remote` tips and explicit `--force-with-lease=<ref>:<oid>`; if a mirror tip is missing locally, fetches it into `refs/ingotvault/preforce/…` first so history is not orphaned, then that namespace is pushed to the spare remote with the rest of `refs/ingotvault/*`.
+Never by default. Requires `allowForceWithLease: true` in config **and** CLI `--force-with-lease` with `--repo` or `--all-repos`. Uses `ls-remote` tips and explicit `--force-with-lease=<ref>:<oid>`; if a mirror tip is missing locally, fetches it into `refs/ingotvault/preforce/…` first so history is not orphaned, then that namespace is pushed to the spare remote with the rest of `refs/ingotvault/*`.
 
 ### Non-fast-forward (rebase / amend)
 
@@ -32,9 +32,9 @@ Fail that repo; continue others.
 
 Lock file `mirrorRoot/.ingotvault.lock`.
 
-### Mirror volume missing / locked
+### Mirror volume missing / locked / not a vault
 
-Exit `2` (scheduled: expected skip). See [Exit codes](#exit-codes).
+Exit `2` (scheduled: expected skip). `init` writes `mirrorRoot/.ingotvault-vault`; normal runs never create the tree if that marker is absent — so an unplugged volume cannot silently land mirrors on the boot disk. See [Exit codes](#exit-codes).
 
 ### Deleted local branches
 
@@ -42,7 +42,7 @@ Exit `2` (scheduled: expected skip). See [Exit codes](#exit-codes).
 
 ### Uncommitted work / stashes
 
-Not covered by default. Opt-in `captureWorktree` / `--capture-worktree` snapshots dirty trees (incl. untracked that are **not** gitignored) to `refs/ingotvault/wip/<host>/…` without mutating the worktree; keeps newest `wipRetention` (default 20). That rolling window is the only thing ingotvault deletes from a mirror. Use `wipExclude` for extra pathspecs.
+Not covered by default. Opt-in `captureWorktree` / `--capture-worktree` snapshots dirty trees (incl. untracked that are **not** gitignored) to `refs/ingotvault/wip/<host>/…` without mutating the worktree; keeps newest `wipRetention` (default 20) per worktree slug on this host. Prune/push is host-scoped so a shared vault does not wipe another machine's WIP. That rolling window is the only thing ingotvault deletes from a mirror. Use `wipExclude` for extra pathspecs.
 
 ### Git LFS
 

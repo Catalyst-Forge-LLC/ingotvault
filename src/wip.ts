@@ -6,8 +6,27 @@ import type { DiscoveredRepo } from "./discover.js";
 import { combinedOutput, runGit } from "./git.js";
 import type { Logger } from "./log.js";
 
-function sanitizeRefSegment(s: string): string {
+export function sanitizeRefSegment(s: string): string {
   return s.replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "") || "x";
+}
+
+export function wipHostPrefix(host = hostname()): string {
+  return `refs/ingotvault/wip/${sanitizeRefSegment(host)}`;
+}
+
+/** refs/ingotvault/wip/<host>/<slug>/<timestamp> → timestamp segment (or ""). */
+export function wipTimestampSegment(ref: string): string {
+  const parts = ref.split("/");
+  // refs ingotvault wip host slug timestamp
+  return parts.length >= 6 ? parts[parts.length - 1]! : "";
+}
+
+/** refs/ingotvault/wip/<host>/<slug>/<timestamp> → slug (or ""). */
+export function wipSlugSegment(ref: string, hostPrefix: string): string {
+  if (!ref.startsWith(`${hostPrefix}/`)) return "";
+  const rest = ref.slice(hostPrefix.length + 1);
+  const slash = rest.indexOf("/");
+  return slash >= 0 ? rest.slice(0, slash) : rest;
 }
 
 async function worktreeDirty(worktreePath: string): Promise<boolean> {
@@ -108,13 +127,10 @@ async function createWipCommit(
 
 async function listWipRefs(
   repoPath: string,
+  prefix: string,
 ): Promise<{ ref: string; sha: string }[]> {
   const result = await runGit(
-    [
-      "for-each-ref",
-      "--format=%(refname) %(objectname)",
-      "refs/ingotvault/wip",
-    ],
+    ["for-each-ref", "--format=%(refname) %(objectname)", prefix],
     repoPath,
   );
   if (!result.ok) return [];
@@ -130,21 +146,40 @@ async function listWipRefs(
     .filter((x): x is { ref: string; sha: string } => x != null);
 }
 
-async function pruneWipRefs(
+/**
+ * Keep the newest `keep` snapshots per worktree slug under this host prefix.
+ * Sorted by the timestamp path segment, not the full ref string.
+ */
+export async function pruneWipRefs(
   repoPath: string,
+  hostPrefix: string,
   keep: number,
   log: Logger,
   relativePath: string,
 ): Promise<number> {
   if (keep <= 0) return 0;
-  const refs = await listWipRefs(repoPath);
-  refs.sort((a, b) => b.ref.localeCompare(a.ref));
-  const drop = refs.slice(keep);
-  for (const r of drop) {
-    log.verbose(`${relativePath}: prune WIP ${r.ref}`);
-    await runGit(["update-ref", "-d", r.ref], repoPath);
+  const refs = await listWipRefs(repoPath, hostPrefix);
+  const bySlug = new Map<string, { ref: string; sha: string }[]>();
+  for (const r of refs) {
+    const slug = wipSlugSegment(r.ref, hostPrefix) || "main";
+    const group = bySlug.get(slug) ?? [];
+    group.push(r);
+    bySlug.set(slug, group);
   }
-  return drop.length;
+
+  let dropped = 0;
+  for (const group of bySlug.values()) {
+    group.sort((a, b) =>
+      wipTimestampSegment(b.ref).localeCompare(wipTimestampSegment(a.ref)),
+    );
+    const drop = group.slice(keep);
+    for (const r of drop) {
+      log.verbose(`${relativePath}: prune WIP ${r.ref}`);
+      await runGit(["update-ref", "-d", r.ref], repoPath);
+      dropped += 1;
+    }
+  }
+  return dropped;
 }
 
 export type WipCaptureResult =
@@ -162,6 +197,7 @@ export async function captureAndPushWip(
   log: Logger,
 ): Promise<WipCaptureResult> {
   const host = sanitizeRefSegment(hostname());
+  const hostPrefix = wipHostPrefix(host);
   const stamp = new Date()
     .toISOString()
     .replace(/[:.]/g, "-")
@@ -177,7 +213,7 @@ export async function captureAndPushWip(
         ? "main"
         : path.relative(repo.repoPath, wt) || path.basename(wt),
     );
-    const ref = `refs/ingotvault/wip/${host}/${slug}/${stamp}`;
+    const ref = `${hostPrefix}/${slug}/${stamp}`;
     const message = `ingotvault wip ${host} ${slug} ${stamp}`;
     const commit = await createWipCommit(wt, message, config.wipExclude);
     if (!commit.ok) {
@@ -203,17 +239,19 @@ export async function captureAndPushWip(
 
   await pruneWipRefs(
     repo.repoPath,
+    hostPrefix,
     config.wipRetention,
     log,
     repo.relativePath,
   );
 
+  // Prune only this host's WIP namespace so shared vaults keep other hosts' snapshots.
   const push = await runGit(
     [
       "push",
       "--prune",
       config.remoteName,
-      "refs/ingotvault/wip/*:refs/ingotvault/wip/*",
+      `${hostPrefix}/*:${hostPrefix}/*`,
     ],
     repo.repoPath,
   );

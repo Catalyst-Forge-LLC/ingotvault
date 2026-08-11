@@ -385,6 +385,15 @@ export async function syncMirrorHead(
   log.verbose(`${repo.relativePath}: mirror HEAD -> refs/heads/${branch}`);
 }
 
+function isEmptyRefspecFailure(out: string): boolean {
+  // Narrow benign cases: namespace has no local refs to push.
+  return (
+    (out.includes("src refspec") && out.includes("does not match")) ||
+    out.includes("no refs in common") ||
+    out.includes("everything up-to-date")
+  );
+}
+
 async function pushAuxRefspecs(
   repo: DiscoveredRepo,
   config: AppConfig,
@@ -399,22 +408,16 @@ async function pushAuxRefspecs(
       log,
     );
     if (!push.ok) {
-      const out = combinedOutput(push).toLowerCase();
-      // Empty namespace is fine
-      if (
-        out.includes("src refspec") ||
-        out.includes("does not match") ||
-        out.includes("no refs in common") ||
-        out.includes("everything up-to-date")
-      ) {
+      const detail = combinedOutput(push);
+      const out = detail.toLowerCase();
+      if (isEmptyRefspecFailure(out)) {
         continue;
       }
       if (isNonFastForward(push)) {
         return { ok: false, detail: divergedDetail(false) };
       }
-      // Some git versions error when the glob matches nothing — treat as ok
-      if (out.includes("no such ref") || out.includes("not found")) continue;
-      log.verbose(`${repo.relativePath}: push ${spec}: ${combinedOutput(push)}`);
+      log.verbose(`${repo.relativePath}: push ${spec}: ${detail}`);
+      return { ok: false, detail: `push ${spec} failed: ${detail}` };
     }
   }
   return { ok: true };

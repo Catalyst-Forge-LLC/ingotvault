@@ -66,7 +66,7 @@
     "allowForceWithLease": {
       "type": "boolean",
       "default": false,
-      "description": "If true, pushes use --force-with-lease (same as CLI --force-with-lease). Still requires --repo or --all-repos."
+      "description": "If true, permits CLI --force-with-lease (still requires --repo or --all-repos). Never enables force by itself."
     },
     "captureWorktree": {
       "type": "boolean",
@@ -77,18 +77,13 @@
       "type": "integer",
       "minimum": 1,
       "default": 20,
-      "description": "Keep the newest N WIP refs per repo; older local refs are deleted and pruned on the mirror. This rolling window is the only thing ingotvault deletes from a mirror."
+      "description": "Keep the newest N WIP refs per worktree slug (per host); older local refs are deleted and pruned on the mirror for that host only. This rolling window is the only thing ingotvault deletes from a mirror."
     },
     "wipExclude": {
       "type": "array",
       "items": { "type": "string" },
       "default": [],
       "description": "Extra git pathspecs excluded from WIP snapshots beyond .gitignore (e.g. \".env.local\", \"tmp/**\")."
-    },
-    "concurrency": {
-      "type": "integer",
-      "minimum": 1,
-      "default": 1
     },
     "logDir": {
       "type": "string",

@@ -33,12 +33,15 @@ pnpm link --global
 ```bash
 ingotvault init
 # workspace + mirror roots → ./ingotvault.config.json
+# also writes mirrorRoot/.ingotvault-vault (required on later runs)
 
 ingotvault list          # planned mirror paths
 ingotvault --dry-run     # no writes
 ingotvault               # ensure bare mirrors + push
 ingotvault verify        # compare tips
 ```
+
+If you change `mirrorRoot`, run `ingotvault init` against the new path (or ensure `.ingotvault-vault` exists there), then `ingotvault relink` so each repo's `backup` remote matches.
 
 Mirror naming preserves workspace paths under `mirrorRoot` (`acme/widgets` → `…/acme/widgets.git`).
 

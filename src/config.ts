@@ -27,17 +27,20 @@ export type AppConfig = {
   dryRun: boolean;
   naming: NamingConfig;
   safeDirectory: "per-mirror" | "off";
+  /**
+   * When true, CLI `--force-with-lease` is permitted (still requires --repo or
+   * --all-repos). Never enables force by itself.
+   */
   allowForceWithLease: boolean;
   /** Snapshot dirty worktrees to refs/ingotvault/wip/… and push them */
   captureWorktree: boolean;
-  /** Keep the newest N WIP refs per repo (local + prune on mirror push) */
+  /** Keep the newest N WIP refs per worktree slug (per host) */
   wipRetention: number;
   /**
    * Extra git pathspecs excluded from WIP snapshots (beyond .gitignore).
    * Examples: `".env.local"`, `"secrets/**"`.
    */
   wipExclude: string[];
-  concurrency: number;
   logDir: string;
   logRetentionDays: number;
   /** Path of the config file that was loaded, if any */
@@ -45,7 +48,7 @@ export type AppConfig = {
 };
 
 export type CliOptions = {
-  command: "run" | "list" | "init" | "verify" | "safe-dirs";
+  command: "run" | "list" | "init" | "verify" | "safe-dirs" | "relink";
   dryRun: boolean;
   verbose: boolean;
   scheduled: boolean;
@@ -86,7 +89,6 @@ const fieldDefaults = {
   captureWorktree: false,
   wipRetention: 20,
   wipExclude: [] as string[],
-  concurrency: 1,
   logDir: "~/.local/share/ingotvault/logs",
   logRetentionDays: 30,
 };
@@ -208,7 +210,6 @@ export function loadConfig(cliPath: string | null): AppConfig {
     wipExclude: Array.isArray(fileConfig.wipExclude)
       ? fileConfig.wipExclude.filter((x: unknown): x is string => typeof x === "string")
       : [...fieldDefaults.wipExclude],
-    concurrency: fileConfig.concurrency ?? fieldDefaults.concurrency,
     logDir: normalizeSlashes(logDir),
     logRetentionDays:
       Number.isFinite(logRetentionDays) && logRetentionDays >= 0
@@ -259,6 +260,7 @@ export function parseCli(argv: string[]): CliOptions {
       case "init":
       case "verify":
       case "safe-dirs":
+      case "relink":
         opts.command = arg;
         break;
       case "--dry-run":
@@ -373,15 +375,20 @@ Usage:
   ingotvault list [--config <path>] [--repo <path|name>]
   ingotvault verify [--config <path>] [--repo <path|name>]
              [--verbose] [--quiet-if-clean]
+  ingotvault relink [--config <path>] [--repo <path|name>]
   ingotvault safe-dirs [--config <path>] [--list|--clean]
 
 Never modifies origin. Never force-pushes unless --force-with-lease.
-Force updates use ls-remote tips + explicit --force-with-lease=<ref>:<oid>,
-preserving missing mirror tips under refs/ingotvault/preforce/… first.
-Requires --repo or --all-repos (aimed action).
+Force requires allowForceWithLease: true in config AND --force-with-lease
+with --repo or --all-repos. Uses ls-remote tips + explicit leases, preserving
+missing mirror tips under refs/ingotvault/preforce/… first.
+
+init writes a .ingotvault-vault marker under mirrorRoot. Normal runs refuse
+(exit 2) if that marker is missing — so an unplugged volume never silently
+creates mirrors on the boot disk.
 
 Optional --capture-worktree (or captureWorktree in config) snapshots dirty
-trees to refs/ingotvault/wip/… (respects .gitignore; see wipExclude).
+trees to refs/ingotvault/wip/<host>/… (respects .gitignore; see wipExclude).
 
 Exit codes: 0 ok · 1 setup/config · 2 mirror unavailable · 3 repo/verify drift
 `);

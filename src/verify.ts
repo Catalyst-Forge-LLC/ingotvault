@@ -29,11 +29,12 @@ function mirrorExists(mirrorPath: string): boolean {
   }
 }
 
-async function listLocalBranches(
+async function listLocalRefs(
   repoPath: string,
+  namespace: string,
 ): Promise<{ name: string; sha: string }[]> {
   const result = await runGit(
-    ["for-each-ref", "--format=%(refname:short) %(objectname)", "refs/heads"],
+    ["for-each-ref", "--format=%(refname:short) %(objectname)", namespace],
     repoPath,
   );
   if (!result.ok) return [];
@@ -52,12 +53,12 @@ async function listLocalBranches(
     .filter((x): x is { name: string; sha: string } => x != null);
 }
 
-async function mirrorTip(
+async function mirrorRefTip(
   mirrorPath: string,
-  branch: string,
+  fullRef: string,
 ): Promise<string | null> {
   const result = await runGit(
-    ["rev-parse", "--verify", `refs/heads/${branch}`],
+    ["rev-parse", "--verify", fullRef],
     mirrorPath,
   );
   if (!result.ok) return null;
@@ -109,68 +110,83 @@ export async function verifyRepo(
     return { ...base, status: "missing-mirror", detail: "mirror missing" };
   }
 
-  const branches = await listLocalBranches(repo.repoPath);
-  if (branches.length === 0) {
+  const branches = await listLocalRefs(repo.repoPath, "refs/heads");
+  const tags = await listLocalRefs(repo.repoPath, "refs/tags");
+
+  if (branches.length === 0 && tags.length === 0) {
     return {
       ...base,
       status: "ok",
-      detail: "no local branches (detached HEAD only)",
+      detail: "no local branches or tags",
     };
   }
 
   let maxBehind = 0;
-  let missingBranches = 0;
-  let divergedBranches: string[] = [];
-  const behindNotes: string[] = [];
+  let missingRefs = 0;
+  let divergedRefs: string[] = [];
+  const notes: string[] = [];
 
   for (const branch of branches) {
-    const tip = await mirrorTip(repo.mirrorPath, branch.name);
+    const tip = await mirrorRefTip(
+      repo.mirrorPath,
+      `refs/heads/${branch.name}`,
+    );
     if (!tip) {
-      missingBranches += 1;
-      behindNotes.push(`${branch.name}: missing on mirror`);
+      missingRefs += 1;
+      notes.push(`${branch.name}: missing on mirror`);
       continue;
     }
     if (tip === branch.sha) continue;
 
-    // Only count "behind" when the mirror tip is a known ancestor of local.
-    // Otherwise report diverged — do not rev-list across unrelated histories
-    // (mirror tip may not even be in the local object store after a rebase).
     const ancestor = await isAncestor(repo.repoPath, tip, branch.sha);
     if (!ancestor) {
-      divergedBranches.push(branch.name);
+      divergedRefs.push(branch.name);
       continue;
     }
 
     const behind = await commitsBehind(repo.repoPath, branch.sha, tip);
     if (behind != null && behind > 0) {
       maxBehind = Math.max(maxBehind, behind);
-      behindNotes.push(`${branch.name}: ${behind} commit(s) behind`);
+      notes.push(`${branch.name}: ${behind} commit(s) behind`);
     } else if (behind === null) {
-      divergedBranches.push(branch.name);
+      divergedRefs.push(branch.name);
     }
   }
 
-  if (divergedBranches.length > 0) {
+  for (const tag of tags) {
+    const tip = await mirrorRefTip(repo.mirrorPath, `refs/tags/${tag.name}`);
+    if (!tip) {
+      missingRefs += 1;
+      notes.push(`tag ${tag.name}: missing on mirror`);
+      continue;
+    }
+    if (tip !== tag.sha) {
+      // Tags should be immutable; any tip mismatch is divergence.
+      divergedRefs.push(`tag:${tag.name}`);
+    }
+  }
+
+  if (divergedRefs.length > 0) {
     log.verbose(
-      `${repo.relativePath}: diverged branches: ${divergedBranches.join(", ")}`,
+      `${repo.relativePath}: diverged: ${divergedRefs.join(", ")}`,
     );
     return {
       ...base,
       status: "diverged",
-      detail: `diverged on ${divergedBranches.join(", ")}`,
+      detail: `diverged on ${divergedRefs.join(", ")}`,
     };
   }
 
-  if (missingBranches > 0 || maxBehind > 0) {
+  if (missingRefs > 0 || maxBehind > 0) {
     const parts: string[] = [];
     if (maxBehind > 0) parts.push(`mirror is up to ${maxBehind} commit(s) behind`);
-    if (missingBranches > 0) {
-      parts.push(`${missingBranches} branch(es) missing on mirror`);
+    if (missingRefs > 0) {
+      parts.push(`${missingRefs} ref(s) missing on mirror`);
     }
     return {
       ...base,
       status: "behind",
-      detail: behindNotes.length ? behindNotes.join("; ") : parts.join("; "),
+      detail: notes.length ? notes.join("; ") : parts.join("; "),
     };
   }
 

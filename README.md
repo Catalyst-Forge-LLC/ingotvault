@@ -39,13 +39,13 @@ The product is the **guarantee set** below — what a late-night bash loop usual
 |---------|----------|
 | `origin` / other remotes | Never modified |
 | What gets pushed | All local branches + tags + `refs/notes/*` + `refs/replace/*` + `refs/ingotvault/*` (WIP under `refs/ingotvault/wip/…`, preforce rescues under `refs/ingotvault/preforce/…`) |
-| Force update | Never by default. Opt-in `--force-with-lease` requires `--repo` or `--all-repos`. Uses `ls-remote` tips and explicit `--force-with-lease=<ref>:<oid>`; if a mirror tip is missing locally, fetches it into `refs/ingotvault/preforce/…` first, then pushes `refs/ingotvault/*` to the spare remote |
+| Force update | Never by default. Requires `allowForceWithLease: true` in config **and** CLI `--force-with-lease` with `--repo` or `--all-repos`. Uses `ls-remote` tips and explicit `--force-with-lease=<ref>:<oid>`; if a mirror tip is missing locally, fetches it into `refs/ingotvault/preforce/…` first, then pushes `refs/ingotvault/*` to the spare remote |
 | Non-fast-forward (rebase/amend) | Fail that repo with `DIVERGED:` (branches and tags); other repos continue. **Do not delete** the stale mirror — see [Divergence](#divergence) |
 | Existing `backup` with wrong URL | Fail that repo; continue others |
-| Concurrent runs | Lock file `mirrorRoot/.ingotvault.lock` |
-| Mirror volume missing/locked | Exit `2` (scheduled: expected skip) |
+| Concurrent runs | Lock file `mirrorRoot/.ingotvault.lock` (records hostname; foreign PIDs are not probed) |
+| Mirror volume missing/locked / not a vault | Exit `2` (scheduled: expected skip). `init` writes `mirrorRoot/.ingotvault-vault`; normal runs **never** mkdir the tree — an unplugged `/Volumes/…` must not silently create mirrors on the boot disk |
 | Deleted local branches | **Not pruned** from the mirror — intentional ratchet: history only accumulates (valuable when an agent "cleans up" a branch) |
-| Uncommitted work / stashes | Not covered by default. Opt-in `captureWorktree` / `--capture-worktree` snapshots dirty trees (incl. untracked that are **not** gitignored) to `refs/ingotvault/wip/<host>/…` without mutating the worktree; keeps newest `wipRetention` (default 20). That rolling window is the **only** thing ingotvault deletes from a mirror. Use `wipExclude` for extra pathspecs |
+| Uncommitted work / stashes | Not covered by default. Opt-in `captureWorktree` / `--capture-worktree` snapshots dirty trees (incl. untracked that are **not** gitignored) to `refs/ingotvault/wip/<host>/…` without mutating the worktree; keeps newest `wipRetention` (default 20) **per worktree slug on this host**. Prune/push is host-scoped so a shared vault does not wipe another machine's WIP. That rolling window is the **only** thing ingotvault deletes from a mirror. Use `wipExclude` for extra pathspecs |
 | Git LFS | Not covered — bare push stores pointer files only; warned when `.gitattributes` has `filter=lfs` |
 | Linked worktrees | Discovery skips dirs whose `.git` is a file, but their **branches** live in the parent repo — `push --all` from the parent already covers committed work. With `captureWorktree`, dirty state is snapshotted for each path from `git worktree list` |
 | Submodules | Skipped (`.git` is a file). Parent stores only the gitlink SHA; submodule objects are not pushed. Restore needs each submodule's own remote (or its own ingotvault mirror) |
@@ -75,11 +75,13 @@ pnpm link --global
 ```bash
 ingotvault init
 # prompts for workspace + mirror roots; writes ./ingotvault.config.json
+# and creates mirrorRoot/.ingotvault-vault (required on every later run)
 
 ingotvault list          # discover repos → planned mirror paths
 ingotvault --dry-run     # no writes
 ingotvault               # ensure bare mirrors + backup remote + push
-ingotvault verify        # compare local branch tips to mirror tips
+ingotvault verify        # compare local branch/tag tips to mirror tips
+ingotvault relink        # after moving mirrorRoot: retarget the backup remote
 ```
 
 Sample `list` output:
@@ -235,8 +237,11 @@ ingotvault [run] [--config <path>] [--repo <path|name>] [--dry-run]
 ingotvault list  [--config <path>] [--repo <path|name>]
 ingotvault verify [--config <path>] [--repo <path|name>]
                 [--verbose] [--quiet-if-clean]
+ingotvault relink [--config <path>] [--repo <path|name>]
 ingotvault safe-dirs [--config <path>] [--list|--clean]
 ```
+
+`relink` updates a mismatched `backup` remote URL to the current `mirrorRoot` path (after you confirm the new path is a marker-bearing vault). Use it when you rename or per-machine-scope the vault.
 
 `--repo` matches the workspace-relative path (preferred), a unique path suffix, or a unique basename. If several repos share the same leaf name, the command fails and asks for the full relative path.
 
@@ -252,7 +257,7 @@ Same table as [Safety → Exit codes](https://ingotvault.dev/safety#exit-codes):
 |------|---------|
 | `0` | Success (verify with `--quiet-if-clean` stays silent when clean) |
 | `1` | Setup/config/CLI error (bad config, missing git, ambiguous `--repo`, lock held, `--force-with-lease` without `--repo`/`--all-repos`) |
-| `2` | Mirror root unavailable (missing, locked, or not writable) — expected skip for scheduled runs; prefer not alerting |
+| `2` | Mirror root unavailable (missing marker, locked, or not writable) — expected skip for scheduled runs; prefer not alerting |
 | `3` | One or more repos failed on run, or `verify` found drift (`behind` / `diverged` / `missing-mirror`) |
 
 ## How it differs

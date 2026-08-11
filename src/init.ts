@@ -5,6 +5,7 @@ import { stdin as input, stdout as output } from "node:process";
 import type { CliOptions } from "./config.js";
 import { getUserConfigPath, normalizeSlashes } from "./config.js";
 import { resolveUserPath } from "./paths.js";
+import { initializeVault } from "./vault.js";
 
 async function prompt(rl: ReturnType<typeof createInterface>, question: string, fallback?: string): Promise<string> {
   const suffix = fallback ? ` [${fallback}]` : "";
@@ -71,7 +72,6 @@ export async function runInit(cli: CliOptions): Promise<number> {
       captureWorktree: false,
       wipRetention: 20,
       wipExclude: [],
-      concurrency: 1,
       logRetentionDays: 30,
     };
 
@@ -82,11 +82,12 @@ export async function runInit(cli: CliOptions): Promise<number> {
     mkdirSync(path.dirname(outPath), { recursive: true });
     writeFileSync(outPath, `${JSON.stringify(config, null, 2)}\n`, "utf8");
 
-    // Validate paths expand
+    const mirrorResolved = resolveUserPath(mirror);
     resolveUserPath(workspace);
-    resolveUserPath(mirror);
+    const vaultPath = initializeVault(mirrorResolved);
 
     console.log(`Wrote ${normalizeSlashes(outPath)}`);
+    console.log(`Vault marker ready at ${vaultPath}`);
     console.log(
       "Next: ingotvault list   then   ingotvault --dry-run   then   ingotvault",
     );

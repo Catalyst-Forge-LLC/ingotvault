@@ -1,6 +1,6 @@
 {
   "name": "ingotvault",
-	"version": "0.1.0",
+  "version": "0.1.0",
   "description": "Spare remotes for a workspace of Git repos: push all local branches and tags to bare mirrors on a drive you control. Never touches origin.",
   "type": "module",
   "license": "Apache-2.0",
@@ -17,6 +17,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "test": "tsx --test --test-reporter=spec src/**/*.test.ts",
     "start": "tsx src/cli.ts",
     "ingotvault": "tsx src/cli.ts",
     "list": "tsx src/cli.ts list",
@@ -25,7 +26,7 @@
     "site:dev": "pnpm --dir site dev",
     "site:build": "pnpm --dir site run build",
     "site:deploy": "pnpm --dir site run deploy",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build && pnpm test"
   },
   "engines": {
     "node": ">=22"

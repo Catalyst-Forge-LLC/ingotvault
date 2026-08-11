@@ -1,10 +1,10 @@
 import {
   existsSync,
-  mkdirSync,
   readFileSync,
   unlinkSync,
   writeFileSync,
 } from "node:fs";
+import { hostname } from "node:os";
 import path from "node:path";
 import { normalizeSlashes } from "./paths.js";
 
@@ -29,27 +29,42 @@ function pidAlive(pid: number): boolean {
 
 type LockPayload = {
   pid: number;
+  host: string;
   startedAt: string;
 };
 
 /**
  * Exclusive lock under mirrorRoot so scheduled + manual runs don't interleave.
+ * Caller must have already verified the vault marker (root exists).
  */
 export function acquireMirrorLock(mirrorRoot: string): MirrorLock {
   const root = path.resolve(mirrorRoot);
-  mkdirSync(root, { recursive: true });
   const lockPath = path.join(root, LOCK_NAME);
+  const thisHost = hostname();
 
   if (existsSync(lockPath)) {
     let stale = false;
     try {
       const raw = JSON.parse(readFileSync(lockPath, "utf8")) as LockPayload;
       const age = Date.now() - Date.parse(raw.startedAt);
-      if (!pidAlive(raw.pid) || (Number.isFinite(age) && age > STALE_MS)) {
+      const agedOut = Number.isFinite(age) && age > STALE_MS;
+      const sameHost = (raw.host ?? "") === thisHost;
+
+      if (agedOut) {
         stale = true;
+      } else if (sameHost) {
+        // Only trust pidAlive on this host — a foreign PID is meaningless here.
+        if (!pidAlive(raw.pid)) {
+          stale = true;
+        } else {
+          throw new Error(
+            `Another ingotvault run holds the lock (${normalizeSlashes(lockPath)}, pid ${raw.pid} on ${raw.host} started ${raw.startedAt}).`,
+          );
+        }
       } else {
+        // Different host: wait out the staleness window; do not probe PIDs.
         throw new Error(
-          `Another ingotvault run holds the lock (${normalizeSlashes(lockPath)}, pid ${raw.pid} started ${raw.startedAt}).`,
+          `Another ingotvault run holds the lock (${normalizeSlashes(lockPath)}, host ${raw.host ?? "unknown"} pid ${raw.pid} started ${raw.startedAt}).`,
         );
       }
     } catch (err) {
@@ -67,6 +82,7 @@ export function acquireMirrorLock(mirrorRoot: string): MirrorLock {
 
   const payload: LockPayload = {
     pid: process.pid,
+    host: thisHost,
     startedAt: new Date().toISOString(),
   };
   try {

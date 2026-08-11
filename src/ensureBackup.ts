@@ -1,42 +1,17 @@
 import { accessSync, constants, mkdirSync } from "node:fs";
 import path from "node:path";
-import { type AppConfig, normalizeSlashes, urlsMatch } from "./config.js";
+import { type AppConfig, urlsMatch } from "./config.js";
 import type { DiscoveredRepo } from "./discover.js";
 import { combinedOutput, isDubiousOwnership, runGit } from "./git.js";
 import type { Logger } from "./log.js";
+import { assertMirrorRootAvailable, MirrorUnavailableError } from "./vault.js";
 
 export type EnsureResult =
   | { status: "ready" }
   | { status: "skip"; reason: string }
   | { status: "fail"; reason: string };
 
-export class MirrorUnavailableError extends Error {
-  readonly exitCode = 2;
-  constructor(message: string) {
-    super(message);
-    this.name = "MirrorUnavailableError";
-  }
-}
-
-export function assertMirrorRootAvailable(mirrorRoot: string): void {
-  const root = path.resolve(mirrorRoot);
-  try {
-    accessSync(root, constants.R_OK | constants.W_OK);
-    return;
-  } catch {
-    // Mirror folder may not exist yet — require parent to be usable.
-  }
-
-  const parent = path.dirname(root);
-  try {
-    accessSync(parent, constants.R_OK | constants.W_OK);
-    mkdirSync(root, { recursive: true });
-  } catch {
-    throw new MirrorUnavailableError(
-      `Mirror root not available: ${normalizeSlashes(root)}. Unlock the volume or check the path.`,
-    );
-  }
-}
+export { assertMirrorRootAvailable, MirrorUnavailableError };
 
 export async function ensureSafeDirectory(
   mirrorPath: string,

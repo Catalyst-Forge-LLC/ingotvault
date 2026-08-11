@@ -7,16 +7,17 @@ import {
   type CliOptions,
 } from "./config.js";
 import { discoverRepos, filterRepos } from "./discover.js";
-import {
-  assertMirrorRootAvailable,
-  MirrorUnavailableError,
-} from "./ensureBackup.js";
 import { requireGit } from "./git.js";
 import { runInit } from "./init.js";
 import { acquireMirrorLock } from "./lock.js";
 import { createLogger, pruneOldLogs, timestampForFilename } from "./log.js";
 import { formatOutcome, processRepo, type RepoOutcome } from "./push.js";
+import { relinkRepo } from "./relink.js";
 import { runSafeDirs } from "./safeDirs.js";
+import {
+  assertMirrorRootAvailable,
+  MirrorUnavailableError,
+} from "./vault.js";
 import { summarizeVerify, verifyAll } from "./verify.js";
 
 async function runMain(cli: CliOptions): Promise<number> {
@@ -51,14 +52,23 @@ async function runMain(cli: CliOptions): Promise<number> {
   }
 
   const dryRun = cli.dryRun || config.dryRun;
-  const forceWithLease = cli.forceWithLease || config.allowForceWithLease;
+  // Force is never implied by config alone — allowForceWithLease only permits
+  // the CLI flag; the flag still requires --repo or --all-repos.
+  const forceWithLease = cli.forceWithLease;
   const captureWorktree = cli.captureWorktree || config.captureWorktree;
   const effectiveConfig = { ...config, captureWorktree };
   const log = createLogger(cli.verbose);
   const started = Date.now();
   const quietVerify = cli.command === "verify" && cli.quietIfClean;
 
-  if (forceWithLease && cli.command === "run") {
+  if (cli.forceWithLease && cli.command === "run") {
+    if (!config.allowForceWithLease) {
+      log.line(
+        "ERROR: --force-with-lease is disabled. Set allowForceWithLease: true in config, then re-run with --force-with-lease --repo <path> (or --all-repos).",
+      );
+      maybeWriteScheduledLog(cli, config.logDir, config.logRetentionDays, log);
+      return 1;
+    }
     if (!cli.repoFilter && !cli.allRepos) {
       log.line(
         "ERROR: --force-with-lease requires --repo <path> or --all-repos (forced history rewrites must be aimed).",
@@ -130,7 +140,11 @@ async function runMain(cli: CliOptions): Promise<number> {
   }
 
   let lock: ReturnType<typeof acquireMirrorLock> | null = null;
-  if (cli.command === "run" || cli.command === "verify") {
+  if (
+    cli.command === "run" ||
+    cli.command === "verify" ||
+    cli.command === "relink"
+  ) {
     try {
       lock = acquireMirrorLock(config.mirrorRoot);
       log.verbose(`lock=${lock.lockPath}`);
@@ -143,6 +157,23 @@ async function runMain(cli: CliOptions): Promise<number> {
   }
 
   try {
+    if (cli.command === "relink") {
+      let fail = 0;
+      for (const repo of repos) {
+        const outcome = await relinkRepo(repo, effectiveConfig, dryRun, log);
+        const label = outcome.status.padEnd(4);
+        log.line(
+          `${label}  ${outcome.relativePath.padEnd(28)}  ${outcome.detail}`,
+        );
+        if (outcome.status === "fail") fail += 1;
+      }
+      const seconds = ((Date.now() - started) / 1000).toFixed(1);
+      log.line("---");
+      log.line(`relink done  (${seconds}s)`);
+      maybeWriteScheduledLog(cli, config.logDir, config.logRetentionDays, log);
+      return fail > 0 ? 3 : 0;
+    }
+
     if (cli.command === "verify") {
       const { exitCode, clean, outcomes } = await verifyAll(
         repos,
