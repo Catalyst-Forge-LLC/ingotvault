@@ -2,7 +2,7 @@
 
 A **spare remote** for a folder full of Git repos: push committed history into bare mirrors on a drive you control. **Never touches `origin`.**
 
-The promise is narrow on purpose: **every commit you've made lands in a second place you control.** Not uncommitted work, not LFS objects — commits, on every local branch and tag (default: `git push --all` and `git push --tags`).
+The promise is narrow on purpose: **every commit you've made lands in a second place you control.** Not uncommitted work, not LFS objects — commits on every local branch and tag, plus `refs/notes/*` and `refs/replace/*` (default: `git push --all`, `--tags`, and those refspecs). Custom namespaces (e.g. Gerrit `refs/changes`) are not covered.
 
 That gap is real even if you already have a forge **and** a file backup:
 
@@ -23,10 +23,11 @@ The product is the **guarantee set** below — what a late-night bash loop usual
 | Concern | Behavior |
 |---------|----------|
 | `origin` / other remotes | Never modified |
-| What gets pushed | All local branches + tags by default (`pushAllBranches` / `pushTags`) |
-| Force push | Never by default; opt-in `--force-with-lease` (fetches `backup` first so the lease can compare) |
-| Non-fast-forward (rebase/amend) | Fail that repo with `DIVERGED:`; other repos continue. **Do not delete** the stale mirror — rename it aside, then re-run |
+| What gets pushed | All local branches + tags + `refs/notes/*` + `refs/replace/*` |
+| Force update | Never by default. Opt-in `--force-with-lease` requires `--repo` or `--all-repos`. Uses `ls-remote` tips and explicit `--force-with-lease=<ref>:<oid>`; if a mirror tip is missing locally, fetches it into `refs/ingotvault/preforce/…` first so history is not orphaned |
+| Non-fast-forward (rebase/amend) | Fail that repo with `DIVERGED:` (branches and tags); other repos continue. **Do not delete** the stale mirror — move it under `mirrorRoot/_diverged/` |
 | Existing `backup` with wrong URL | Fail that repo; continue others |
+| Concurrent runs | Lock file `mirrorRoot/.ingotvault.lock` |
 | Mirror volume missing/locked | Exit `2` (scheduled: expected skip) |
 | Deleted local branches | **Not pruned** from the mirror (intentional — history stays) |
 | Uncommitted work / stashes | Not covered (commits only) |
@@ -102,33 +103,34 @@ git clone /Volumes/Backup/git-mirrors/acme/widgets.git widgets-restored
 cd widgets-restored
 ```
 
-That checks out the mirror's default branch (ingotvault points bare `HEAD` at your source branch after each successful push). Other branches exist as `origin/<name>` until you `git checkout <name>` (or `git switch <name>`).
+That checks out the mirror's default branch. After each successful push, ingotvault sets bare `HEAD` from `origin/HEAD` when present, otherwise `main`/`master` / `init.defaultBranch`, and only then the current branch — so a push while you're on a feature branch does not flip the clone default. Other branches exist as `origin/<name>` until you `git checkout <name>` (or `git switch <name>`).
 
 Uncommitted work and stashes were never covered — only commits that were pushed.
 
 ## Divergence
 
-By default ingotvault **never** force-pushes. After a rebase or amend, the bare mirror may reject updates. That repo fails with a loud `DIVERGED:` message while other repos continue.
+By default ingotvault **never** force-pushes. After a rebase or amend, the bare mirror may reject updates. That repo fails with a loud `DIVERGED:` message (including moved tags) while other repos continue.
 
 The stale mirror may be the **only** copy of pre-rebase history. **Do not delete it.**
 
 Escape hatches:
 
 ```bash
-# Opt-in: fetch backup remote-tracking refs, then push --force-with-lease
-ingotvault --force-with-lease
-# or set "allowForceWithLease": true in config
+# Aimed force update (required: --repo or --all-repos)
+# Reads mirror tips via ls-remote, keeps any tip missing locally under
+# refs/ingotvault/preforce/<date>/…, then pushes with
+# --force-with-lease=<ref>:<oid-from-ls-remote>
+ingotvault --force-with-lease --repo notes
 ```
 
-Or keep the old history and start a fresh mirror:
+Or keep the old history and start a fresh mirror (prefer `_diverged/` so the live tree stays clean):
 
 ```bash
+mkdir -p /Volumes/Backup/git-mirrors/_diverged
 mv /Volumes/Backup/git-mirrors/notes.git \
-   /Volumes/Backup/git-mirrors/notes.diverged-2026-08-11.git
+   /Volumes/Backup/git-mirrors/_diverged/notes.diverged-2026-08-11.git
 ingotvault --repo notes
 ```
-
-You can also `git fetch backup` in the worktree first so old tips are reachable locally, then use `--force-with-lease`.
 
 ## Encrypting the vault
 
@@ -145,7 +147,23 @@ Unlock the volume before running `ingotvault`. If the path is missing or locked,
 
 Step-by-step OS setup: [`docs/encryption.md`](docs/encryption.md).
 
-Removable volumes are often exFAT/FAT. Git may report “dubious ownership”. With `safeDirectory: "per-mirror"` (default), ingotvault adds each mirror path via `git config --global --add safe.directory <path>` (writes `~/.gitconfig` / the global gitconfig). Set `"safeDirectory": "off"` to disable. Undo all entries: `git config --global --unset-all safe.directory`.
+Removable volumes are often exFAT/FAT. Git may report “dubious ownership”. With `safeDirectory: "per-mirror"` (default), ingotvault adds each mirror path via `git config --global --add safe.directory <path>` (writes `~/.gitconfig` / the global gitconfig). Set `"safeDirectory": "off"` to disable.
+
+Inspect or remove **only** entries under your `mirrorRoot`:
+
+```bash
+ingotvault unsafe-directory --list
+ingotvault unsafe-directory --clean
+```
+
+Or selectively by hand:
+
+```bash
+git config --global --get-all safe.directory
+git config --global --unset safe.directory '/Volumes/Backup/git-mirrors/notes.git'
+```
+
+Do **not** use `--unset-all safe.directory` — that deletes unrelated entries you may have added for other drives.
 
 ### What this does and does not cover
 
@@ -166,9 +184,11 @@ Removable volumes are often exFAT/FAT. Git may report “dubious ownership”. W
 ingotvault init [--global] [--workspace <path>] [--mirror <path>]
                 [--remote-name backup] [--max-depth 3]
 ingotvault [run] [--config <path>] [--repo <path|name>] [--dry-run]
-                [--verbose] [--scheduled] [--force-with-lease]
+                [--verbose] [--scheduled]
+                [--force-with-lease --repo <path>|--all-repos]
 ingotvault list  [--config <path>] [--repo <path|name>]
 ingotvault verify [--config <path>] [--repo <path|name>] [--verbose]
+ingotvault unsafe-directory [--config <path>] [--list|--clean]
 ```
 
 `--repo` matches the workspace-relative path (preferred), a unique path suffix, or a unique basename. If several repos share the same leaf name, the command fails and asks for the full relative path.
@@ -182,7 +202,7 @@ ingotvault verify [--config <path>] [--repo <path|name>] [--verbose]
 | Code | Meaning |
 |------|---------|
 | `0` | Success |
-| `1` | Setup/config/CLI error (bad config, missing git, ambiguous `--repo`, no match) |
+| `1` | Setup/config/CLI error (bad config, missing git, ambiguous `--repo`, lock held, force without `--repo`/`--all-repos`) |
 | `2` | Mirror root unavailable (missing, locked, or not writable) |
 | `3` | One or more repos failed on run, or `verify` found drift |
 
@@ -193,7 +213,7 @@ ingotvault verify [--config <path>] [--repo <path|name>] [--verbose]
 - **myrepos / gita** — run arbitrary git across many repos; you still invent the local spare remote and its safety rules.
 - **Host mirror tools** — clone *from* GitHub/GitLab onto disk.
 - **git bundle** — portable snapshots, but not an incremental spare remote; each update is a new bundle. Bare mirrors take ordinary `git push` and stay updatable in place.
-- **ingotvault** — scan a workspace → ensure a local `backup` remote → push all branches/tags into bare mirrors on a path you choose, with the guarantee set above.
+- **ingotvault** — scan a workspace → ensure a local `backup` remote → push branches/tags/notes into bare mirrors on a path you choose, with the guarantee set above.
 
 ## Publish (maintainers)
 

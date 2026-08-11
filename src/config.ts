@@ -36,12 +36,16 @@ export type AppConfig = {
 };
 
 export type CliOptions = {
-  command: "run" | "list" | "init" | "verify";
+  command: "run" | "list" | "init" | "verify" | "unsafe-directory";
   dryRun: boolean;
   verbose: boolean;
   scheduled: boolean;
   help: boolean;
   forceWithLease: boolean;
+  /** Allow --force-with-lease across the whole workspace */
+  allRepos: boolean;
+  /** unsafe-directory: list | clean */
+  unsafeMode: "list" | "clean" | null;
   repoFilter: string | null;
   configPath: string | null;
   /** init: write to user config dir */
@@ -215,6 +219,8 @@ export function parseCli(argv: string[]): CliOptions {
     scheduled: false,
     help: false,
     forceWithLease: false,
+    allRepos: false,
+    unsafeMode: null,
     repoFilter: null,
     configPath: null,
     global: false,
@@ -231,6 +237,7 @@ export function parseCli(argv: string[]): CliOptions {
       case "list":
       case "init":
       case "verify":
+      case "unsafe-directory":
         opts.command = arg;
         break;
       case "--dry-run":
@@ -246,11 +253,21 @@ export function parseCli(argv: string[]): CliOptions {
       case "--force-with-lease":
         opts.forceWithLease = true;
         break;
+      case "--all-repos":
+        opts.allRepos = true;
+        break;
+      case "--clean":
+        opts.unsafeMode = "clean";
+        break;
       case "--global":
         opts.global = true;
         break;
       case "--list":
-        opts.command = "list";
+        if (opts.command === "unsafe-directory") {
+          opts.unsafeMode = "list";
+        } else {
+          opts.command = "list";
+        }
         break;
       case "--help":
       case "-h":
@@ -324,13 +341,16 @@ export function printHelp(): void {
 Usage:
   ingotvault init [--global] [--workspace <path>] [--mirror <path>]
   ingotvault [run] [--config <path>] [--repo <path|name>] [--dry-run]
-             [--verbose] [--scheduled] [--force-with-lease]
+             [--verbose] [--scheduled]
+             [--force-with-lease --repo <path>|--all-repos]
   ingotvault list [--config <path>] [--repo <path|name>]
   ingotvault verify [--config <path>] [--repo <path|name>] [--verbose]
+  ingotvault unsafe-directory [--config <path>] [--list|--clean]
 
-Never modifies origin. Never force-pushes unless --force-with-lease (or
-allowForceWithLease in config). With --force-with-lease, fetches the backup
-remote first so the lease has remote-tracking refs to compare.
+Never modifies origin. Never force-pushes unless --force-with-lease.
+Force updates use ls-remote tips + explicit --force-with-lease=<ref>:<oid>,
+preserving missing mirror tips under refs/ingotvault/preforce/… first.
+Requires --repo or --all-repos (aimed action).
 
 Exit codes: 0 ok · 1 setup/config · 2 mirror unavailable · 3 repo/verify drift
 `);
