@@ -76,35 +76,37 @@ header.site-header .wrap {
 	gap: 1rem 2rem;
 }
 
-/* Brand stack (mark + wordmark, then tagline) with nav vertically centered */
+/* Large mark | stacked wordmark + tagline; nav vertically centered */
 header.site-header .site-id {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	justify-content: center;
-	gap: 0.3rem;
 	min-width: 0;
 }
 
 header.site-header .site-title {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.7rem;
+	gap: 0.95rem;
 	font-family: var(--font-sans);
 	font-weight: 700;
-	font-size: 1.45rem;
+	font-size: 1.55rem;
 	letter-spacing: -0.04em;
 	color: var(--ink);
 	text-decoration: none;
 }
 
-header.site-header .site-title::after {
-	content: 'ingotvault';
+header.site-header .site-brand-copy {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 0.25rem;
+	min-width: 0;
+}
+
+header.site-header .site-wordmark {
 	line-height: 1;
 }
 
 header.site-header .site-logo {
-	height: 3.75rem;
+	height: 5.5rem;
 	max-height: none;
 	width: auto;
 	border-radius: 0;
@@ -455,12 +457,16 @@ pre {
 
 @media (width <= 40rem) {
 	header.site-header .site-logo {
-		height: 3rem;
+		height: 4.25rem;
 	}
 
 	header.site-header .site-title {
-		font-size: 1.25rem;
-		gap: 0.55rem;
+		font-size: 1.3rem;
+		gap: 0.7rem;
+	}
+
+	header.site-header .site-tagline {
+		font-size: 0.7rem;
 	}
 
 	header.site-header .site-nav {
