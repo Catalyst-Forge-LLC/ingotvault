@@ -11,7 +11,7 @@
 		"deploy": "pnpm build && wrangler pages deploy build --project-name=ingotvault"
 	},
 	"devDependencies": {
-		"getfilepress": "link:../../filepress",
+		"getfilepress": "^0.1.2",
 		"wrangler": "^4.28.0"
 	},
 	"pnpm": {
