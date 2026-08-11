@@ -4,7 +4,7 @@ description: Install ingotvault from npm or a clone.
 order: 1
 ---
 
-Requires **Node.js 22+** and `git` on PATH. What the tool covers (and refuses) is on [Safety](/safety) — worth a skim before you schedule it.
+Requires **Node.js 22+** and `git` on PATH. What the tool covers (and refuses) is on [Safety](/safety) — worth a skim before you schedule it. Same install path as the [README](https://github.com/Catalyst-Forge-LLC/ingotvault#install).
 
 ### From npm / pnpm
 
@@ -27,8 +27,6 @@ pnpm install
 pnpm run build
 pnpm link --global
 ```
-
-(Needs a **public** GitHub repo, or SSH access if it is still private.)
 
 ### First run
 
@@ -71,6 +69,8 @@ Restore a WIP snapshot (fetch from the mirror if needed):
 ```bash
 git fetch backup 'refs/ingotvault/wip/*:refs/ingotvault/wip/*'
 git restore --source=refs/ingotvault/wip/<host>/<slug>/<timestamp> --worktree --staged .
+# inspect only (does not write the worktree):
+git show refs/ingotvault/wip/<host>/<slug>/<timestamp>
 ```
 
 ### Encrypt the vault volume
@@ -84,8 +84,11 @@ Git does **not** encrypt repositories at rest. Encrypt the volume (or container)
 | Linux | LUKS (`cryptsetup`) |
 | Cross-platform | VeraCrypt container |
 
-More detail in [`docs/encryption.md`](https://github.com/Catalyst-Forge-LLC/ingotvault/blob/main/docs/encryption.md) once the repo is public.
+Step-by-step OS setup: [`docs/encryption.md`](https://github.com/Catalyst-Forge-LLC/ingotvault/blob/main/docs/encryption.md). `safeDirectory` / exFAT notes: [README → Encrypting the vault](https://github.com/Catalyst-Forge-LLC/ingotvault#encrypting-the-vault).
 
 ### Full reference
 
-Exit codes and divergence recovery: [Safety](/safety). Flags and scheduling notes also live in the [GitHub README](https://github.com/Catalyst-Forge-LLC/ingotvault#readme) once the repo is public.
+| Topic | Where |
+|-------|--------|
+| Exit codes & divergence | [Safety](/safety) |
+| Flags, config, discovery, scheduling | [README on GitHub](https://github.com/Catalyst-Forge-LLC/ingotvault#cli) |

@@ -2,7 +2,7 @@
 
 Git does **not** encrypt repositories at rest. Encrypt the **volume** (or an encrypted container on it), then point `mirrorRoot` inside that unlocked path. Unlock before running `ingotvault`; if the path is missing or locked, the tool exits with code `2` (expected skip for scheduled runs).
 
-See the main [README](../README.md) for the covered/not-covered list and `safeDirectory` / exFAT notes.
+See the main [README → Encrypting the vault](../README.md#encrypting-the-vault) for the covered/not-covered list and `safeDirectory` / exFAT notes. Short OS table also on [Install](https://ingotvault.dev/install#encrypt-the-vault-volume).
 
 ## Windows — BitLocker To Go
 

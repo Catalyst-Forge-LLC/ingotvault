@@ -27,6 +27,10 @@ pnpm deploy
 
 Then attach **ingotvault.dev** in the Cloudflare dashboard.
 
+## Content sync
+
+**Site** = product narrative (home, Install, Safety, posts). **Root README** = CLI / config reference. Same promise sentence, Safety facts, exit codes, and WIP rules in both; when behavior changes, update README + `site/pages/*` (+ the agents post if it restates those facts).
+
 ## Launch checklist
 
 - [ ] Make the GitHub repo **public** (nav + “View on GitHub” 404 for everyone else until then)

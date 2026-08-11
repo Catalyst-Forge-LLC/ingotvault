@@ -1,8 +1,21 @@
+<p align="center">
+  <img src="site/static/logo.png" alt="ingotvault" width="128" height="128" />
+</p>
+
 # ingotvault
 
-**Site:** [ingotvault.dev](https://ingotvault.dev) — Downpress + Cloudflare Pages (`site/`).
+**Every commit in a second place you control.**
 
 A **spare remote** for a folder full of Git repos: push committed history into bare mirrors on a drive you control. **Never touches `origin`.**
+
+**Site:** [ingotvault.dev](https://ingotvault.dev) — Install, Safety, and the agents write-up live there. This README is the CLI / config reference; keep both in sync when behavior changes.
+
+| On the site | In this repo |
+|-------------|--------------|
+| [Install](https://ingotvault.dev/install) | Quick start + full CLI below |
+| [Safety](https://ingotvault.dev/safety) | Guarantee summary below (same facts) |
+| [An undo layer for autonomous edits](https://ingotvault.dev/posts/undo-layer-for-agents) | [Working with coding agents](#working-with-coding-agents) |
+| — | [`docs/encryption.md`](docs/encryption.md), [`config.example.json`](config.example.json) |
 
 The promise is narrow on purpose: **every commit you've made lands in a second place you control.** Not uncommitted work (unless you opt in), not LFS objects — commits on every local branch and tag, plus `refs/notes/*`, `refs/replace/*`, and `refs/ingotvault/*` (default: `git push --all`, `--tags`, and those refspecs). Optionally, a snapshot of your dirty tree too (`captureWorktree`). Custom namespaces (e.g. Gerrit `refs/changes`) are not covered.
 
@@ -18,16 +31,16 @@ Unlike a file copy of a live `.git`, a push into a bare mirror is a **git** oper
 
 **Not for** one or two repos you already push everywhere with no unpushed branches.
 
-The product is the **guarantee set** below — what a late-night bash loop usually gets wrong.
+The product is the **guarantee set** below — what a late-night bash loop usually gets wrong. Narrative form: [Safety on the site](https://ingotvault.dev/safety).
 
 ## Safety
 
 | Concern | Behavior |
 |---------|----------|
 | `origin` / other remotes | Never modified |
-| What gets pushed | All local branches + tags + `refs/notes/*` + `refs/replace/*` + `refs/ingotvault/*` (WIP snapshots and preforce rescues) |
-| Force update | Never by default. Opt-in `--force-with-lease` requires `--repo` or `--all-repos`. Uses `ls-remote` tips and explicit `--force-with-lease=<ref>:<oid>`; if a mirror tip is missing locally, fetches it into `refs/ingotvault/preforce/…` first so history is not orphaned |
-| Non-fast-forward (rebase/amend) | Fail that repo with `DIVERGED:` (branches and tags); other repos continue. **Do not delete** the stale mirror — move it under `mirrorRoot/_diverged/` |
+| What gets pushed | All local branches + tags + `refs/notes/*` + `refs/replace/*` + `refs/ingotvault/*` (WIP under `refs/ingotvault/wip/…`, preforce rescues under `refs/ingotvault/preforce/…`) |
+| Force update | Never by default. Opt-in `--force-with-lease` requires `--repo` or `--all-repos`. Uses `ls-remote` tips and explicit `--force-with-lease=<ref>:<oid>`; if a mirror tip is missing locally, fetches it into `refs/ingotvault/preforce/…` first, then pushes `refs/ingotvault/*` to the spare remote |
+| Non-fast-forward (rebase/amend) | Fail that repo with `DIVERGED:` (branches and tags); other repos continue. **Do not delete** the stale mirror — see [Divergence](#divergence) |
 | Existing `backup` with wrong URL | Fail that repo; continue others |
 | Concurrent runs | Lock file `mirrorRoot/.ingotvault.lock` |
 | Mirror volume missing/locked | Exit `2` (scheduled: expected skip) |
@@ -40,20 +53,22 @@ The product is the **guarantee set** below — what a late-night bash loop usual
 
 ## Install
 
+Requires **Node.js 22+** and `git` on PATH (`git --version` is checked at startup). Same steps: [Install on the site](https://ingotvault.dev/install).
+
 ```bash
 pnpm add -g ingotvault
 # or: npm i -g ingotvault
 ```
 
-From a clone:
+Until a real release is published, npm may still serve a placeholder — prefer a clone for review builds:
 
 ```bash
+git clone https://github.com/Catalyst-Forge-LLC/ingotvault.git
+cd ingotvault
 pnpm install
 pnpm run build
 pnpm link --global
 ```
-
-Requires Node 22+ and `git` on PATH (`git --version` is checked at startup).
 
 ## Quick start
 
@@ -108,25 +123,30 @@ cd widgets-restored
 
 That checks out the mirror's default branch. After each successful push, ingotvault sets bare `HEAD` from `origin/HEAD` when present, otherwise `main`/`master` / `init.defaultBranch`, and only then the current branch — so a push while you're on a feature branch does not flip the clone default. Other branches exist as `origin/<name>` until you `git checkout <name>` (or `git switch <name>`).
 
-Uncommitted work and stashes were never covered — only commits that were pushed.
+Uncommitted work is **not** covered unless you opt into `--capture-worktree` (see [Working with coding agents](#working-with-coding-agents) and [Safety](#safety)).
+
+Restore a WIP snapshot (fetch from the mirror first if needed):
+
+```bash
+git fetch backup 'refs/ingotvault/wip/*:refs/ingotvault/wip/*'
+git restore --source=refs/ingotvault/wip/<host>/<slug>/<timestamp> --worktree --staged .
+# inspect only (does not write the worktree):
+git show refs/ingotvault/wip/<host>/<slug>/<timestamp>
+```
 
 ## Divergence
 
 By default ingotvault **never** force-pushes. After a rebase or amend, the bare mirror may reject updates. That repo fails with a loud `DIVERGED:` message (including moved tags) while other repos continue.
 
-The stale mirror may be the **only** copy of pre-rebase history. **Do not delete it.**
+The stale mirror may be the **only** copy of pre-rebase history. **Do not delete it.** Same steps: [Safety → Divergence recovery](https://ingotvault.dev/safety#divergence-recovery).
 
-Escape hatches:
+**Option A — aimed force update** (keeps missing mirror tips under `refs/ingotvault/preforce/…`, then pushes `refs/ingotvault/*` to the spare remote):
 
 ```bash
-# Aimed force update (required: --repo or --all-repos)
-# Reads mirror tips via ls-remote, keeps any tip missing locally under
-# refs/ingotvault/preforce/<date>/…, then pushes with
-# --force-with-lease=<ref>:<oid-from-ls-remote>
 ingotvault --force-with-lease --repo notes
 ```
 
-Or keep the old history and start a fresh mirror (prefer `_diverged/` so the live tree stays clean):
+**Option B — quarantine the old mirror and start fresh** (prefer `_diverged/` so the live tree stays clean):
 
 ```bash
 mkdir -p /Volumes/Backup/git-mirrors/_diverged
@@ -139,7 +159,7 @@ ingotvault --repo notes
 
 Git does **not** encrypt repositories at rest. Anyone who can mount `mirrorRoot` can read every bare mirror. Encrypt the **volume** (or an encrypted container on it), then point `mirrorRoot` inside that unlocked path.
 
-Unlock the volume before running `ingotvault`. If the path is missing or locked, ingotvault exits with code `2`. For scheduled runs, treat exit `2` as an expected skip (vault unplugged/locked). Exit `1` means setup/config is broken; exit `3` means repos failed or verify found drift.
+Unlock the volume before running `ingotvault`. If the path is missing or locked, ingotvault exits with code `2`. For scheduled runs, treat exit `2` as an expected skip (vault unplugged/locked).
 
 | OS | Typical option |
 |----|----------------|
@@ -148,7 +168,7 @@ Unlock the volume before running `ingotvault`. If the path is missing or locked,
 | Linux | LUKS (`cryptsetup`) |
 | Cross-platform | VeraCrypt container |
 
-Step-by-step OS setup: [`docs/encryption.md`](docs/encryption.md).
+Step-by-step OS setup: [`docs/encryption.md`](docs/encryption.md). Short version also on [Install](https://ingotvault.dev/install#encrypt-the-vault-volume).
 
 Removable volumes are often exFAT/FAT. Git may report “dubious ownership”. With `safeDirectory: "per-mirror"` (default), ingotvault adds each mirror path via `git config --global --add safe.directory <path>` (writes `~/.gitconfig` / the global gitconfig). Set `"safeDirectory": "off"` to disable.
 
@@ -171,11 +191,13 @@ Do **not** use `--unset-all safe.directory` — that deletes unrelated entries y
 ### What this does and does not cover
 
 - **Covered:** someone walks off with the SD card/USB/disk and tries to read the mirrors cold.
-- **Not covered:** the volume is already unlocked on a logged-in machine; uncommitted work in `workspaceRoot` (encrypt that disk too, or commit before you care); recovery keys stored on the same media; Git LFS object bytes; submodule object stores (see Safety).
+- **Not covered:** the volume is already unlocked on a logged-in machine; uncommitted work in `workspaceRoot` (encrypt that disk too, or commit / use `--capture-worktree` before you care); recovery keys stored on the same media; Git LFS object bytes; submodule object stores (see Safety).
 
 ## Working with coding agents
 
 Agents tend to fail by **rewriting** history (rebase, amend, `reset --hard`, deleting a "stale" branch), not by quietly losing whole directories. An append-only spare remote that never force-pushes and never prunes deleted branches is a **ratchet**: the mirror still has the branch the agent removed.
+
+Longer argument: [An undo layer for autonomous edits](https://ingotvault.dev/posts/undo-layer-for-agents).
 
 The usual agent-shaped loss is **uncommitted** work (`checkout .`, `clean -fd`, hard reset on a dirty tree). Enable WIP capture at session boundaries:
 
@@ -185,14 +207,6 @@ ingotvault --capture-worktree
 ```
 
 **.gitignore is respected** (`git add -A` on a temporary index). Ignored secrets stay out of the mirror; set `wipExclude` for additional pathspecs. WIP and preforce tips live under `refs/ingotvault/*`, which is pushed to the spare remote with the rest of each run.
-
-Restore a snapshot (fetch from the mirror first if needed):
-
-```bash
-git fetch backup 'refs/ingotvault/wip/*:refs/ingotvault/wip/*'
-git restore --source=refs/ingotvault/wip/<host>/<slug>/<timestamp> --worktree --staged .
-# inspect only: git show refs/ingotvault/wip/<host>/<slug>/<timestamp>
-```
 
 `ingotvault verify` is a post-session **detector**: `diverged` on a repo you did not rebase yourself means something rewrote history. Use `--quiet-if-clean` in harness hooks so a clean vault stays silent.
 
@@ -233,12 +247,14 @@ ingotvault safe-dirs [--config <path>] [--list|--clean]
 
 ## Exit codes
 
+Same table as [Safety → Exit codes](https://ingotvault.dev/safety#exit-codes):
+
 | Code | Meaning |
 |------|---------|
-| `0` | Success |
-| `1` | Setup/config/CLI error (bad config, missing git, ambiguous `--repo`, lock held, force without `--repo`/`--all-repos`) |
-| `2` | Mirror root unavailable (missing, locked, or not writable) |
-| `3` | One or more repos failed on run, or `verify` found drift |
+| `0` | Success (verify with `--quiet-if-clean` stays silent when clean) |
+| `1` | Setup/config/CLI error (bad config, missing git, ambiguous `--repo`, lock held, `--force-with-lease` without `--repo`/`--all-repos`) |
+| `2` | Mirror root unavailable (missing, locked, or not writable) — expected skip for scheduled runs; prefer not alerting |
+| `3` | One or more repos failed on run, or `verify` found drift (`behind` / `diverged` / `missing-mirror`) |
 
 ## How it differs
 
@@ -247,7 +263,7 @@ ingotvault safe-dirs [--config <path>] [--list|--clean]
 - **myrepos / gita** — run arbitrary git across many repos; you still invent the local spare remote and its safety rules.
 - **Host mirror tools** — clone *from* GitHub/GitLab onto disk.
 - **git bundle** — portable snapshots, but not an incremental spare remote; each update is a new bundle. Bare mirrors take ordinary `git push` and stay updatable in place.
-- **ingotvault** — scan a workspace → ensure a local `backup` remote → push branches/tags/notes into bare mirrors on a path you choose, with the guarantee set above.
+- **ingotvault** — scan a workspace → ensure a local `backup` remote → push branches/tags/notes/replace/`refs/ingotvault/*` into bare mirrors on a path you choose, with the guarantee set above.
 
 ## Publish (maintainers)
 
@@ -256,6 +272,8 @@ pnpm run build
 pnpm pack          # sanity-check tarball
 pnpm publish       # requires npm login; package name: ingotvault
 ```
+
+Site: `pnpm site:deploy` from the repo root (needs the sibling Downpress checkout until the engine is a public pin). See [`site/README.md`](site/README.md).
 
 ## License
 

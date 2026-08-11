@@ -6,7 +6,7 @@ order: 1
 
 **ingotvault** scans a workspace, ensures a local `backup` remote, and pushes every local branch and tag into bare mirrors on a path you choose — USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default.
 
-The promise is narrow on purpose: **every commit you've made lands in a second place you control.** Optionally, a snapshot of your dirty tree too.
+The promise is narrow on purpose: **every commit you've made lands in a second place you control** — local branches, tags, `refs/notes/*`, `refs/replace/*`, and `refs/ingotvault/*`. Optionally, a snapshot of your dirty tree too.
 
 [What else is covered →](/safety)
 
@@ -44,7 +44,7 @@ A push into a bare mirror is a **git** operation: validated on receipt, atomic a
 - One repo fails; the others continue
 - Locked / missing vault → exit `2` (scheduled runs can skip quietly)
 
-Details and edge cases: [Safety](/safety).
+Details and edge cases: [Safety](/safety). Full CLI, config resolution, and discovery rules: [README on GitHub](https://github.com/Catalyst-Forge-LLC/ingotvault#readme).
 
 ## Quick start
 
@@ -56,7 +56,7 @@ ingotvault
 ingotvault verify
 ```
 
-Full flags and restore notes live on the [install](/install) page and in the [README](https://github.com/Catalyst-Forge-LLC/ingotvault#readme).
+More install paths (clone, WIP, restore, encrypt): [Install](/install).
 
 <div class="cta-row">
   <a class="cta cta-primary" href="/install">Get started →</a>

@@ -69,4 +69,4 @@ ingotvault verify --quiet-if-clean     # silent when clean; noise on drift
 
 `--quiet-if-clean` makes that cheap enough for a wrapper script or harness hook.
 
-The [Install](/install) page has the commands. Edge cases, exit codes, and what is deliberately not covered live on [Safety](/safety).
+The [Install](/install) page has the commands. Edge cases, exit codes, and what is deliberately not covered live on [Safety](/safety). CLI depth (config resolution, discovery, flags): [README on GitHub](https://github.com/Catalyst-Forge-LLC/ingotvault#readme).
