@@ -63,22 +63,26 @@ body {
 }
 
 .site-header .wrap {
-	padding-top: 1.35rem;
-	padding-bottom: 1.35rem;
+	padding-top: 0.85rem;
+	padding-bottom: 0.85rem;
 	align-items: center;
 }
 
+/* Single header band: mark + wordmark + tagline on one baseline with nav */
 .site-id {
-	gap: 0.35rem;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.55rem 1.1rem;
 }
 
 .site-title {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.95rem;
+	gap: 0.55rem;
 	font-family: var(--font-sans);
 	font-weight: 700;
-	font-size: 1.7rem;
+	font-size: 1.25rem;
 	letter-spacing: -0.04em;
 	color: var(--ink);
 	text-decoration: none;
@@ -90,21 +94,22 @@ body {
 }
 
 .site-logo {
-	height: 5.5rem;
+	height: 2.5rem;
 	max-height: none;
 	width: auto;
-	/* Transparent mark — no plate chrome */
 	border-radius: 0;
 	box-shadow: none;
 }
 
 .site-tagline {
 	font-family: var(--font-mono);
-	font-size: 0.8rem;
+	font-size: 0.72rem;
 	font-style: normal;
 	letter-spacing: 0.04em;
 	color: var(--accent);
-	max-width: 32rem;
+	max-width: none;
+	margin: 0;
+	line-height: 1.3;
 }
 
 .site-nav {
@@ -136,9 +141,9 @@ body {
 }
 
 .home-page .page-header {
-	margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
-	padding-bottom: clamp(1.5rem, 4vw, 2.25rem);
-	border-bottom: 1px solid var(--rule);
+	margin-bottom: clamp(1.25rem, 3vw, 1.75rem);
+	padding-bottom: 0;
+	border-bottom: none;
 }
 
 .home-page .hero-lede {
@@ -389,12 +394,18 @@ pre {
 
 @media (width <= 40rem) {
 	.site-logo {
-		height: 4.75rem;
+		height: 2.25rem;
 	}
 
 	.site-title {
-		font-size: 1.4rem;
-		gap: 0.7rem;
+		font-size: 1.15rem;
+		gap: 0.45rem;
+	}
+
+	.site-id {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.25rem;
 	}
 
 	.home-page .page-header h1 {

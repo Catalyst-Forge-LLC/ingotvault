@@ -4,9 +4,11 @@ description: Push committed history to bare mirrors on a drive you control. Neve
 order: 1
 ---
 
-**ingotvault** scans a workspace, ensures a local `backup` remote, and pushes every local branch and tag into bare mirrors on a path you choose — USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default. ([What else is covered →](/safety))
+**ingotvault** scans a workspace, ensures a local `backup` remote, and pushes every local branch and tag into bare mirrors on a path you choose — USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default.
 
 The promise is narrow on purpose: **every commit you've made lands in a second place you control.** Optionally, a snapshot of your dirty tree too.
+
+[What else is covered →](/safety)
 
 <div class="cta-row">
   <a class="cta cta-primary" href="/install">Install ingotvault →</a>
@@ -30,7 +32,7 @@ Forge remotes cover what you pushed upstream. File backups cover bytes on disk �
 - **Unpushed branches and tags** in repos you thought were safe because `main` is on origin
 - **Confidentiality** — NDA'd or unfinished work that shouldn't leave the machine
 - **Offline / intermittent** network
-- **Account-level risk** — forge outage, lost 2FA, org offboarding
+- **Account-level risk** — forge outage, lost 2FA, losing org access
 
 A push into a bare mirror is a **git** operation: validated on receipt, atomic at the ref level, restorable with `git clone`, checkable with `ingotvault verify`.
 
