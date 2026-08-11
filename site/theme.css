@@ -163,15 +163,7 @@ main.wrap {
 main.wrap > article {
 	width: min(var(--measure), 100%);
 	max-width: var(--measure);
-}
-
-.home-page {
 	padding-top: clamp(1.5rem, 5vw, 3rem);
-	padding-bottom: clamp(2rem, 6vw, 4rem);
-}
-
-.static-page {
-	padding-top: clamp(1.25rem, 4vw, 2.25rem);
 	padding-bottom: clamp(2rem, 6vw, 3.5rem);
 }
 
@@ -188,7 +180,7 @@ main.wrap > article {
 	font-size: 0.95rem;
 }
 
-/* Writing index shares the same column as posts and pages */
+/* Writing index shares the same column and top offset as posts/pages */
 main.wrap > .hero,
 main.wrap > .featured,
 main.wrap > ul.post-list,
@@ -197,13 +189,28 @@ main.wrap > header.post-header {
 	max-width: var(--measure);
 }
 
+main.wrap > .hero:first-child,
+main.wrap > .featured:first-child,
+main.wrap > ul.post-list:first-child,
+main.wrap > header.post-header:first-child {
+	margin-top: clamp(1.5rem, 5vw, 3rem);
+}
+
+/* Drop the cramped lede band; match the home eyebrow treatment */
+main.wrap > .hero {
+	margin-bottom: clamp(1.25rem, 3vw, 1.75rem);
+	padding-bottom: 0;
+	border-bottom: none;
+}
+
 .home-page .page-header {
 	margin-bottom: clamp(1.25rem, 3vw, 1.75rem);
 	padding-bottom: 0;
 	border-bottom: none;
 }
 
-.home-page .hero-lede {
+.home-page .hero-lede,
+main.wrap > .hero .hero-lede {
 	font-family: var(--font-mono);
 	font-size: 0.78rem;
 	font-style: normal;
