@@ -10,6 +10,7 @@
   "files": [
     "dist",
     "schema",
+    "docs",
     "config.example.json",
     "LICENSE",
     "README.md"
@@ -19,6 +20,7 @@
     "start": "tsx src/cli.ts",
     "ingotvault": "tsx src/cli.ts",
     "list": "tsx src/cli.ts list",
+    "verify": "tsx src/cli.ts verify",
     "dry-run": "tsx src/cli.ts --dry-run",
     "prepublishOnly": "pnpm run build"
   },

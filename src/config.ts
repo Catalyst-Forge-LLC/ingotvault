@@ -10,7 +10,7 @@ import {
 } from "./paths.js";
 
 export type NamingConfig = {
-  style: "path-dash";
+  style: "path-tree";
   prefix: string;
   suffix: string;
 };
@@ -27,18 +27,21 @@ export type AppConfig = {
   dryRun: boolean;
   naming: NamingConfig;
   safeDirectory: "per-mirror" | "off";
+  allowForceWithLease: boolean;
   concurrency: number;
   logDir: string;
+  logRetentionDays: number;
   /** Path of the config file that was loaded, if any */
   configPath: string | null;
 };
 
 export type CliOptions = {
-  command: "run" | "list" | "init";
+  command: "run" | "list" | "init" | "verify";
   dryRun: boolean;
   verbose: boolean;
   scheduled: boolean;
   help: boolean;
+  forceWithLease: boolean;
   repoFilter: string | null;
   configPath: string | null;
   /** init: write to user config dir */
@@ -58,13 +61,15 @@ const fieldDefaults = {
   pushTags: true,
   dryRun: false,
   naming: {
-    style: "path-dash" as const,
+    style: "path-tree" as const,
     prefix: "",
     suffix: ".git",
   },
   safeDirectory: "per-mirror" as const,
+  allowForceWithLease: false,
   concurrency: 1,
   logDir: "~/.local/share/ingotvault/logs",
+  logRetentionDays: 30,
 };
 
 const packageRoot = path.resolve(
@@ -108,8 +113,7 @@ function readJsonConfig(configPath: string): FileConfig {
   }
 }
 
-/** Resolution: --config, ./ingotvault.config.json, ./.ingotvault.json, user config.
- * Also accepts legacy ingot.config.json / .ingot.json names. */
+/** Resolution: --config, ./ingotvault.config.json, ./.ingotvault.json, user config. */
 export function resolveConfigPath(cliPath: string | null): string | null {
   if (cliPath) {
     const resolved = resolveUserPath(cliPath);
@@ -122,8 +126,6 @@ export function resolveConfigPath(cliPath: string | null): string | null {
   const cwdCandidates = [
     path.resolve("ingotvault.config.json"),
     path.resolve(".ingotvault.json"),
-    path.resolve("ingot.config.json"),
-    path.resolve(".ingot.json"),
   ];
   for (const candidate of cwdCandidates) {
     if (existsSync(candidate)) return candidate;
@@ -153,7 +155,7 @@ export function loadConfig(cliPath: string | null): AppConfig {
   const naming: NamingConfig = {
     ...fieldDefaults.naming,
     ...fileConfig.naming,
-    style: "path-dash",
+    style: "path-tree",
   };
 
   const logDirRaw = fileConfig.logDir ?? fieldDefaults.logDir;
@@ -161,6 +163,9 @@ export function loadConfig(cliPath: string | null): AppConfig {
     logDirRaw === fieldDefaults.logDir && process.platform === "win32"
       ? getDefaultLogDir()
       : resolveUserPath(logDirRaw);
+
+  const logRetentionDays =
+    fileConfig.logRetentionDays ?? fieldDefaults.logRetentionDays;
 
   return {
     workspaceRoot: normalizeSlashes(resolveUserPath(fileConfig.workspaceRoot)),
@@ -178,17 +183,27 @@ export function loadConfig(cliPath: string | null): AppConfig {
     dryRun: fileConfig.dryRun ?? fieldDefaults.dryRun,
     naming,
     safeDirectory: fileConfig.safeDirectory ?? fieldDefaults.safeDirectory,
+    allowForceWithLease:
+      fileConfig.allowForceWithLease ?? fieldDefaults.allowForceWithLease,
     concurrency: fileConfig.concurrency ?? fieldDefaults.concurrency,
     logDir: normalizeSlashes(logDir),
+    logRetentionDays:
+      Number.isFinite(logRetentionDays) && logRetentionDays >= 0
+        ? logRetentionDays
+        : fieldDefaults.logRetentionDays,
     configPath: normalizeSlashes(configPath),
   };
 }
 
+/**
+ * Mirror path relative to mirrorRoot: preserve workspace dirs, append suffix.
+ * e.g. acme/widgets → acme/widgets.git
+ */
 export function mirrorNameFromRelative(
   relativePosix: string,
   naming: NamingConfig,
 ): string {
-  const base = relativePosix.replace(/\//g, "-");
+  const base = relativePosix.replace(/\\/g, "/");
   return `${naming.prefix}${base}${naming.suffix}`;
 }
 
@@ -199,6 +214,7 @@ export function parseCli(argv: string[]): CliOptions {
     verbose: false,
     scheduled: false,
     help: false,
+    forceWithLease: false,
     repoFilter: null,
     configPath: null,
     global: false,
@@ -214,6 +230,7 @@ export function parseCli(argv: string[]): CliOptions {
       case "run":
       case "list":
       case "init":
+      case "verify":
         opts.command = arg;
         break;
       case "--dry-run":
@@ -225,6 +242,9 @@ export function parseCli(argv: string[]): CliOptions {
         break;
       case "--scheduled":
         opts.scheduled = true;
+        break;
+      case "--force-with-lease":
+        opts.forceWithLease = true;
         break;
       case "--global":
         opts.global = true;
@@ -303,10 +323,15 @@ export function printHelp(): void {
 
 Usage:
   ingotvault init [--global] [--workspace <path>] [--mirror <path>]
-  ingotvault [run] [--config <path>] [--repo <name>] [--dry-run] [--verbose] [--scheduled]
-  ingotvault list [--config <path>] [--repo <name>]
+  ingotvault [run] [--config <path>] [--repo <path|name>] [--dry-run]
+             [--verbose] [--scheduled] [--force-with-lease]
+  ingotvault list [--config <path>] [--repo <path|name>]
+  ingotvault verify [--config <path>] [--repo <path|name>] [--verbose]
 
-Never modifies origin. Never force-pushes.
+Never modifies origin. Never force-pushes unless --force-with-lease (or
+allowForceWithLease in config).
+
+Exit codes: 0 ok · 1 error/repo failure · 2 mirror root unavailable
 `);
 }
 

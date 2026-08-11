@@ -46,3 +46,20 @@ export function isDubiousOwnership(result: GitResult): boolean {
   const text = combinedOutput(result).toLowerCase();
   return text.includes("dubious ownership");
 }
+
+/** Ensure git is on PATH. Returns version string (e.g. "git version 2.45.0"). */
+export async function requireGit(): Promise<string> {
+  const result = await runGit(["--version"]);
+  if (!result.ok) {
+    throw new Error(
+      "git not found on PATH (or failed to run). Install Git and ensure `git --version` works.",
+    );
+  }
+  const version = result.stdout.trim() || result.stderr.trim();
+  if (!version.toLowerCase().includes("git version")) {
+    throw new Error(
+      `Unexpected output from git --version: ${version || "(empty)"}`,
+    );
+  }
+  return version;
+}

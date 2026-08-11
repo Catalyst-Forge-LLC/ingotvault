@@ -13,11 +13,13 @@
   "pushAllBranches": true,
   "pushTags": true,
   "naming": {
-    "style": "path-dash",
+    "style": "path-tree",
     "prefix": "",
     "suffix": ".git"
   },
   "safeDirectory": "per-mirror",
+  "allowForceWithLease": false,
   "concurrency": 1,
-  "logDir": "~/.local/share/ingotvault/logs"
+  "logDir": "~/.local/share/ingotvault/logs",
+  "logRetentionDays": 30
 }

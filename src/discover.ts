@@ -13,6 +13,10 @@ export type DiscoveredRepo = {
   mirrorPath: string;
 };
 
+export type FilterReposResult =
+  | { ok: true; repos: DiscoveredRepo[] }
+  | { ok: false; error: string };
+
 function matchesGlob(relativePosix: string, pattern: string): boolean {
   const escaped = pattern
     .replace(/\\/g, "/")
@@ -47,6 +51,7 @@ export function discoverRepos(config: AppConfig): DiscoveredRepo[] {
       let isRepo = false;
       try {
         const st = statSync(gitPath);
+        // Directory .git only — skip worktrees/submodules where .git is a file.
         isRepo = st.isDirectory();
       } catch {
         isRepo = false;
@@ -90,15 +95,47 @@ export function discoverRepos(config: AppConfig): DiscoveredRepo[] {
   return found;
 }
 
+/**
+ * --repo matches relative path (preferred) or basename.
+ * Basename match fails if more than one repo shares that leaf name.
+ */
 export function filterRepos(
   repos: DiscoveredRepo[],
   repoFilter: string | null,
-): DiscoveredRepo[] {
-  if (!repoFilter) return repos;
-  const needle = repoFilter.replace(/\\/g, "/").toLowerCase();
-  return repos.filter((r) => {
-    const rel = r.relativePath.toLowerCase();
-    const base = path.posix.basename(rel);
-    return rel === needle || base === needle || rel.endsWith(`/${needle}`);
-  });
+): FilterReposResult {
+  if (!repoFilter) return { ok: true, repos };
+
+  const needle = repoFilter.replace(/\\/g, "/").toLowerCase().replace(/\/+$/, "");
+  const exact = repos.filter((r) => r.relativePath.toLowerCase() === needle);
+  if (exact.length === 1) return { ok: true, repos: exact };
+  if (exact.length > 1) {
+    return {
+      ok: false,
+      error: `--repo ${repoFilter} matched multiple paths: ${exact.map((r) => r.relativePath).join(", ")}`,
+    };
+  }
+
+  const bySuffix = repos.filter(
+    (r) => r.relativePath.toLowerCase().endsWith(`/${needle}`),
+  );
+  if (bySuffix.length === 1) return { ok: true, repos: bySuffix };
+  if (bySuffix.length > 1) {
+    return {
+      ok: false,
+      error: `--repo ${repoFilter} is ambiguous; matches: ${bySuffix.map((r) => r.relativePath).join(", ")}. Use the full relative path.`,
+    };
+  }
+
+  const byBase = repos.filter(
+    (r) => path.posix.basename(r.relativePath).toLowerCase() === needle,
+  );
+  if (byBase.length === 1) return { ok: true, repos: byBase };
+  if (byBase.length > 1) {
+    return {
+      ok: false,
+      error: `--repo ${repoFilter} matches multiple repos (${byBase.map((r) => r.relativePath).join(", ")}). Use the full relative path.`,
+    };
+  }
+
+  return { ok: true, repos: [] };
 }

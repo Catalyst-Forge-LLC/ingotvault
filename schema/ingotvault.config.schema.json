@@ -6,7 +6,10 @@
   "additionalProperties": false,
   "required": ["workspaceRoot", "mirrorRoot"],
   "properties": {
-    "$schema": { "type": "string" },
+    "$schema": {
+      "type": "string",
+      "description": "Optional JSON Schema URL for editor autocomplete."
+    },
     "workspaceRoot": {
       "type": "string",
       "description": "Folder to scan for Git repositories. ~ is expanded."
@@ -28,7 +31,8 @@
     "excludeDirNames": {
       "type": "array",
       "items": { "type": "string" },
-      "default": ["__ARCHIVE", "node_modules", ".git", ".hg"]
+      "default": ["__ARCHIVE", "node_modules", ".git", ".hg"],
+      "description": "Directory names skipped while walking the workspace (e.g. node_modules)."
     },
     "excludeRepoGlobs": {
       "type": "array",
@@ -45,8 +49,9 @@
       "properties": {
         "style": {
           "type": "string",
-          "const": "path-dash",
-          "default": "path-dash"
+          "const": "path-tree",
+          "default": "path-tree",
+          "description": "Preserve relative path under mirrorRoot (foo/bar → foo/bar.git)."
         },
         "prefix": { "type": "string", "default": "" },
         "suffix": { "type": "string", "default": ".git" }
@@ -56,7 +61,12 @@
       "type": "string",
       "enum": ["per-mirror", "off"],
       "default": "per-mirror",
-      "description": "Add git safe.directory entries for mirrors on filesystems without ownership (e.g. exFAT)."
+      "description": "per-mirror adds each mirror path to global git safe.directory (~/.gitconfig). Use off to disable."
+    },
+    "allowForceWithLease": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, pushes use --force-with-lease (same as CLI --force-with-lease)."
     },
     "concurrency": {
       "type": "integer",
@@ -66,6 +76,12 @@
     "logDir": {
       "type": "string",
       "description": "Directory for --scheduled log files. ~ is expanded."
+    },
+    "logRetentionDays": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 30,
+      "description": "Delete --scheduled logs older than this many days when writing a new log. 0 keeps forever."
     }
   }
 }

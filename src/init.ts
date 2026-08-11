@@ -62,12 +62,14 @@ export async function runInit(cli: CliOptions): Promise<number> {
       pushAllBranches: true,
       pushTags: true,
       naming: {
-        style: "path-dash",
+        style: "path-tree",
         prefix: "",
         suffix: ".git",
       },
       safeDirectory: "per-mirror",
+      allowForceWithLease: false,
       concurrency: 1,
+      logRetentionDays: 30,
     };
 
     const outPath = cli.global
