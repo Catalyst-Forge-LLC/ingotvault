@@ -145,10 +145,50 @@ header.site-header .site-nav a:hover {
 	color: var(--accent-strong);
 }
 
+/* GitHub: icon + label as a copper-edged control, not another uppercase nav word */
+header.site-header .site-nav a.nav-github {
+	gap: 0.45rem;
+	padding: 0.35rem 0.7rem 0.35rem 0.55rem;
+	border: 1px solid color-mix(in srgb, var(--accent-strong) 45%, var(--rule));
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--copper-wash) 70%, var(--surface));
+	color: var(--ink);
+	font-size: 0.7rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: none;
+}
+
+header.site-header .site-nav a.nav-github:hover {
+	border-color: var(--accent-strong);
+	background: color-mix(in srgb, var(--accent-strong) 18%, var(--surface));
+	color: var(--ink);
+}
+
+header.site-header .site-nav a.nav-github .nav-icon {
+	width: 1rem;
+	height: 1rem;
+}
+
 .site-footer {
 	color: var(--ink-faint);
 	border-top-color: var(--rule);
 	margin-top: clamp(3rem, 8vw, 5rem);
+}
+
+.site-footer .footer-links a.nav-github {
+	gap: 0.4rem;
+	color: var(--ink-soft);
+	font-weight: 600;
+}
+
+.site-footer .footer-links a.nav-github:hover {
+	color: var(--accent-strong);
+}
+
+.site-footer .footer-links a.nav-github .nav-icon {
+	width: 0.95rem;
+	height: 0.95rem;
 }
 
 /* Center the reading column inside the 72rem shell */

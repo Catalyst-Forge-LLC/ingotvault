@@ -1,5 +1,7 @@
 import { defineFilepressConfig } from 'getfilepress';
 
+const github = 'https://github.com/Catalyst-Forge-LLC/ingotvault';
+
 export default defineFilepressConfig({
 	title: 'IngotVault',
 	description:
@@ -21,6 +23,11 @@ export default defineFilepressConfig({
 		{ label: 'Posts', href: '/writing' },
 		{ label: 'Install', href: '/install' },
 		{ label: 'Safety', href: '/safety' },
-		{ label: 'GitHub', href: 'https://github.com/Catalyst-Forge-LLC/ingotvault' }
+		{ label: 'GitHub', href: github, icon: 'github' }
+	],
+	footerLinks: [
+		{ label: 'RSS', href: '/rss.xml' },
+		{ label: 'Topics', href: '/topics' },
+		{ label: 'GitHub', href: github, icon: 'github' }
 	]
 });
