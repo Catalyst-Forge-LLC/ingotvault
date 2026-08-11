@@ -26,7 +26,8 @@
     "site:dev": "pnpm --dir site dev",
     "site:build": "pnpm --dir site run build",
     "site:deploy": "pnpm --dir site run deploy",
-    "prepublishOnly": "pnpm run build && pnpm test"
+    "clean": "node -e \"import('node:fs').then(fs=>fs.rmSync('dist',{recursive:true,force:true}))\"",
+    "prepublishOnly": "pnpm run clean && pnpm run build && pnpm test"
   },
   "engines": {
     "node": ">=22"
