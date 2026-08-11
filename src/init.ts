@@ -68,6 +68,8 @@ export async function runInit(cli: CliOptions): Promise<number> {
       },
       safeDirectory: "per-mirror",
       allowForceWithLease: false,
+      captureWorktree: false,
+      wipRetention: 20,
       concurrency: 1,
       logRetentionDays: 30,
     };

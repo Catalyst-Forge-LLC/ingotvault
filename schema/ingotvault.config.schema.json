@@ -66,7 +66,18 @@
     "allowForceWithLease": {
       "type": "boolean",
       "default": false,
-      "description": "If true, pushes use --force-with-lease (same as CLI --force-with-lease)."
+      "description": "If true, pushes use --force-with-lease (same as CLI --force-with-lease). Still requires --repo or --all-repos."
+    },
+    "captureWorktree": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, snapshot dirty worktrees (including untracked) to refs/ingotvault/wip/<host>/… and push them. Opt-in; does not change the commits-only default promise."
+    },
+    "wipRetention": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 20,
+      "description": "Keep the newest N WIP refs per repo; older local refs are deleted and pruned on the mirror."
     },
     "concurrency": {
       "type": "integer",

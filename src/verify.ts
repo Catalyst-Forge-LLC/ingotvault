@@ -183,32 +183,54 @@ export function formatVerifyOutcome(o: VerifyOutcome): string {
   return `${label}  ${name}  ${o.detail}`;
 }
 
+export function summarizeVerify(outcomes: VerifyOutcome[]): string {
+  const counts = {
+    ok: 0,
+    behind: 0,
+    diverged: 0,
+    "missing-mirror": 0,
+    "no-commits": 0,
+    fail: 0,
+  };
+  for (const o of outcomes) {
+    counts[o.status] += 1;
+  }
+  const parts = [
+    `${counts.ok} ok`,
+    counts.diverged ? `${counts.diverged} diverged` : null,
+    counts.behind ? `${counts.behind} behind` : null,
+    counts["missing-mirror"] ? `${counts["missing-mirror"]} missing` : null,
+    counts.fail ? `${counts.fail} fail` : null,
+    counts["no-commits"] ? `${counts["no-commits"]} no-commits` : null,
+  ].filter(Boolean);
+  return parts.join(", ");
+}
+
 export async function verifyAll(
   repos: DiscoveredRepo[],
   config: AppConfig,
   log: Logger,
-): Promise<{ outcomes: VerifyOutcome[]; exitCode: number }> {
+): Promise<{ outcomes: VerifyOutcome[]; exitCode: number; clean: boolean }> {
   const outcomes: VerifyOutcome[] = [];
   for (const repo of repos) {
     try {
       const outcome = await verifyRepo(repo, config, log);
       outcomes.push(outcome);
-      log.line(formatVerifyOutcome(outcome));
     } catch (err) {
-      const outcome: VerifyOutcome = {
+      outcomes.push({
         relativePath: repo.relativePath,
         mirrorPath: repo.mirrorPath,
         status: "fail",
         detail: (err as Error).message,
-      };
-      outcomes.push(outcome);
-      log.line(formatVerifyOutcome(outcome));
+      });
     }
   }
 
   const bad = outcomes.filter((o) =>
     ["behind", "diverged", "missing-mirror", "fail"].includes(o.status),
   );
+  const clean = bad.length === 0;
+
   // 3 = drift / partial failure (distinct from config errors = 1)
-  return { outcomes, exitCode: bad.length > 0 ? 3 : 0 };
+  return { outcomes, exitCode: clean ? 0 : 3, clean };
 }

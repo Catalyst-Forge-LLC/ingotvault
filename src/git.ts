@@ -13,6 +13,7 @@ export type GitResult = {
 export async function runGit(
   args: string[],
   cwd?: string,
+  env?: Record<string, string>,
 ): Promise<GitResult> {
   try {
     const { stdout, stderr } = await execFileAsync("git", args, {
@@ -20,6 +21,7 @@ export async function runGit(
       encoding: "utf8",
       maxBuffer: 20 * 1024 * 1024,
       windowsHide: true,
+      env: env ? { ...process.env, ...env } : undefined,
     });
     return { ok: true, code: 0, stdout: stdout ?? "", stderr: stderr ?? "" };
   } catch (err) {

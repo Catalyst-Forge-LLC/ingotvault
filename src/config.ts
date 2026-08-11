@@ -28,6 +28,10 @@ export type AppConfig = {
   naming: NamingConfig;
   safeDirectory: "per-mirror" | "off";
   allowForceWithLease: boolean;
+  /** Snapshot dirty worktrees to refs/ingotvault/wip/… and push them */
+  captureWorktree: boolean;
+  /** Keep the newest N WIP refs per repo (local + prune on mirror push) */
+  wipRetention: number;
   concurrency: number;
   logDir: string;
   logRetentionDays: number;
@@ -44,6 +48,9 @@ export type CliOptions = {
   forceWithLease: boolean;
   /** Allow --force-with-lease across the whole workspace */
   allRepos: boolean;
+  captureWorktree: boolean;
+  /** verify: stay silent when everything matches */
+  quietIfClean: boolean;
   /** unsafe-directory: list | clean */
   unsafeMode: "list" | "clean" | null;
   repoFilter: string | null;
@@ -71,6 +78,8 @@ const fieldDefaults = {
   },
   safeDirectory: "per-mirror" as const,
   allowForceWithLease: false,
+  captureWorktree: false,
+  wipRetention: 20,
   concurrency: 1,
   logDir: "~/.local/share/ingotvault/logs",
   logRetentionDays: 30,
@@ -189,6 +198,12 @@ export function loadConfig(cliPath: string | null): AppConfig {
     safeDirectory: fileConfig.safeDirectory ?? fieldDefaults.safeDirectory,
     allowForceWithLease:
       fileConfig.allowForceWithLease ?? fieldDefaults.allowForceWithLease,
+    captureWorktree:
+      fileConfig.captureWorktree ?? fieldDefaults.captureWorktree,
+    wipRetention: (() => {
+      const n = fileConfig.wipRetention ?? fieldDefaults.wipRetention;
+      return Number.isFinite(n) && n >= 1 ? n : fieldDefaults.wipRetention;
+    })(),
     concurrency: fileConfig.concurrency ?? fieldDefaults.concurrency,
     logDir: normalizeSlashes(logDir),
     logRetentionDays:
@@ -220,6 +235,8 @@ export function parseCli(argv: string[]): CliOptions {
     help: false,
     forceWithLease: false,
     allRepos: false,
+    captureWorktree: false,
+    quietIfClean: false,
     unsafeMode: null,
     repoFilter: null,
     configPath: null,
@@ -255,6 +272,12 @@ export function parseCli(argv: string[]): CliOptions {
         break;
       case "--all-repos":
         opts.allRepos = true;
+        break;
+      case "--capture-worktree":
+        opts.captureWorktree = true;
+        break;
+      case "--quiet-if-clean":
+        opts.quietIfClean = true;
         break;
       case "--clean":
         opts.unsafeMode = "clean";
@@ -341,16 +364,20 @@ export function printHelp(): void {
 Usage:
   ingotvault init [--global] [--workspace <path>] [--mirror <path>]
   ingotvault [run] [--config <path>] [--repo <path|name>] [--dry-run]
-             [--verbose] [--scheduled]
+             [--verbose] [--scheduled] [--capture-worktree]
              [--force-with-lease --repo <path>|--all-repos]
   ingotvault list [--config <path>] [--repo <path|name>]
-  ingotvault verify [--config <path>] [--repo <path|name>] [--verbose]
+  ingotvault verify [--config <path>] [--repo <path|name>]
+             [--verbose] [--quiet-if-clean]
   ingotvault unsafe-directory [--config <path>] [--list|--clean]
 
 Never modifies origin. Never force-pushes unless --force-with-lease.
 Force updates use ls-remote tips + explicit --force-with-lease=<ref>:<oid>,
 preserving missing mirror tips under refs/ingotvault/preforce/… first.
 Requires --repo or --all-repos (aimed action).
+
+Optional --capture-worktree (or captureWorktree in config) snapshots dirty
+trees to refs/ingotvault/wip/… without mutating the worktree.
 
 Exit codes: 0 ok · 1 setup/config · 2 mirror unavailable · 3 repo/verify drift
 `);

@@ -17,7 +17,7 @@ import { acquireMirrorLock } from "./lock.js";
 import { createLogger, pruneOldLogs, timestampForFilename } from "./log.js";
 import { formatOutcome, processRepo, type RepoOutcome } from "./push.js";
 import { runUnsafeDirectory } from "./unsafeDirectory.js";
-import { verifyAll } from "./verify.js";
+import { summarizeVerify, verifyAll } from "./verify.js";
 
 async function runMain(cli: CliOptions): Promise<number> {
   if (cli.help) {
@@ -52,8 +52,11 @@ async function runMain(cli: CliOptions): Promise<number> {
 
   const dryRun = cli.dryRun || config.dryRun;
   const forceWithLease = cli.forceWithLease || config.allowForceWithLease;
+  const captureWorktree = cli.captureWorktree || config.captureWorktree;
+  const effectiveConfig = { ...config, captureWorktree };
   const log = createLogger(cli.verbose);
   const started = Date.now();
+  const quietVerify = cli.command === "verify" && cli.quietIfClean;
 
   if (forceWithLease && cli.command === "run") {
     if (!cli.repoFilter && !cli.allRepos) {
@@ -65,16 +68,23 @@ async function runMain(cli: CliOptions): Promise<number> {
     }
   }
 
-  log.line(
-    `ingotvault  workspace=${config.workspaceRoot}  mirror=${config.mirrorRoot}`,
-  );
-  log.verbose(`config=${config.configPath}`);
-  if (dryRun) log.line("(dry-run: no writes)");
-  if (forceWithLease && cli.command === "run") {
-    log.line("(force-with-lease enabled — explicit leases via ls-remote)");
-  }
-  if (cli.command === "list") log.line("(list only)");
-  if (cli.command === "verify") log.line("(verify)");
+  const printBanner = () => {
+    log.line(
+      `ingotvault  workspace=${config.workspaceRoot}  mirror=${config.mirrorRoot}`,
+    );
+    log.verbose(`config=${config.configPath}`);
+    if (dryRun) log.line("(dry-run: no writes)");
+    if (forceWithLease && cli.command === "run") {
+      log.line("(force-with-lease enabled — explicit leases via ls-remote)");
+    }
+    if (captureWorktree && cli.command === "run") {
+      log.line("(capture-worktree enabled — dirty trees → refs/ingotvault/wip/…)");
+    }
+    if (cli.command === "list") log.line("(list only)");
+    if (cli.command === "verify") log.line("(verify)");
+  };
+
+  if (!quietVerify) printBanner();
 
   try {
     if (cli.command !== "list") {
@@ -89,9 +99,10 @@ async function runMain(cli: CliOptions): Promise<number> {
     throw err;
   }
 
-  const allRepos = discoverRepos(config);
+  const allRepos = discoverRepos(effectiveConfig);
   const filtered = filterRepos(allRepos, cli.repoFilter);
   if (!filtered.ok) {
+    if (quietVerify) printBanner();
     log.line(filtered.error);
     maybeWriteScheduledLog(cli, config.logDir, config.logRetentionDays, log);
     return 1;
@@ -99,13 +110,16 @@ async function runMain(cli: CliOptions): Promise<number> {
   const repos = filtered.repos;
 
   if (cli.repoFilter && repos.length === 0) {
+    if (quietVerify) printBanner();
     log.line(`No repos matched --repo ${cli.repoFilter}`);
     maybeWriteScheduledLog(cli, config.logDir, config.logRetentionDays, log);
     return 1;
   }
 
-  log.line(`Found ${repos.length} repo(s)`);
-  log.line("");
+  if (!quietVerify) {
+    log.line(`Found ${repos.length} repo(s)`);
+    log.line("");
+  }
 
   if (cli.command === "list") {
     for (const repo of repos) {
@@ -121,6 +135,7 @@ async function runMain(cli: CliOptions): Promise<number> {
       lock = acquireMirrorLock(config.mirrorRoot);
       log.verbose(`lock=${lock.lockPath}`);
     } catch (err) {
+      if (quietVerify) printBanner();
       log.line(`ERROR: ${(err as Error).message}`);
       maybeWriteScheduledLog(cli, config.logDir, config.logRetentionDays, log);
       return 1;
@@ -129,10 +144,26 @@ async function runMain(cli: CliOptions): Promise<number> {
 
   try {
     if (cli.command === "verify") {
-      const { exitCode } = await verifyAll(repos, config, log);
-      const seconds = ((Date.now() - started) / 1000).toFixed(1);
-      log.line("---");
-      log.line(`verify done (${seconds}s)`);
+      const { exitCode, clean, outcomes } = await verifyAll(
+        repos,
+        effectiveConfig,
+        log,
+      );
+      if (!quietVerify || !clean) {
+        if (quietVerify) {
+          printBanner();
+          log.line(`Found ${repos.length} repo(s)`);
+          log.line("");
+        }
+        for (const outcome of outcomes) {
+          log.line(
+            `${outcome.status.padEnd(14)}  ${outcome.relativePath.padEnd(28)}  ${outcome.detail}`,
+          );
+        }
+        const seconds = ((Date.now() - started) / 1000).toFixed(1);
+        log.line("---");
+        log.line(`${summarizeVerify(outcomes)}  (${seconds}s)`);
+      }
       maybeWriteScheduledLog(cli, config.logDir, config.logRetentionDays, log);
       return exitCode;
     }
@@ -141,7 +172,7 @@ async function runMain(cli: CliOptions): Promise<number> {
     for (const repo of repos) {
       const outcome = await processRepo(
         repo,
-        config,
+        effectiveConfig,
         dryRun,
         log,
         forceWithLease,

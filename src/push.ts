@@ -9,6 +9,7 @@ import {
 } from "./ensureBackup.js";
 import { combinedOutput, isDubiousOwnership, runGit } from "./git.js";
 import type { Logger } from "./log.js";
+import { captureAndPushWip } from "./wip.js";
 
 export type RepoOutcome = {
   relativePath: string;
@@ -459,10 +460,11 @@ export async function processRepo(
     const forceNote = forceWithLease
       ? " ls-remote + leased force-push (keep missing tips)"
       : " push";
+    const wipNote = config.captureWorktree ? " + WIP snapshot if dirty" : "";
     return {
       ...base,
       status: "ok",
-      detail: `[dry-run] would${forceNote} ${config.remoteName}`,
+      detail: `[dry-run] would${forceNote}${wipNote} ${config.remoteName}`,
     };
   }
 
@@ -527,9 +529,24 @@ export async function processRepo(
     }
   }
 
+  let wipNote = "";
+  if (config.captureWorktree) {
+    const wip = await captureAndPushWip(repo, config, log);
+    if (wip.status === "fail") {
+      return { ...base, status: "fail", detail: wip.detail };
+    }
+    if (wip.status === "ok") {
+      wipNote = `; ${wip.detail}`;
+    }
+  }
+
   await syncMirrorHead(repo, log);
 
-  return { ...base, status: "ok", detail: `-> ${repo.mirrorPath}` };
+  return {
+    ...base,
+    status: "ok",
+    detail: `-> ${repo.mirrorPath}${wipNote}`,
+  };
 }
 
 export function formatOutcome(o: RepoOutcome): string {

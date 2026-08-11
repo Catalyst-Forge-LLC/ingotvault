@@ -2,7 +2,7 @@
 
 A **spare remote** for a folder full of Git repos: push committed history into bare mirrors on a drive you control. **Never touches `origin`.**
 
-The promise is narrow on purpose: **every commit you've made lands in a second place you control.** Not uncommitted work, not LFS objects — commits on every local branch and tag, plus `refs/notes/*` and `refs/replace/*` (default: `git push --all`, `--tags`, and those refspecs). Custom namespaces (e.g. Gerrit `refs/changes`) are not covered.
+The promise is narrow on purpose: **every commit you've made lands in a second place you control.** Not uncommitted work (unless you opt in), not LFS objects — commits on every local branch and tag, plus `refs/notes/*` and `refs/replace/*` (default: `git push --all`, `--tags`, and those refspecs). Optionally, a snapshot of your dirty tree too (`captureWorktree`). Custom namespaces (e.g. Gerrit `refs/changes`) are not covered.
 
 That gap is real even if you already have a forge **and** a file backup:
 
@@ -29,10 +29,11 @@ The product is the **guarantee set** below — what a late-night bash loop usual
 | Existing `backup` with wrong URL | Fail that repo; continue others |
 | Concurrent runs | Lock file `mirrorRoot/.ingotvault.lock` |
 | Mirror volume missing/locked | Exit `2` (scheduled: expected skip) |
-| Deleted local branches | **Not pruned** from the mirror (intentional — history stays) |
-| Uncommitted work / stashes | Not covered (commits only) |
+| Deleted local branches | **Not pruned** from the mirror — intentional ratchet: history only accumulates (valuable when an agent "cleans up" a branch) |
+| Uncommitted work / stashes | Not covered by default. Opt-in `captureWorktree` / `--capture-worktree` snapshots dirty trees (incl. untracked) to `refs/ingotvault/wip/<host>/…` without mutating the worktree; keeps newest `wipRetention` (default 20) |
 | Git LFS | Not covered — bare push stores pointer files only; warned when `.gitattributes` has `filter=lfs` |
-| Submodules / linked worktrees | Skipped (`.git` is a file). Parent stores only the gitlink SHA; submodule objects are not pushed. Restore needs each submodule's own remote (or its own ingotvault mirror) |
+| Linked worktrees | Discovery skips dirs whose `.git` is a file, but their **branches** live in the parent repo — `push --all` from the parent already covers committed work. With `captureWorktree`, dirty state is snapshotted for each path from `git worktree list` |
+| Submodules | Skipped (`.git` is a file). Parent stores only the gitlink SHA; submodule objects are not pushed. Restore needs each submodule's own remote (or its own ingotvault mirror) |
 | Drive pulled mid-push | Push may be partial; remount and re-run — Git usually recovers; `verify` helps confirm |
 
 ## Install
@@ -170,11 +171,33 @@ Do **not** use `--unset-all safe.directory` — that deletes unrelated entries y
 - **Covered:** someone walks off with the SD card/USB/disk and tries to read the mirrors cold.
 - **Not covered:** the volume is already unlocked on a logged-in machine; uncommitted work in `workspaceRoot` (encrypt that disk too, or commit before you care); recovery keys stored on the same media; Git LFS object bytes; submodule object stores (see Safety).
 
+## Working with coding agents
+
+Agents tend to fail by **rewriting** history (rebase, amend, `reset --hard`, deleting a "stale" branch), not by quietly losing whole directories. An append-only spare remote that never force-pushes and never prunes deleted branches is a **ratchet**: the mirror still has the branch the agent removed.
+
+The usual agent-shaped loss is **uncommitted** work (`checkout .`, `clean -fd`, hard reset on a dirty tree). Enable WIP capture at session boundaries:
+
+```bash
+ingotvault --capture-worktree
+# or "captureWorktree": true in config
+```
+
+Restore a snapshot: `git show refs/ingotvault/wip/<host>/<slug>/<timestamp>` (or check out that ref from the mirror).
+
+`ingotvault verify` is a post-session **detector**: `diverged` on a repo you did not rebase yourself means something rewrote history. Use `--quiet-if-clean` in harness hooks so a clean vault stays silent.
+
+**Blast radius:** if the vault is unlocked and writable while an agent has a shell, the agent can destroy mirrors or invoke `--force-with-lease`. Mitigations (OS/process, not magic in this tool):
+
+- Mount the vault read-only for the agent user, or run ingotvault as a different user/scheduled task the agent cannot invoke
+- Keep config outside the agent's working tree; omit `ingotvault` from the agent's shell allowlist
+- Unplug between runs (same story as theft)
+- Note that `safeDirectory: "per-mirror"` mutates global `~/.gitconfig` — relevant in sandboxes
+
 ## Discovery
 
 - Walks `workspaceRoot` up to `maxDepth` (default 3).
 - Skips directory names in `excludeDirNames` (default includes `node_modules`, `.git`, `.hg`, `__ARCHIVE`).
-- Only treats a directory as a repo when `.git` is a **directory** (linked worktrees and submodules with a `.git` **file** are skipped).
+- Only treats a directory as a repo when `.git` is a **directory** (linked worktrees and submodules with a `.git` **file** are skipped as scan roots; see Safety for branch/WIP coverage).
 - Repos with zero commits are skipped at push time.
 - Detached HEAD: commits still push if branches exist via `push --all`; verify reports when there are no local branches.
 
@@ -184,10 +207,11 @@ Do **not** use `--unset-all safe.directory` — that deletes unrelated entries y
 ingotvault init [--global] [--workspace <path>] [--mirror <path>]
                 [--remote-name backup] [--max-depth 3]
 ingotvault [run] [--config <path>] [--repo <path|name>] [--dry-run]
-                [--verbose] [--scheduled]
+                [--verbose] [--scheduled] [--capture-worktree]
                 [--force-with-lease --repo <path>|--all-repos]
 ingotvault list  [--config <path>] [--repo <path|name>]
-ingotvault verify [--config <path>] [--repo <path|name>] [--verbose]
+ingotvault verify [--config <path>] [--repo <path|name>]
+                [--verbose] [--quiet-if-clean]
 ingotvault unsafe-directory [--config <path>] [--list|--clean]
 ```
 
@@ -195,7 +219,7 @@ ingotvault unsafe-directory [--config <path>] [--list|--clean]
 
 `--scheduled` writes a timestamped log under `logDir` and prunes logs older than `logRetentionDays` (default 30; `0` = keep forever). No interactive pause; pair with your OS task scheduler. Prefer not alerting on exit `2`.
 
-`ingotvault verify` compares each local branch tip to the bare mirror and reports `ok`, `behind` (mirror tip is an ancestor, N commits behind), `diverged`, or `missing-mirror`. Diverged refs are never counted as "behind."
+`ingotvault verify` compares each local branch tip to the bare mirror and reports `ok`, `behind` (mirror tip is an ancestor, N commits behind), `diverged`, or `missing-mirror`. Diverged refs are never counted as "behind." Ends with a summary (`12 ok, 2 diverged, …`). `--quiet-if-clean` prints nothing and exits `0` when everything matches.
 
 ## Exit codes
 
