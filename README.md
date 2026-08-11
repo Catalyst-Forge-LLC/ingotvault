@@ -1,8 +1,38 @@
 # ingotvault
 
-Local spare remotes for a folder full of Git repos. Push committed history to bare mirrors on another drive. **Never touches `origin`.**
+A **spare remote** for a folder full of Git repos: push committed history into bare mirrors on a drive you control. **Never touches `origin`.**
 
-Use it when you keep many repos in a workspace folder and want a second, local Git remote (encrypted USB/SD, NAS path, extra disk) without replacing GitHub/GitLab — or without using a forge at all.
+The promise is narrow on purpose: **every commit you've made lands in a second place you control.** Not uncommitted work, not LFS objects — commits, on every local branch and tag (default: `git push --all` and `git push --tags`).
+
+That gap is real even if you already have GitHub/GitLab **and** Time Machine/restic:
+
+- Repos with **no forge remote** (scratch experiments, notes-in-git, client work you never uploaded)
+- **Unpushed branches and tags** in repos you think are "backed up" because `main` is on origin
+- **Confidentiality** (NDA, regulated, or unfinished thinking that shouldn't leave your machine)
+- **Offline / intermittent** network (flight, field, air-gapped sites)
+- **Account-level risk** (forge outage, lost 2FA, org offboarding) — low odds, total loss
+
+A file backup of a live `.git` copies whatever bytes were on disk (including torn mid-gc/rebase state) and restores as an opaque blob. A push into a bare mirror is a **git** operation: content-addressed, validated on receipt, atomic at the ref level, restorable with `git clone`, checkable with `ingotvault verify`. An **unplugged** encrypted drive also won't cheerfully replicate your `rm -rf` the way a cloud-synced folder can.
+
+"Git is already distributed" only helps if another clone actually exists and is up to date. For most people the laptop workspace is the sole clone of half their repos.
+
+**Not for:** one or two repos you already push everywhere, or a workflow with no unpushed branches and no local-only repos. Use a forge (or a one-off remote) and move on.
+
+The product is the **guarantee set** below — the bits a late-night bash loop usually gets wrong and doesn't notice for months.
+
+## Safety
+
+| Concern | Behavior |
+|---------|----------|
+| `origin` / other remotes | Never modified |
+| What gets pushed | All local branches + tags by default (`pushAllBranches` / `pushTags`) |
+| Force push | Never by default; opt-in `--force-with-lease` / `allowForceWithLease` |
+| Non-fast-forward (rebase/amend) | Fail that repo with `DIVERGED:`; other repos continue |
+| Existing `backup` with wrong URL | Fail that repo; continue others |
+| Mirror volume missing/locked | Exit `2` (scheduled: expected skip) |
+| Uncommitted work / stashes | Not covered (commits only) |
+| Git LFS | Not covered — bare push stores pointer files only; warned when `.gitattributes` has `filter=lfs` |
+| Drive pulled mid-push | Push may be partial; remount and re-run — Git usually recovers; `verify` helps confirm |
 
 ## Install
 
@@ -79,7 +109,7 @@ git clone --mirror /Volumes/Backup/git-mirrors/acme/widgets.git widgets.git
 # bare mirror copy; then clone from that if you want a worktree
 ```
 
-Uncommitted work was never backed up — only commits that were pushed.
+Uncommitted work and stashes were never covered — only commits that were pushed.
 
 ## Divergence
 
@@ -116,19 +146,6 @@ Removable volumes are often exFAT/FAT. Git may report “dubious ownership”. W
 - **Covered:** someone walks off with the SD card/USB/disk and tries to read the mirrors cold.
 - **Not covered:** the volume is already unlocked on a logged-in machine; uncommitted work in `workspaceRoot` (encrypt that disk too, or commit before you care); recovery keys stored on the same media; Git LFS object bytes (pointers only — see Safety).
 
-## Safety
-
-| Concern | Behavior |
-|---------|----------|
-| `origin` / other remotes | Never modified |
-| Force push | Never by default; opt-in `--force-with-lease` / `allowForceWithLease` |
-| Non-fast-forward (rebase/amend) | Fail that repo with `DIVERGED:`; other repos continue |
-| Existing `backup` with wrong URL | Fail that repo; continue others |
-| Mirror volume missing/locked | Exit `2` (scheduled: expected skip) |
-| Uncommitted work | Not backed up (commits only) |
-| Git LFS | Not backed up — bare push stores pointer files only; warned when `.gitattributes` has `filter=lfs` |
-| Drive pulled mid-push | Push may be partial; remount and re-run — Git usually recovers; `verify` helps confirm |
-
 ## Discovery
 
 - Walks `workspaceRoot` up to `maxDepth` (default 3).
@@ -164,10 +181,12 @@ ingotvault verify [--config <path>] [--repo <path|name>] [--verbose]
 
 ## How it differs
 
-- **myrepos / gita** — run arbitrary git across many repos; you still invent the local spare remote.
+- **Forge remotes (origin)** — cover what you’ve pushed upstream. ingotvault covers local-only repos and unpushed refs without replacing origin.
+- **File backup (Time Machine, restic, Backblaze)** — broader coverage (including dirty worktrees), weaker git semantics. A live `.git` snapshot can be torn; a bare-mirror push is validated and cloneable. Use both if you want; they solve different problems.
+- **myrepos / gita** — run arbitrary git across many repos; you still invent the local spare remote and its safety rules.
 - **Host mirror tools** — clone *from* GitHub/GitLab onto disk.
 - **git bundle** — portable snapshots, but not an incremental spare remote; each update is a new bundle. Bare mirrors take ordinary `git push` and stay updatable in place.
-- **ingotvault** — scan a workspace → ensure a local `backup` remote → push into bare mirrors on a path you choose.
+- **ingotvault** — scan a workspace → ensure a local `backup` remote → push all branches/tags into bare mirrors on a path you choose, with the guarantee set above.
 
 ## Publish (maintainers)
 

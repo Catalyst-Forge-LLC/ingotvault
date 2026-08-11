@@ -1,7 +1,7 @@
 {
   "name": "ingotvault",
   "version": "0.1.0",
-  "description": "Local spare remotes for a folder full of Git repos. Push committed history to bare mirrors on another drive. Never touches origin.",
+  "description": "Spare remotes for a workspace of Git repos: push all local branches and tags to bare mirrors on a drive you control. Never touches origin.",
   "type": "module",
   "license": "Apache-2.0",
   "bin": {
