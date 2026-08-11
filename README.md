@@ -105,8 +105,7 @@ Resolution order (first found wins):
 
 1. `--config <path>`
 2. `./ingotvault.config.json`
-3. `./.ingotvault.json`
-4. User config: `~/.config/ingotvault/config.json` (Windows: `%APPDATA%\ingotvault\config.json`)
+3. User config: `~/.config/ingotvault/config.json` (Windows: `%APPDATA%\ingotvault\config.json`)
 
 `workspaceRoot` and `mirrorRoot` are required. `~` is expanded. See [`config.example.json`](config.example.json) (includes `"$schema"` for editor autocomplete) and [`schema/ingotvault.config.schema.json`](schema/ingotvault.config.schema.json).
 

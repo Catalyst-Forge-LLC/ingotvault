@@ -132,7 +132,7 @@ function readJsonConfig(configPath: string): FileConfig {
   }
 }
 
-/** Resolution: --config, ./ingotvault.config.json, ./.ingotvault.json, user config. */
+/** Resolution: --config, ./ingotvault.config.json, then user config. */
 export function resolveConfigPath(cliPath: string | null): string | null {
   if (cliPath) {
     const resolved = resolveUserPath(cliPath);
@@ -142,13 +142,8 @@ export function resolveConfigPath(cliPath: string | null): string | null {
     return resolved;
   }
 
-  const cwdCandidates = [
-    path.resolve("ingotvault.config.json"),
-    path.resolve(".ingotvault.json"),
-  ];
-  for (const candidate of cwdCandidates) {
-    if (existsSync(candidate)) return candidate;
-  }
+  const cwdConfig = path.resolve("ingotvault.config.json");
+  if (existsSync(cwdConfig)) return cwdConfig;
 
   const userPath = getUserConfigPath();
   if (existsSync(userPath)) return userPath;
