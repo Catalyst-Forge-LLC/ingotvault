@@ -241,7 +241,7 @@ ingotvault relink [--config <path>] [--repo <path|name>]
 ingotvault safe-dirs [--config <path>] [--list|--clean]
 ```
 
-`relink` updates a mismatched `backup` remote URL to the current `mirrorRoot` path (after you confirm the new path is a marker-bearing vault). Use it when you rename or per-machine-scope the vault.
+`relink` updates a mismatched `backup` remote URL to the current path-tree mirror location. If the old URL still points at a bare repo on disk (e.g. flat `foo-bar.git` from an earlier naming style) and the new path is empty, it **moves** that bare repo first so history is preserved, then `git remote set-url`. Use `--dry-run` to preview.
 
 `--repo` matches the workspace-relative path (preferred), a unique path suffix, or a unique basename. If several repos share the same leaf name, the command fails and asks for the full relative path.
 
