@@ -1,5 +1,5 @@
 {
-  "$schema": "./schema/ingot.config.schema.json",
+  "$schema": "./schema/ingotvault.config.schema.json",
   "workspaceRoot": "~/code",
   "mirrorRoot": "/Volumes/Backup/git-mirrors",
   "remoteName": "backup",
@@ -19,5 +19,5 @@
   },
   "safeDirectory": "per-mirror",
   "concurrency": 1,
-  "logDir": "~/.local/share/ingot/logs"
+  "logDir": "~/.local/share/ingotvault/logs"
 }

@@ -1,21 +1,21 @@
 @echo off
 setlocal EnableExtensions
 REM Optional Windows launcher for Task Scheduler / double-click.
-REM Prefer a global `ingot` on PATH after: pnpm add -g git-ingot
+REM Prefer a global `ingotvault` on PATH after: pnpm add -g ingotvault
 
 set "SCHEDULED="
 for %%A in (%*) do (
   if /I "%%~A"=="--scheduled" set "SCHEDULED=1"
 )
 
-where ingot >nul 2>&1
+where ingotvault >nul 2>&1
 if errorlevel 1 (
-  echo ERROR: ingot not on PATH. Install with: pnpm add -g git-ingot
+  echo ERROR: ingotvault not on PATH. Install with: pnpm add -g ingotvault
   if not defined SCHEDULED pause
   exit /b 2
 )
 
-ingot %*
+ingotvault %*
 set "EXIT_CODE=%ERRORLEVEL%"
 
 if not defined SCHEDULED (

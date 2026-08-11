@@ -1,11 +1,11 @@
 {
-  "name": "git-ingot",
+  "name": "ingotvault",
   "version": "0.1.0",
   "description": "Local spare remotes for a folder full of Git repos. Push committed history to bare mirrors on another drive. Never touches origin.",
   "type": "module",
   "license": "Apache-2.0",
   "bin": {
-    "ingot": "./dist/cli.js"
+    "ingotvault": "./dist/cli.js"
   },
   "files": [
     "dist",
@@ -17,7 +17,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "start": "tsx src/cli.ts",
-    "ingot": "tsx src/cli.ts",
+    "ingotvault": "tsx src/cli.ts",
     "list": "tsx src/cli.ts list",
     "dry-run": "tsx src/cli.ts --dry-run",
     "prepublishOnly": "pnpm run build"
@@ -31,9 +31,10 @@
     "mirror",
     "bare-repository",
     "local-first",
-    "workspace"
+    "workspace",
+    "ingotvault"
   ],
-  "homepage": "https://github.com/example/git-ingot#readme",
+  "homepage": "https://github.com/example/ingotvault#readme",
   "devDependencies": {
     "@types/node": "^22.15.0",
     "tsx": "^4.19.0",

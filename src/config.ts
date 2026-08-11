@@ -64,7 +64,7 @@ const fieldDefaults = {
   },
   safeDirectory: "per-mirror" as const,
   concurrency: 1,
-  logDir: "~/.local/share/ingot/logs",
+  logDir: "~/.local/share/ingotvault/logs",
 };
 
 const packageRoot = path.resolve(
@@ -79,18 +79,18 @@ export function getPackageRoot(): string {
 export function getUserConfigPath(): string {
   if (process.platform === "win32") {
     const appData = process.env.APPDATA || path.join(homedir(), "AppData", "Roaming");
-    return path.join(appData, "ingot", "config.json");
+    return path.join(appData, "ingotvault", "config.json");
   }
   const xdg = process.env.XDG_CONFIG_HOME || path.join(homedir(), ".config");
-  return path.join(xdg, "ingot", "config.json");
+  return path.join(xdg, "ingotvault", "config.json");
 }
 
 export function getDefaultLogDir(): string {
   if (process.platform === "win32") {
     const local = process.env.LOCALAPPDATA || path.join(homedir(), "AppData", "Local");
-    return path.join(local, "ingot", "logs");
+    return path.join(local, "ingotvault", "logs");
   }
-  return path.join(homedir(), ".local", "share", "ingot", "logs");
+  return path.join(homedir(), ".local", "share", "ingotvault", "logs");
 }
 
 type FileConfig = Partial<Omit<AppConfig, "configPath" | "naming">> & {
@@ -108,7 +108,8 @@ function readJsonConfig(configPath: string): FileConfig {
   }
 }
 
-/** Resolution: --config, ./ingot.config.json, ./.ingot.json, user config. */
+/** Resolution: --config, ./ingotvault.config.json, ./.ingotvault.json, user config.
+ * Also accepts legacy ingot.config.json / .ingot.json names. */
 export function resolveConfigPath(cliPath: string | null): string | null {
   if (cliPath) {
     const resolved = resolveUserPath(cliPath);
@@ -119,6 +120,8 @@ export function resolveConfigPath(cliPath: string | null): string | null {
   }
 
   const cwdCandidates = [
+    path.resolve("ingotvault.config.json"),
+    path.resolve(".ingotvault.json"),
     path.resolve("ingot.config.json"),
     path.resolve(".ingot.json"),
   ];
@@ -136,7 +139,7 @@ export function loadConfig(cliPath: string | null): AppConfig {
   const configPath = resolveConfigPath(cliPath);
   if (!configPath) {
     throw new Error(
-      "No config found. Run `ingot init` or pass --config <path>. See config.example.json.",
+      "No config found. Run `ingotvault init` or pass --config <path>. See config.example.json.",
     );
   }
 
@@ -296,12 +299,12 @@ export function parseCli(argv: string[]): CliOptions {
 }
 
 export function printHelp(): void {
-  console.log(`ingot — local spare remotes for a workspace of Git repos
+  console.log(`ingotvault — local spare remotes for a workspace of Git repos
 
 Usage:
-  ingot init [--global] [--workspace <path>] [--mirror <path>]
-  ingot [run] [--config <path>] [--repo <name>] [--dry-run] [--verbose] [--scheduled]
-  ingot list [--config <path>] [--repo <name>]
+  ingotvault init [--global] [--workspace <path>] [--mirror <path>]
+  ingotvault [run] [--config <path>] [--repo <name>] [--dry-run] [--verbose] [--scheduled]
+  ingotvault list [--config <path>] [--repo <name>]
 
 Never modifies origin. Never force-pushes.
 `);

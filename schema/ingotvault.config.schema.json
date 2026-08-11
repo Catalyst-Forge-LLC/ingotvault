@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/example/git-ingot/schema/ingot.config.schema.json",
-  "title": "ingot config",
+  "$id": "https://github.com/example/ingotvault/schema/ingotvault.config.schema.json",
+  "title": "ingotvault config",
   "type": "object",
   "additionalProperties": false,
   "required": ["workspaceRoot", "mirrorRoot"],

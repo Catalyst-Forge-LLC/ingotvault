@@ -52,7 +52,7 @@ export async function runInit(cli: CliOptions): Promise<number> {
     }
 
     const config = {
-      $schema: "./schema/ingot.config.schema.json",
+      $schema: "./schema/ingotvault.config.schema.json",
       workspaceRoot: normalizeSlashes(workspace),
       mirrorRoot: normalizeSlashes(mirror),
       remoteName: remoteName || "backup",
@@ -72,7 +72,7 @@ export async function runInit(cli: CliOptions): Promise<number> {
 
     const outPath = cli.global
       ? getUserConfigPath()
-      : path.resolve("ingot.config.json");
+      : path.resolve("ingotvault.config.json");
 
     mkdirSync(path.dirname(outPath), { recursive: true });
     writeFileSync(outPath, `${JSON.stringify(config, null, 2)}\n`, "utf8");
@@ -82,7 +82,9 @@ export async function runInit(cli: CliOptions): Promise<number> {
     resolveUserPath(mirror);
 
     console.log(`Wrote ${normalizeSlashes(outPath)}`);
-    console.log("Next: ingot list   then   ingot --dry-run   then   ingot");
+    console.log(
+      "Next: ingotvault list   then   ingotvault --dry-run   then   ingotvault",
+    );
     return 0;
   } finally {
     rl?.close();

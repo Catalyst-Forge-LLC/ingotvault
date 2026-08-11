@@ -1,4 +1,4 @@
-# ingot (`git-ingot`)
+# ingotvault
 
 Local spare remotes for a folder full of Git repos. Push committed history to bare mirrors on another drive. **Never touches `origin`.**
 
@@ -7,8 +7,8 @@ Use it when you keep many repos in a workspace folder and want a second, local G
 ## Install
 
 ```bash
-pnpm add -g git-ingot
-# or: npm i -g git-ingot
+pnpm add -g ingotvault
+# or: npm i -g ingotvault
 ```
 
 From a clone:
@@ -24,18 +24,18 @@ Requires Node 20+ and `git` on PATH.
 ## Quick start
 
 ```bash
-ingot init
-# prompts for workspace + mirror roots; writes ./ingot.config.json
+ingotvault init
+# prompts for workspace + mirror roots; writes ./ingotvault.config.json
 
-ingot list          # discover repos → planned mirror paths
-ingot --dry-run     # no writes
-ingot               # ensure bare mirrors + backup remote + push
+ingotvault list          # discover repos → planned mirror paths
+ingotvault --dry-run     # no writes
+ingotvault               # ensure bare mirrors + backup remote + push
 ```
 
 User-wide config (instead of cwd):
 
 ```bash
-ingot init --global --workspace ~/code --mirror /Volumes/Backup/git-mirrors
+ingotvault init --global --workspace ~/code --mirror /Volumes/Backup/git-mirrors
 ```
 
 ## Config
@@ -43,11 +43,13 @@ ingot init --global --workspace ~/code --mirror /Volumes/Backup/git-mirrors
 Resolution order (first found wins):
 
 1. `--config <path>`
-2. `./ingot.config.json`
-3. `./.ingot.json`
-4. User config: `~/.config/ingot/config.json` (Windows: `%APPDATA%\ingot\config.json`)
+2. `./ingotvault.config.json`
+3. `./.ingotvault.json`
+4. User config: `~/.config/ingotvault/config.json` (Windows: `%APPDATA%\ingotvault\config.json`)
 
-`workspaceRoot` and `mirrorRoot` are required. `~` is expanded. See [`config.example.json`](config.example.json) and [`schema/ingot.config.schema.json`](schema/ingot.config.schema.json).
+Legacy filenames `ingot.config.json` / `.ingot.json` are still recognized in the cwd.
+
+`workspaceRoot` and `mirrorRoot` are required. `~` is expanded. See [`config.example.json`](config.example.json) and [`schema/ingotvault.config.schema.json`](schema/ingotvault.config.schema.json).
 
 Mirror naming (v1): relative path with `/` → `-`, e.g. `acme/widgets` → `acme-widgets.git`.
 
@@ -64,10 +66,10 @@ Mirror naming (v1): relative path with `/` → `-`, e.g. `acme/widgets` → `acm
 ## CLI
 
 ```text
-ingot init [--global] [--workspace <path>] [--mirror <path>]
-           [--remote-name backup] [--max-depth 3]
-ingot [run] [--config <path>] [--repo <name>] [--dry-run] [--verbose] [--scheduled]
-ingot list  [--config <path>] [--repo <name>]
+ingotvault init [--global] [--workspace <path>] [--mirror <path>]
+                [--remote-name backup] [--max-depth 3]
+ingotvault [run] [--config <path>] [--repo <name>] [--dry-run] [--verbose] [--scheduled]
+ingotvault list  [--config <path>] [--repo <name>]
 ```
 
 `--scheduled` writes a timestamped log under `logDir` (no interactive pause; pair with your OS task scheduler).
@@ -76,14 +78,14 @@ ingot list  [--config <path>] [--repo <name>]
 
 - **myrepos / gita** — run arbitrary git across many repos; you still invent the local spare remote.
 - **Host mirror tools** — clone *from* GitHub/GitLab onto disk.
-- **ingot** — scan a workspace → ensure a local `backup` remote → push into bare mirrors on a path you choose.
+- **ingotvault** — scan a workspace → ensure a local `backup` remote → push into bare mirrors on a path you choose.
 
 ## Publish (maintainers)
 
 ```bash
 pnpm run build
 pnpm pack          # sanity-check tarball
-pnpm publish       # requires npm login; package name: git-ingot
+pnpm publish       # requires npm login; package name: ingotvault
 ```
 
 Update `homepage` in `package.json` to the real GitHub URL before the first public release.

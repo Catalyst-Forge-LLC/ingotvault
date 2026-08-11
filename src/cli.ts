@@ -38,7 +38,7 @@ async function runMain(cli: CliOptions): Promise<number> {
   const started = Date.now();
 
   log.line(
-    `ingot  workspace=${config.workspaceRoot}  mirror=${config.mirrorRoot}`,
+    `ingotvault  workspace=${config.workspaceRoot}  mirror=${config.mirrorRoot}`,
   );
   log.verbose(`config=${config.configPath}`);
   if (dryRun) log.line("(dry-run: no writes)");
