@@ -8,3 +8,7 @@ ingot.config.json
 .ingot.json
 smoke.config.json
 *.tgz
+site/build/
+site/node_modules/
+site/.downpress-genie/
+site/.downpress-import/

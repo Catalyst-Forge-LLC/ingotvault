@@ -1,5 +1,7 @@
 # ingotvault
 
+**Site:** [ingotvault.dev](https://ingotvault.dev) — Downpress + Cloudflare Pages (`site/`).
+
 A **spare remote** for a folder full of Git repos: push committed history into bare mirrors on a drive you control. **Never touches `origin`.**
 
 The promise is narrow on purpose: **every commit you've made lands in a second place you control.** Not uncommitted work (unless you opt in), not LFS objects — commits on every local branch and tag, plus `refs/notes/*` and `refs/replace/*` (default: `git push --all`, `--tags`, and those refspecs). Optionally, a snapshot of your dirty tree too (`captureWorktree`). Custom namespaces (e.g. Gerrit `refs/changes`) are not covered.
