@@ -60,7 +60,7 @@ pnpm add -g ingotvault
 # or: npm i -g ingotvault
 ```
 
-Until a real release is published, npm may still serve a placeholder — prefer a clone for review builds:
+From a clone (dev builds):
 
 ```bash
 git clone https://github.com/Catalyst-Forge-LLC/ingotvault.git

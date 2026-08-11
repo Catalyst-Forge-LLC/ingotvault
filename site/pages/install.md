@@ -16,8 +16,6 @@ ingotvault list
 ingotvault
 ```
 
-Until a real release is published, npm may still serve a placeholder. Prefer a clone for review builds.
-
 ### From a clone
 
 ```bash
