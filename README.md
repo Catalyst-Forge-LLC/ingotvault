@@ -78,6 +78,16 @@ ingot list  [--config <path>] [--repo <name>]
 - **Host mirror tools** — clone *from* GitHub/GitLab onto disk.
 - **ingot** — scan a workspace → ensure a local `backup` remote → push into bare mirrors on a path you choose.
 
+## Publish (maintainers)
+
+```bash
+pnpm run build
+pnpm pack          # sanity-check tarball
+pnpm publish       # requires npm login; package name: git-ingot
+```
+
+Update `homepage` in `package.json` to the real GitHub URL before the first public release.
+
 ## License
 
 Apache-2.0
