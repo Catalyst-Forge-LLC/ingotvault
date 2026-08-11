@@ -4,14 +4,14 @@ description: Push committed history to bare mirrors on a drive you control. Neve
 order: 1
 ---
 
-**ingotvault** scans a workspace, ensures a local `backup` remote, and pushes every local branch and tag into bare mirrors on a path you choose — USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default.
+**IngotVault** scans a workspace, ensures a local `backup` remote, and pushes every local branch and tag into bare mirrors on a path you choose — USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default.
 
 The promise is narrow on purpose: **every commit you've made lands in a second place you control** — local branches, tags, `refs/notes/*`, `refs/replace/*`, and `refs/ingotvault/*`. Optionally, a snapshot of your dirty tree too.
 
 [What else is covered →](/safety)
 
 <div class="cta-row">
-  <a class="cta cta-primary" href="/install">Install ingotvault →</a>
+  <a class="cta cta-primary" href="/install">Install IngotVault →</a>
   <a class="cta cta-secondary" href="https://github.com/Catalyst-Forge-LLC/ingotvault">View on GitHub</a>
 </div>
 

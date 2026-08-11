@@ -1,6 +1,6 @@
 ---
 title: Safety
-description: What ingotvault covers, what it refuses to do, and what is deliberately out of scope.
+description: What IngotVault covers, what it refuses to do, and what is deliberately out of scope.
 order: 2
 ---
 
@@ -42,7 +42,7 @@ Exit `2` (scheduled: expected skip). `init` writes `mirrorRoot/.ingotvault-vault
 
 ### Uncommitted work / stashes
 
-Not covered by default. Opt-in `captureWorktree` / `--capture-worktree` snapshots dirty trees (incl. untracked that are **not** gitignored) to `refs/ingotvault/wip/<host>/…` without mutating the worktree; keeps newest `wipRetention` (default 20) per worktree slug on this host. Prune/push is host-scoped so a shared vault does not wipe another machine's WIP. That rolling window is the only thing ingotvault deletes from a mirror. Use `wipExclude` for extra pathspecs.
+Not covered by default. Opt-in `captureWorktree` / `--capture-worktree` snapshots dirty trees (incl. untracked that are **not** gitignored) to `refs/ingotvault/wip/<host>/…` without mutating the worktree; keeps newest `wipRetention` (default 20) per worktree slug on this host. Prune/push is host-scoped so a shared vault does not wipe another machine's WIP. That rolling window is the only thing IngotVault deletes from a mirror. Use `wipExclude` for extra pathspecs.
 
 ### Git LFS
 
@@ -54,7 +54,7 @@ Discovery skips dirs whose `.git` is a file, but their **branches** live in the 
 
 ### Submodules
 
-Skipped (`.git` is a file). Parent stores only the gitlink SHA; submodule objects are not pushed. Restore needs each submodule's own remote (or its own ingotvault mirror).
+Skipped (`.git` is a file). Parent stores only the gitlink SHA; submodule objects are not pushed. Restore needs each submodule's own remote (or its own IngotVault mirror).
 
 ### Drive pulled mid-push
 
@@ -71,7 +71,7 @@ Push may be partial; remount and re-run — Git usually recovers; `verify` helps
 
 ## Divergence recovery
 
-By default ingotvault **never** force-pushes. After a rebase or amend, the bare mirror may reject updates. That repo fails with a loud `DIVERGED:` message while other repos continue.
+By default IngotVault **never** force-pushes. After a rebase or amend, the bare mirror may reject updates. That repo fails with a loud `DIVERGED:` message while other repos continue.
 
 The stale mirror may be the **only** copy of pre-rebase history. **Do not delete it.**
 

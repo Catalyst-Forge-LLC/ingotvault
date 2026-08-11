@@ -11,7 +11,7 @@ See the main [README → Encrypting the vault](../README.md#encrypting-the-vault
 3. Set `mirrorRoot` to a folder on the unlocked drive (e.g. `D:/git-mirrors`).
 4. Lock/eject when finished.
 
-Removable BitLocker volumes are often exFAT/FAT. Git may report “dubious ownership”; with `safeDirectory: "per-mirror"` (the default), ingotvault allowlists each mirror path in your global git config and retries.
+Removable BitLocker volumes are often exFAT/FAT. Git may report “dubious ownership”; with `safeDirectory: "per-mirror"` (the default), IngotVault allowlists each mirror path in your global git config and retries.
 
 ## macOS
 

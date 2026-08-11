@@ -1,6 +1,6 @@
 ---
 title: Install
-description: Install ingotvault from npm or a clone.
+description: Install IngotVault from npm or a clone.
 order: 1
 ---
 

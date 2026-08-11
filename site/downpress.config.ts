@@ -1,7 +1,7 @@
 import { defineDownpressConfig } from 'downpress';
 
 export default defineDownpressConfig({
-	title: 'ingotvault',
+	title: 'IngotVault',
 	description:
 		'Spare remotes for a workspace of Git repos. Push committed history to bare mirrors on a drive you control — never touches origin.',
 	tagline: 'Every commit in a second place you control.',

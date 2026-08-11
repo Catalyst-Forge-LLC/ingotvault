@@ -11,7 +11,7 @@ Coding agents fail differently than humans. They don't usually delete your proje
 
 The single most common agent-caused loss is **uncommitted** work: `git checkout .`, `git clean -fd`, `git reset --hard` on a dirty tree. Commits-only coverage misses all of it, and unlike a human, an agent can do it thirty seconds after you stepped away.
 
-ingotvault closes that without breaking the headline promise. Opt in with `--capture-worktree` (or `"captureWorktree": true` in config). Dirty index + worktree — including untracked files that are **not** gitignored, including linked worktrees from `git worktree list` — become commits under:
+IngotVault closes that without breaking the headline promise. Opt in with `--capture-worktree` (or `"captureWorktree": true` in config). Dirty index + worktree — including untracked files that are **not** gitignored, including linked worktrees from `git worktree list` — become commits under:
 
 ```text
 refs/ingotvault/wip/<host>/<slug>/<timestamp>
@@ -21,7 +21,7 @@ Those WIP refs are part of `refs/ingotvault/*`, which is pushed to the spare rem
 
 **.gitignore is respected.** Capture uses `git add -A` against a temporary index; ignored paths (`.env`, `service-account.json`, `.venv/`, …) are not swept into the snapshot. For anything further, set `wipExclude` pathspecs in config.
 
-Nothing in your working tree is mutated. **History refs are append-only; WIP snapshots are a rolling window** — newest `wipRetention` (default 20) are kept; older ones are pruned locally and on the mirror. That window is the only thing ingotvault ever deletes from a mirror. The default promise stays: every commit you've made lands in a second place you control. Optionally, a snapshot of your dirty tree too.
+Nothing in your working tree is mutated. **History refs are append-only; WIP snapshots are a rolling window** — newest `wipRetention` (default 20) are kept; older ones are pruned locally and on the mirror. That window is the only thing IngotVault ever deletes from a mirror. The default promise stays: every commit you've made lands in a second place you control. Optionally, a snapshot of your dirty tree too.
 
 ```bash
 ingotvault --capture-worktree
@@ -50,7 +50,7 @@ If the drive is unlocked and writable while an agent has a shell, the agent can 
 
 Practical mitigations, ascending effort:
 
-1. Mount the vault **read-only** for the agent's user, or run ingotvault as a different user / scheduled task the agent cannot invoke. This is the real answer; it is an OS concern next to the tool, not inside it.
+1. Mount the vault **read-only** for the agent's user, or run IngotVault as a different user / scheduled task the agent cannot invoke. This is the real answer; it is an OS concern next to the tool, not inside it.
 2. Keep config outside anything the agent works in. Do not put `ingotvault` on the agent's shell allowlist.
 3. Physically unplug between runs — crude, effective, and already the theft story.
 

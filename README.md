@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="site/static/logo.png" alt="ingotvault" width="128" height="128" />
+  <img src="site/static/logo.png" alt="IngotVault" width="128" height="128" />
 </p>
 
-# ingotvault
+# IngotVault
 
 **Every commit in a second place you control.**
 
@@ -45,10 +45,10 @@ The product is the **guarantee set** below — what a late-night bash loop usual
 | Concurrent runs | Lock file `mirrorRoot/.ingotvault.lock` (records hostname; foreign PIDs are not probed) |
 | Mirror volume missing/locked / not a vault | Exit `2` (scheduled: expected skip). `init` writes `mirrorRoot/.ingotvault-vault`; normal runs **never** mkdir the tree — an unplugged `/Volumes/…` must not silently create mirrors on the boot disk |
 | Deleted local branches | **Not pruned** from the mirror — intentional ratchet: history only accumulates (valuable when an agent "cleans up" a branch) |
-| Uncommitted work / stashes | Not covered by default. Opt-in `captureWorktree` / `--capture-worktree` snapshots dirty trees (incl. untracked that are **not** gitignored) to `refs/ingotvault/wip/<host>/…` without mutating the worktree; keeps newest `wipRetention` (default 20) **per worktree slug on this host**. Prune/push is host-scoped so a shared vault does not wipe another machine's WIP. That rolling window is the **only** thing ingotvault deletes from a mirror. Use `wipExclude` for extra pathspecs |
+| Uncommitted work / stashes | Not covered by default. Opt-in `captureWorktree` / `--capture-worktree` snapshots dirty trees (incl. untracked that are **not** gitignored) to `refs/ingotvault/wip/<host>/…` without mutating the worktree; keeps newest `wipRetention` (default 20) **per worktree slug on this host**. Prune/push is host-scoped so a shared vault does not wipe another machine's WIP. That rolling window is the **only** thing IngotVault deletes from a mirror. Use `wipExclude` for extra pathspecs |
 | Git LFS | Not covered — bare push stores pointer files only; warned when `.gitattributes` has `filter=lfs` |
 | Linked worktrees | Discovery skips dirs whose `.git` is a file, but their **branches** live in the parent repo — `push --all` from the parent already covers committed work. With `captureWorktree`, dirty state is snapshotted for each path from `git worktree list` |
-| Submodules | Skipped (`.git` is a file). Parent stores only the gitlink SHA; submodule objects are not pushed. Restore needs each submodule's own remote (or its own ingotvault mirror) |
+| Submodules | Skipped (`.git` is a file). Parent stores only the gitlink SHA; submodule objects are not pushed. Restore needs each submodule's own remote (or its own IngotVault mirror) |
 | Drive pulled mid-push | Push may be partial; remount and re-run — Git usually recovers; `verify` helps confirm |
 
 ## Install
@@ -122,7 +122,7 @@ git clone /Volumes/Backup/git-mirrors/acme/widgets.git widgets-restored
 cd widgets-restored
 ```
 
-That checks out the mirror's default branch. After each successful push, ingotvault sets bare `HEAD` from `origin/HEAD` when present, otherwise `main`/`master` / `init.defaultBranch`, and only then the current branch — so a push while you're on a feature branch does not flip the clone default. Other branches exist as `origin/<name>` until you `git checkout <name>` (or `git switch <name>`).
+That checks out the mirror's default branch. After each successful push, IngotVault sets bare `HEAD` from `origin/HEAD` when present, otherwise `main`/`master` / `init.defaultBranch`, and only then the current branch — so a push while you're on a feature branch does not flip the clone default. Other branches exist as `origin/<name>` until you `git checkout <name>` (or `git switch <name>`).
 
 Uncommitted work is **not** covered unless you opt into `--capture-worktree` (see [Working with coding agents](#working-with-coding-agents) and [Safety](#safety)).
 
@@ -137,7 +137,7 @@ git show refs/ingotvault/wip/<host>/<slug>/<timestamp>
 
 ## Divergence
 
-By default ingotvault **never** force-pushes. After a rebase or amend, the bare mirror may reject updates. That repo fails with a loud `DIVERGED:` message (including moved tags) while other repos continue.
+By default IngotVault **never** force-pushes. After a rebase or amend, the bare mirror may reject updates. That repo fails with a loud `DIVERGED:` message (including moved tags) while other repos continue.
 
 The stale mirror may be the **only** copy of pre-rebase history. **Do not delete it.** Same steps: [Safety → Divergence recovery](https://ingotvault.dev/safety#divergence-recovery).
 
@@ -160,7 +160,7 @@ ingotvault --repo notes
 
 Git does **not** encrypt repositories at rest. Anyone who can mount `mirrorRoot` can read every bare mirror. Encrypt the **volume** (or an encrypted container on it), then point `mirrorRoot` inside that unlocked path.
 
-Unlock the volume before running `ingotvault`. If the path is missing or locked, ingotvault exits with code `2`. For scheduled runs, treat exit `2` as an expected skip (vault unplugged/locked).
+Unlock the volume before running `ingotvault`. If the path is missing or locked, IngotVault exits with code `2`. For scheduled runs, treat exit `2` as an expected skip (vault unplugged/locked).
 
 | OS | Typical option |
 |----|----------------|
@@ -171,7 +171,7 @@ Unlock the volume before running `ingotvault`. If the path is missing or locked,
 
 Step-by-step OS setup: [`docs/encryption.md`](docs/encryption.md). Short version also on [Install](https://ingotvault.dev/install#encrypt-the-vault-volume).
 
-Removable volumes are often exFAT/FAT. Git may report “dubious ownership”. With `safeDirectory: "per-mirror"` (default), ingotvault adds each mirror path via `git config --global --add safe.directory <path>` (writes `~/.gitconfig` / the global gitconfig). Set `"safeDirectory": "off"` to disable.
+Removable volumes are often exFAT/FAT. Git may report “dubious ownership”. With `safeDirectory: "per-mirror"` (default), IngotVault adds each mirror path via `git config --global --add safe.directory <path>` (writes `~/.gitconfig` / the global gitconfig). Set `"safeDirectory": "off"` to disable.
 
 Inspect or remove **only** entries under your `mirrorRoot`:
 
@@ -213,7 +213,7 @@ ingotvault --capture-worktree
 
 **Blast radius:** if the vault is unlocked and writable while an agent has a shell, the agent can destroy mirrors or invoke `--force-with-lease`. Mitigations (OS/process, not magic in this tool):
 
-- Mount the vault read-only for the agent user, or run ingotvault as a different user/scheduled task the agent cannot invoke
+- Mount the vault read-only for the agent user, or run IngotVault as a different user/scheduled task the agent cannot invoke
 - Keep config outside the agent's working tree; omit `ingotvault` from the agent's shell allowlist
 - Unplug between runs (same story as theft)
 - Note that `safeDirectory: "per-mirror"` mutates global `~/.gitconfig` — relevant in sandboxes
@@ -262,12 +262,12 @@ Same table as [Safety → Exit codes](https://ingotvault.dev/safety#exit-codes):
 
 ## How it differs
 
-- **Forge remotes (origin)** — cover what you've pushed upstream. ingotvault covers local-only repos and unpushed refs without replacing origin.
+- **Forge remotes (origin)** — cover what you've pushed upstream. IngotVault covers local-only repos and unpushed refs without replacing origin.
 - **File backup (Time Machine, restic, Backblaze)** — broader coverage (including dirty worktrees), weaker git semantics. Use both if you want; they solve different problems.
 - **myrepos / gita** — run arbitrary git across many repos; you still invent the local spare remote and its safety rules.
 - **Host mirror tools** — clone *from* GitHub/GitLab onto disk.
 - **git bundle** — portable snapshots, but not an incremental spare remote; each update is a new bundle. Bare mirrors take ordinary `git push` and stay updatable in place.
-- **ingotvault** — scan a workspace → ensure a local `backup` remote → push branches/tags/notes/replace/`refs/ingotvault/*` into bare mirrors on a path you choose, with the guarantee set above.
+- **IngotVault** — scan a workspace → ensure a local `backup` remote → push branches/tags/notes/replace/`refs/ingotvault/*` into bare mirrors on a path you choose, with the guarantee set above.
 
 ## Publish (maintainers)
 

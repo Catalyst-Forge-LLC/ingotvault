@@ -365,7 +365,7 @@ export function parseCli(argv: string[]): CliOptions {
 }
 
 export function printHelp(): void {
-  console.log(`ingotvault — local spare remotes for a workspace of Git repos
+  console.log(`IngotVault — local spare remotes for a workspace of Git repos
 
 Usage:
   ingotvault init [--global] [--workspace <path>] [--mirror <path>]

@@ -1,6 +1,5 @@
-# ingotvault.dev
-
-Marketing + notes site for [ingotvault](https://github.com/Catalyst-Forge-LLC/ingotvault), built with [Downpress](https://github.com/Catalyst-Forge-LLC/downpress).
+# IngotVault.dev
+Marketing + notes site for [IngotVault](https://github.com/Catalyst-Forge-LLC/ingotvault), built with [Downpress](https://github.com/Catalyst-Forge-LLC/downpress).
 
 ```bash
 # once in the engine (sibling checkout)
