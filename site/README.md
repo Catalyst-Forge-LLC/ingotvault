@@ -27,6 +27,13 @@ pnpm deploy
 
 Then attach **ingotvault.dev** in the Cloudflare dashboard.
 
+## Launch checklist
+
+- [ ] Make the GitHub repo **public** (nav + “View on GitHub” 404 for everyone else until then)
+- [ ] `pnpm deploy` (or git-connected Pages) and confirm `https://ingotvault.dev`
+- [ ] Confirm `og:image` / Twitter card in a debugger (logo is wired; needs a public URL)
+- [ ] Publish a real npm release past the `0.0.0` placeholder when ready
+
 ### Git-connected Pages (later)
 
 | Setting | Value |

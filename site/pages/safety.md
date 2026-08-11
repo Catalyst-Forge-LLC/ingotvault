@@ -24,4 +24,4 @@ The product is this guarantee set — what a late-night bash loop usually gets w
 
 Promise sentence (same everywhere): **every commit you've made lands in a second place you control** — local branches, tags, `refs/notes/*`, and `refs/replace/*`. Optionally, a dirty-tree snapshot too.
 
-Full CLI and restore notes: [install](/install) · [README on GitHub](https://github.com/Catalyst-Forge-LLC/ingotvault#readme).
+Full CLI and restore notes: [Install](/install) · [README on GitHub](https://github.com/Catalyst-Forge-LLC/ingotvault#readme).

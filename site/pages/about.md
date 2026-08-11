@@ -4,7 +4,7 @@ description: Push committed history to bare mirrors on a drive you control. Neve
 order: 1
 ---
 
-**ingotvault** scans a workspace, ensures a local `backup` remote, and pushes every local branch and tag — plus `refs/notes/*` and `refs/replace/*` — into bare mirrors on a path you choose: USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default.
+**ingotvault** scans a workspace, ensures a local `backup` remote, and pushes every local branch and tag into bare mirrors on a path you choose — USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default. ([What else is covered →](/safety))
 
 The promise is narrow on purpose: **every commit you've made lands in a second place you control.** Optionally, a snapshot of your dirty tree too.
 
@@ -38,11 +38,11 @@ A push into a bare mirror is a **git** operation: validated on receipt, atomic a
 
 - Never touches `origin` or other remotes
 - Never force-pushes unless you aim `--force-with-lease` at a repo
-- Never prunes deleted **history** branches from the mirror (history only accumulates; WIP snapshots are a separate rolling window)
+- Never prunes deleted branches — history refs only accumulate. WIP snapshots are a separate rolling window.
 - One repo fails; the others continue
 - Locked / missing vault → exit `2` (scheduled runs can skip quietly)
 
-The full coverage table — LFS, submodules, what is *not* covered — is on the [Safety](/safety) page.
+Details and edge cases: [Safety](/safety).
 
 ## Quick start
 
@@ -58,7 +58,7 @@ Full flags and restore notes live on the [install](/install) page and in the [RE
 
 <div class="cta-row">
   <a class="cta cta-primary" href="/install">Get started →</a>
-  <a class="cta cta-secondary" href="/safety">Safety table</a>
+  <a class="cta cta-secondary" href="/safety">Safety</a>
   <a class="cta cta-secondary" href="/writing">Read the posts</a>
 </div>
 
