@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" role="img" aria-label="ingotvault">
+  <defs>
+    <linearGradient id="steel" x1="20" y1="16" x2="108" y2="112" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8a9aab"/>
+      <stop offset="0.45" stop-color="#5a6a7a"/>
+      <stop offset="1" stop-color="#3a4654"/>
+    </linearGradient>
+    <linearGradient id="steelDeep" x1="28" y1="28" x2="90" y2="96" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2a3440"/>
+      <stop offset="1" stop-color="#141a20"/>
+    </linearGradient>
+    <linearGradient id="copper" x1="78" y1="40" x2="118" y2="96" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e0b07a"/>
+      <stop offset="1" stop-color="#b87333"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="36" y1="36" x2="84" y2="92" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0b1f16"/>
+      <stop offset="1" stop-color="#06140e"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.2" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Vault body (no background plate) -->
+  <rect x="14" y="18" width="72" height="92" rx="14" fill="url(#steel)"/>
+  <rect x="22" y="26" width="56" height="76" rx="10" fill="url(#steelDeep)"/>
+
+  <!-- Interior code screen -->
+  <rect x="28" y="32" width="44" height="64" rx="6" fill="url(#screen)"/>
+  <g fill="#5dffa8" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="7.2" font-weight="700" filter="url(#glow)" opacity="0.95">
+    <text x="33" y="44">01 10 01</text>
+    <text x="33" y="54">10 { 01</text>
+    <text x="33" y="64">01 10 11</text>
+    <text x="33" y="74">} 01 10</text>
+    <text x="33" y="84">10 01 10</text>
+  </g>
+
+  <!-- Door ajar (perspective-ish) -->
+  <path d="M78 28 L112 22 L112 106 L78 100 Z" fill="url(#steelDeep)" stroke="url(#steel)" stroke-width="3"/>
+  <path d="M82 34 L106 30 L106 98 L82 94 Z" fill="#1a222c"/>
+
+  <!-- Copper hinges -->
+  <rect x="74" y="40" width="8" height="14" rx="3" fill="url(#copper)"/>
+  <rect x="74" y="74" width="8" height="14" rx="3" fill="url(#copper)"/>
+
+  <!-- Wheel handle -->
+  <circle cx="96" cy="64" r="12" fill="none" stroke="url(#copper)" stroke-width="3.5"/>
+  <circle cx="96" cy="64" r="3.2" fill="url(#copper)"/>
+  <path d="M96 54 V74 M86 64 H106" stroke="url(#copper)" stroke-width="2.4" stroke-linecap="round"/>
+
+  <!-- Rivets on frame -->
+  <g fill="#c5d0da" opacity="0.85">
+    <circle cx="24" cy="30" r="2.2"/>
+    <circle cx="76" cy="30" r="2.2"/>
+    <circle cx="24" cy="98" r="2.2"/>
+    <circle cx="76" cy="98" r="2.2"/>
+  </g>
+</svg>
