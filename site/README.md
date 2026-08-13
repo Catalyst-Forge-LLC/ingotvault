@@ -15,7 +15,7 @@ Optional: edit `theme.css` next to `filepress.config.ts`.
 **Use one pipeline only.** Dual deploys overwrite each other when asset hashes disagree.
 
 ```bash
-pnpm deploy
+pnpm ship
 # = pnpm build && wrangler pages deploy build --project-name=ingotvault
 ```
 
@@ -42,5 +42,5 @@ Dependency is already the public npm package:
 ## Launch checklist
 
 - [ ] Make the GitHub repo **public** (nav + “View on GitHub” 404 for everyone else until then)
-- [ ] `pnpm deploy` (or git-connected Pages) and confirm `https://ingotvault.dev`
+- [ ] `pnpm ship` (or git-connected Pages) and confirm `https://ingotvault.dev`
 - [ ] Confirm `og:image` / Twitter card in a debugger (logo is wired; needs a public URL)

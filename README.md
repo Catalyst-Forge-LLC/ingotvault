@@ -277,7 +277,7 @@ pnpm pack          # sanity-check tarball
 pnpm publish       # requires npm login; package name: ingotvault
 ```
 
-Site: `pnpm site:deploy` from the repo root (FilePress via npm `getfilepress`). See [`site/README.md`](site/README.md).
+Site: `pnpm ship` from the repo root (FilePress via npm `getfilepress`). See [`site/README.md`](site/README.md).
 
 ## License
 
