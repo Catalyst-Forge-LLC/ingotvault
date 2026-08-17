@@ -11,6 +11,9 @@ importers:
       '@types/node':
         specifier: ^22.15.0
         version: 22.20.1
+      aibreze:
+        specifier: ^0.1.5
+        version: 0.1.5
       tsx:
         specifier: ^4.19.0
         version: 4.23.12
@@ -179,6 +182,10 @@ packages:
   '@types/node@22.20.1':
     resolution: {integrity: sha512-EANqOCF9QFyra+4pfxUcX9STKJpCLjMbObVzljIJomAWSnuSIEAvyzEU53GaajbXJEgdh0iEcPL+DGvpUd4k1Q==}
 
+  aibreze@0.1.5:
+    resolution: {integrity: sha512-dZm08hAtUf2fKA0PXbtJSip+wlDl2zlF4Js2idmTypUajBBXhkqG5qm0/DIUidgjoLIg1D5j9fCzJ+eSsMtlcQ==}
+    engines: {node: '>=20'}
+
   esbuild@0.28.2:
     resolution: {integrity: sha512-HKVLS8dvII+xoKW9kmqxbRKrnWEXfJJr/FZhhJmiqIB0e053QNYFqOBouTMO/k5sID4MvCiUCvv8b9M4h32wIA==}
     engines: {node: '>=18'}
@@ -285,6 +292,8 @@ snapshots:
   '@types/node@22.20.1':
     dependencies:
       undici-types: 6.21.0
+
+  aibreze@0.1.5: {}
 
   esbuild@0.28.2:
     optionalDependencies:

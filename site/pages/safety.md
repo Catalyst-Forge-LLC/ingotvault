@@ -4,9 +4,9 @@ description: What IngotVault covers, what it refuses to do, and what is delibera
 order: 2
 ---
 
-The product is this guarantee set — what a late-night bash loop usually gets wrong. Same facts as the [README Safety table](https://github.com/Catalyst-Forge-LLC/ingotvault#safety); this page is the readable form.
+The product is this guarantee set: what a late-night bash loop usually gets wrong. Same facts as the [README Safety table](https://github.com/Catalyst-Forge-LLC/ingotvault#safety); this page is the readable form.
 
-Promise sentence (same everywhere): **every commit you've made lands in a second place you control** — local branches, tags, `refs/notes/*`, `refs/replace/*`, and `refs/ingotvault/*` (WIP snapshots and preforce rescues). Optionally, a dirty-tree snapshot too.
+**Every commit you've made lands in a second place you control:** local branches, tags, `refs/notes/*`, `refs/replace/*`, and `refs/ingotvault/*` (WIP snapshots and preforce rescues). Optionally, a dirty-tree snapshot too.
 
 ### `origin` / other remotes
 

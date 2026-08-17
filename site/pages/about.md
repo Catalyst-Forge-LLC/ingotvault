@@ -4,11 +4,11 @@ description: Push committed history to bare mirrors on a drive you control. Neve
 order: 1
 ---
 
-**IngotVault** scans a workspace, ensures a local `backup` remote, and pushes every local branch and tag into bare mirrors on a path you choose — USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default.
+**IngotVault** scans a workspace, adds a local `backup` remote, and pushes every local branch and tag into bare mirrors on a path you choose: USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default.
 
-The promise is narrow on purpose: **every commit you've made lands in a second place you control** — local branches, tags, `refs/notes/*`, `refs/replace/*`, and `refs/ingotvault/*`. Optionally, a snapshot of your dirty tree too.
+**Every commit you've made lands in a second place you control.** Optionally, a snapshot of your dirty tree too.
 
-[What else is covered →](/safety)
+[What is covered](/safety)
 
 <div class="cta-row">
   <a class="cta cta-primary" href="/install">Install IngotVault →</a>
@@ -17,34 +17,34 @@ The promise is narrow on purpose: **every commit you've made lands in a second p
 
 <p class="kicker">npm · pnpm · Node 22+ · Apache-2.0</p>
 
-## For agents
+## When an agent rewrites history
 
 <div class="mesh-panel">
-  <p>Agents fail by <em>rewriting</em> — rebase, amend, reset, deleting a “stale” branch. An append-only spare remote is a ratchet that survives that class of failure. Opt-in WIP capture snapshots dirty trees (respecting <code>.gitignore</code>) before an unattended session can erase them.</p>
-  <p>Read the full argument: <a href="/posts/undo-layer-for-agents"><strong>An undo layer for autonomous edits</strong></a>.</p>
+  <p>Agents rebase, amend, reset, and delete a branch that looked stale. An append-only spare remote keeps the branch they removed. Opt-in WIP capture snapshots dirty trees (respecting <code>.gitignore</code>) before an unattended session can wipe them.</p>
+  <p>The argument: <a href="/posts/undo-layer-for-agents"><strong>An undo layer for autonomous edits</strong></a>.</p>
 </div>
 
 ## Why it exists
 
-Forge remotes cover what you pushed upstream. File backups cover bytes on disk — including a torn `.git` mid-rebase. The gap between them is real:
+Forge remotes cover what you pushed upstream. File backups cover bytes on disk, including a torn `.git` mid-rebase. Between those two you still lose:
 
-- Repos with **no forge remote** at all
-- **Unpushed branches and tags** in repos you thought were safe because `main` is on origin
-- **Confidentiality** — NDA'd or unfinished work that shouldn't leave the machine
-- **Offline / intermittent** network
-- **Account-level risk** — forge outage, lost 2FA, losing org access
+- Repos with no forge remote
+- Unpushed branches and tags in repos you thought were safe because `main` is on origin
+- NDA'd or unfinished work that should not leave the machine
+- Offline or intermittent network
+- Forge outage, lost 2FA, or losing org access
 
-A push into a bare mirror is a **git** operation: validated on receipt, atomic at the ref level, restorable with `git clone`, checkable with `ingotvault verify`.
+A push into a bare mirror is a git operation: validated on receipt, atomic at the ref level, restorable with `git clone`, checkable with `ingotvault verify`.
 
 ## Guarantees
 
 - Never touches `origin` or other remotes
 - Never force-pushes unless you aim `--force-with-lease` at a repo
-- Never prunes deleted branches — history refs only accumulate. WIP snapshots are a separate rolling window.
+- Never prunes deleted branches. History refs only accumulate. WIP snapshots are a separate rolling window.
 - One repo fails; the others continue
-- Locked / missing vault → exit `2` (scheduled runs can skip quietly)
+- Locked or missing vault → exit `2` (scheduled runs can skip quietly)
 
-Details and edge cases: [Safety](/safety). Full CLI, config resolution, and discovery rules: [README on GitHub](https://github.com/Catalyst-Forge-LLC/ingotvault#readme).
+Details and edge cases: [Safety](/safety). CLI, config resolution, and discovery: [README on GitHub](https://github.com/Catalyst-Forge-LLC/ingotvault#readme).
 
 ## Quick start
 

@@ -4,7 +4,7 @@ description: Install IngotVault from npm or a clone.
 order: 1
 ---
 
-Requires **Node.js 22+** and `git` on PATH. What the tool covers (and refuses) is on [Safety](/safety) — worth a skim before you schedule it. Same install path as the [README](https://github.com/Catalyst-Forge-LLC/ingotvault#install).
+Requires **Node.js 22+** and `git` on PATH. What the tool covers (and refuses) is on [Safety](/safety). Same install path as the [README](https://github.com/Catalyst-Forge-LLC/ingotvault#install).
 
 ### From npm / pnpm
 

@@ -6,9 +6,9 @@
 
 **Every commit in a second place you control.**
 
-A **spare remote** for a folder full of Git repos: push committed history into bare mirrors on a drive you control. **Never touches `origin`.**
+A **spare remote** for a folder of Git repos: push committed history into bare mirrors on a drive you control. **Never touches `origin`.**
 
-**Site:** [ingotvault.dev](https://ingotvault.dev) — Install, Safety, and the agents write-up live there. This README is the CLI / config reference; keep both in sync when behavior changes.
+**Site:** [ingotvault.dev](https://ingotvault.dev). Install, Safety, and the agents write-up live there. This README is the CLI / config reference. Keep both in sync when behavior changes.
 
 | On the site | In this repo |
 |-------------|--------------|
@@ -17,21 +17,21 @@ A **spare remote** for a folder full of Git repos: push committed history into b
 | [An undo layer for autonomous edits](https://ingotvault.dev/posts/undo-layer-for-agents) | [Working with coding agents](#working-with-coding-agents) |
 | — | [`docs/encryption.md`](docs/encryption.md), [`config.example.json`](config.example.json) |
 
-The promise is narrow on purpose: **every commit you've made lands in a second place you control.** Not uncommitted work (unless you opt in), not LFS objects — commits on every local branch and tag, plus `refs/notes/*`, `refs/replace/*`, and `refs/ingotvault/*` (default: `git push --all`, `--tags`, and those refspecs). Optionally, a snapshot of your dirty tree too (`captureWorktree`). Custom namespaces (e.g. Gerrit `refs/changes`) are not covered.
+**Every commit you've made lands in a second place you control.** Not uncommitted work (unless you opt in), not LFS objects. Default push is `git push --all`, `--tags`, plus `refs/notes/*`, `refs/replace/*`, and `refs/ingotvault/*`. Optionally a snapshot of your dirty tree (`captureWorktree`). Custom namespaces (e.g. Gerrit `refs/changes`) are not covered.
 
-That gap is real even if you already have a forge **and** a file backup:
+That gap exists even if you already have a forge **and** a file backup:
 
 - Repos with **no forge remote** (scratch experiments, notes-in-git, client work you never uploaded)
 - **Unpushed branches and tags** in repos you think are "backed up" because `main` is on origin
 - **Confidentiality** (NDA, regulated, or unfinished thinking that shouldn't leave your machine)
 - **Offline / intermittent** network (flight, field, air-gapped sites)
-- **Account-level risk** (forge outage, lost 2FA, org offboarding) — low odds, total loss
+- **Account-level risk** (forge outage, lost 2FA, org offboarding): low odds, total loss
 
-Unlike a file copy of a live `.git`, a push into a bare mirror is a **git** operation: validated on receipt, atomic at the ref level, restorable with `git clone`, checkable with `ingotvault verify`. An unplugged drive won't replicate your `rm -rf` the way cloud sync can. ("Git is already distributed" only helps if another up-to-date clone exists — often the laptop is the sole copy.)
+Unlike a file copy of a live `.git`, a push into a bare mirror is a **git** operation: validated on receipt, atomic at the ref level, restorable with `git clone`, checkable with `ingotvault verify`. An unplugged drive won't replicate your `rm -rf` the way cloud sync can. "Git is already distributed" only helps if another up-to-date clone exists. Often the laptop is the sole copy.
 
 **Not for** one or two repos you already push everywhere with no unpushed branches.
 
-The product is the **guarantee set** below — what a late-night bash loop usually gets wrong. Narrative form: [Safety on the site](https://ingotvault.dev/safety).
+The product is the **guarantee set** below: what a late-night bash loop usually gets wrong. Readable form: [Safety on the site](https://ingotvault.dev/safety).
 
 ## Safety
 
@@ -211,7 +211,7 @@ ingotvault --capture-worktree
 
 `ingotvault verify` is a post-session **detector**: `diverged` on a repo you did not rebase yourself means something rewrote history. Use `--quiet-if-clean` in harness hooks so a clean vault stays silent.
 
-**Blast radius:** if the vault is unlocked and writable while an agent has a shell, the agent can destroy mirrors or invoke `--force-with-lease`. Mitigations (OS/process, not magic in this tool):
+**Blast radius:** if the vault is unlocked and writable while an agent has a shell, the agent can destroy mirrors or invoke `--force-with-lease`. Mitigations are OS/process, not this tool:
 
 - Mount the vault read-only for the agent user, or run IngotVault as a different user/scheduled task the agent cannot invoke
 - Keep config outside the agent's working tree; omit `ingotvault` from the agent's shell allowlist

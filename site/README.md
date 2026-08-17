@@ -32,15 +32,15 @@ Then attach **ingotvault.dev** in the Cloudflare dashboard.
 Dependency is already the public npm package:
 
 ```json
-"getfilepress": "^0.1.1"
+"getfilepress": "^0.1.2"
 ```
 
 ## Content sync
 
-**Site** = product narrative (home, Install, Safety, posts). **Root README** = CLI / config reference. Same promise sentence, Safety facts, exit codes, and WIP rules in both; when behavior changes, update README + `site/pages/*` (+ the agents post if it restates those facts).
+**Site** = product narrative (home, Install, Safety, posts). **Root README** = CLI / config reference. Same promise sentence, Safety facts, exit codes, and WIP rules in both. When behavior changes, update README + `site/pages/*` (and the agents post if it restates those facts). Voice: [`docs/aibreze-overlay.md`](../docs/aibreze-overlay.md).
 
 ## Launch checklist
 
-- [ ] Make the GitHub repo **public** (nav + “View on GitHub” 404 for everyone else until then)
+- [x] GitHub repo public
 - [ ] `pnpm ship` (or git-connected Pages) and confirm `https://ingotvault.dev`
 - [ ] Confirm `og:image` / Twitter card in a debugger (logo is wired; needs a public URL)
