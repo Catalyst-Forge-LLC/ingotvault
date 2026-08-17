@@ -28,7 +28,7 @@
     "site:build": "pnpm --dir site run build",
     "site:deploy": "pnpm --dir site run ship",
     "clean": "node -e \"import('node:fs').then(fs=>fs.rmSync('dist',{recursive:true,force:true}))\"",
-    "prepublishOnly": "pnpm run clean && pnpm run build && pnpm test"
+    "prepublishOnly": "node scripts/publish-gate.mjs && pnpm run clean && pnpm run build && pnpm test"
   },
   "engines": {
     "node": ">=22"

@@ -274,7 +274,7 @@ Same table as [Safety → Exit codes](https://ingotvault.dev/safety#exit-codes):
 ```bash
 pnpm run build
 pnpm pack          # sanity-check tarball
-pnpm publish       # requires npm login; package name: ingotvault
+pnpm publish       # logs in if needed; patch-bumps if this version is on npm
 ```
 
 Site: `pnpm ship` from the repo root (FilePress via npm `getfilepress`). See [`site/README.md`](site/README.md).
