@@ -28,6 +28,7 @@ export default defineFilepressConfig({
 	footerLinks: [
 		{ label: 'RSS', href: '/rss.xml' },
 		{ label: 'Topics', href: '/topics' },
-		{ label: 'GitHub', href: github, icon: 'github' }
+		{ label: 'GitHub', href: github, icon: 'github' },
+		{ label: 'AppFacts', href: 'https://appfacts.dev/v#af1.eNpVkUFrwzAMhf-K0dlttx19G4XBRtklvY0yVEdzvTq2sZSsoeS_D7dp2W5CfHrvSTrDAOZRQ8SOwICPLsmAfRDQIGOuvfXmVUlKATSwoPQMBtCKHwg0BG8pcsWeM9oDLZ6WD1fQHsGcIWB0PboKbMdMjS0-i1ZvOOC1Bg2lj-Iv9u-ppeU3g4ZDYvHRVfuQ-vYrYKGL7hjmdtPApKGlzGA-zhDBXALzTTVXy0bZ1GUfUHyKMOmZ49MM0IlsX43UtlHXUb5jPwWjC1RmtqUc0lhZSepPqmmngQd7T_EvcAFz20WxF1IYW4XMVH12Gva9D209VEZ7REefHUZ0VMdyzF1dsVBO7CWVsWqJZDarlfNy6PdLm7rVGgXDyLJ4ScXRYrNZr_68cfoFp6GiKQ' }
 	]
 });
