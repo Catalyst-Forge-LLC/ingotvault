@@ -39,7 +39,7 @@ Dependency is already the public npm package:
 
 ## Content sync
 
-**Site** = product narrative (home, Install, Safety, posts). **Root README** = CLI / config reference. Same promise sentence, Safety facts, exit codes, and WIP rules in both. When behavior changes, update README + `site/pages/*` (and the agents post if it restates those facts). Voice: [`docs/aibreze-overlay.md`](../docs/aibreze-overlay.md).
+**Site** = product narrative (home, Install, Safety, posts). **Root README** = CLI / config reference. Same promise sentence, Safety facts, exit codes, and WIP rules in both. When behavior changes, update README + `site/pages/*` (and the agents post if it restates those facts). Voice: [`docs/smellcheck-overlay.md`](../docs/smellcheck-overlay.md).
 
 ## Launch checklist
 

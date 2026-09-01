@@ -11,9 +11,9 @@ importers:
       '@types/node':
         specifier: ^22.15.0
         version: 22.20.1
-      aibreze:
-        specifier: ^0.1.5
-        version: 0.1.5
+      smellcheck:
+        specifier: ^0.2.0
+        version: 0.2.0
       tsx:
         specifier: ^4.19.0
         version: 4.23.12
@@ -182,10 +182,6 @@ packages:
   '@types/node@22.20.1':
     resolution: {integrity: sha512-EANqOCF9QFyra+4pfxUcX9STKJpCLjMbObVzljIJomAWSnuSIEAvyzEU53GaajbXJEgdh0iEcPL+DGvpUd4k1Q==}
 
-  aibreze@0.1.5:
-    resolution: {integrity: sha512-dZm08hAtUf2fKA0PXbtJSip+wlDl2zlF4Js2idmTypUajBBXhkqG5qm0/DIUidgjoLIg1D5j9fCzJ+eSsMtlcQ==}
-    engines: {node: '>=20'}
-
   esbuild@0.28.2:
     resolution: {integrity: sha512-HKVLS8dvII+xoKW9kmqxbRKrnWEXfJJr/FZhhJmiqIB0e053QNYFqOBouTMO/k5sID4MvCiUCvv8b9M4h32wIA==}
     engines: {node: '>=18'}
@@ -195,6 +191,10 @@ packages:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
+
+  smellcheck@0.2.0:
+    resolution: {integrity: sha512-jgv+IXXL41MZVKxTtHf7/v+B1DXrxUKkWinynJbpVaBK2ulBr54ntZoVtVR9+CRNhI+KBLIj2Eh4p8LiwKHrvA==}
+    engines: {node: '>=20'}
 
   tsx@4.23.12:
     resolution: {integrity: sha512-FDf4L4sYzKtzWYhU/Xm0AQFdTjdIxNo9ElTf2mxXM6k8YMHXzYUe4yODVaXP4V9uMFbVg8c0qyBccK2OOxb45Q==}
@@ -293,8 +293,6 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  aibreze@0.1.5: {}
-
   esbuild@0.28.2:
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.28.2
@@ -326,6 +324,8 @@ snapshots:
 
   fsevents@2.3.3:
     optional: true
+
+  smellcheck@0.2.0: {}
 
   tsx@4.23.12:
     dependencies:

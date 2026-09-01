@@ -1,6 +1,6 @@
-# IngotVault aiBreze overlay
+# IngotVault Smell Check overlay
 
-Point at `aibreze` (`node_modules/aibreze/rules/core.md`). Do not fork core.
+Point at `smellcheck` (`node_modules/smellcheck/rules/core.md`). Do not fork core.
 
 ## Pronouns
 
@@ -31,7 +31,7 @@ Point at `aibreze` (`node_modules/aibreze/rules/core.md`). Do not fork core.
 
 ## House extras
 
-- Site copy follows `aibreze` `landing.md`. The one concrete chant is the lede: "CLI · bare mirrors · never touches origin." Do not stack "No X. No Y. No Z."
+- Site copy follows `smellcheck` `landing.md`. The one concrete chant is the lede: "CLI · bare mirrors · never touches origin." Do not stack "No X. No Y. No Z."
 - Brand metal (ingot, steel, copper, vault-as-poetry) lives in the theme, not in headings. Two vault/ingot references on a page is the budget; the rest is plain language.
 - Hero and "Why it exists" say what a friend would hear first. Refspecs, lock files, `safe.directory`, and exit-code tables belong on Safety / README, not in the brochure lead.
 - README may stay technical. Same promise sentence and Safety facts as the site; do not rewrite the Safety table into prose.

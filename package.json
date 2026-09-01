@@ -52,7 +52,7 @@
   "homepage": "https://ingotvault.dev",
   "devDependencies": {
     "@types/node": "^22.15.0",
-    "aibreze": "^0.1.5",
+    "smellcheck": "^0.2.0",
     "tsx": "^4.19.0",
     "typescript": "^5.8.0"
   }
