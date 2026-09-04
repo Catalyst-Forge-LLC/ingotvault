@@ -12,8 +12,8 @@ importers:
         specifier: ^22.15.0
         version: 22.20.1
       smellcheck:
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.3.4
+        version: 0.3.4
       tsx:
         specifier: ^4.19.0
         version: 4.23.12
@@ -192,8 +192,8 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  smellcheck@0.2.0:
-    resolution: {integrity: sha512-jgv+IXXL41MZVKxTtHf7/v+B1DXrxUKkWinynJbpVaBK2ulBr54ntZoVtVR9+CRNhI+KBLIj2Eh4p8LiwKHrvA==}
+  smellcheck@0.3.4:
+    resolution: {integrity: sha512-7QhEwrmUpdKi0rg8WlT0m10HsIl5w2gq5MbBijJ9FKrJFBNKsOSkJnNq5HfkLGPd3qs+NBJmVNfKR2svISx5LA==}
     engines: {node: '>=20'}
 
   tsx@4.23.12:
@@ -325,7 +325,7 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  smellcheck@0.2.0: {}
+  smellcheck@0.3.4: {}
 
   tsx@4.23.12:
     dependencies:
