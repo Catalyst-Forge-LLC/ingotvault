@@ -1,14 +1,23 @@
 ---
 title: Spare remotes for a folder of Git repos.
-description: Push committed history to bare mirrors on a drive you control. Never touches origin.
+description: Push covered local Git history to bare mirrors on a drive you control. Never touches origin.
 order: 1
 ---
 
-**IngotVault** scans a workspace, adds a local `backup` remote, and pushes every local branch and tag into bare mirrors on a path you choose: USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default.
+**IngotVault** scans a workspace, adds a local `backup` remote, and pushes covered local branches and tags into bare mirrors on a path you choose: USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default.
 
-**Every commit you've made lands in a second place you control.** Optionally, a snapshot of your dirty tree too.
+**Back up covered local Git branches and tags to a second location you control, including work you have not pushed upstream.** IngotVault preserves existing backup history by default and reports cases that need attention. Work must be captured by a successful run before it is lost. Later edits, stashes, uncommitted files, and objects that sit on no covered ref are not protected automatically.
 
-[What is covered](/safety)
+### Coverage on a successful run
+
+| Included | Not included by default |
+| --- | --- |
+| Local branches, tags, notes, replace refs, and IngotVault refs | Uncommitted files and stashes |
+| Opt-in WIP snapshot of a dirty tree that is not gitignored | Git LFS object bytes and submodule object stores |
+
+A run captures the covered refs that exist at that moment. Changes after that run wait for the next successful capture. A vault on the same physical disk as the workspace is a second Git copy on that disk. It is not protection against that disk failing.
+
+[What is covered](/safety) · [Restore a lost branch](/install#restore-a-lost-branch)
 
 <div class="cta-row">
   <a class="cta cta-primary" href="/install">Install IngotVault →</a>
@@ -20,7 +29,7 @@ order: 1
 ## When an agent rewrites history
 
 <div class="mesh-panel">
-  <p>Agents rebase, amend, reset, and delete a branch that looked stale. An append-only spare remote keeps the branch they removed. Opt-in WIP capture snapshots dirty trees (respecting <code>.gitignore</code>) before an unattended session can wipe them.</p>
+  <p>Agents rebase, amend, reset, and delete a branch that looked stale. An append-only spare remote keeps a branch that was already captured. Opt-in WIP capture snapshots dirty trees (respecting <code>.gitignore</code>) before an unattended session can wipe them.</p>
   <p>The argument: <a href="/posts/undo-layer-for-agents"><strong>An undo layer for autonomous edits</strong></a>.</p>
 </div>
 
@@ -41,7 +50,7 @@ A push into a bare mirror is a git operation: validated on receipt, atomic at th
 - Never touches `origin` or other remotes
 - Never force-pushes unless you aim `--force-with-lease` at a repo
 - Never prunes deleted branches. History refs only accumulate. WIP snapshots are a separate rolling window.
-- One repo fails; the others continue
+- One repo fails, the others continue
 - Locked or missing vault → exit `2` (scheduled runs can skip quietly)
 
 Details and edge cases: [Safety](/safety). CLI, config resolution, and discovery: [README on GitHub](https://github.com/Catalyst-Forge-LLC/ingotvault#readme).

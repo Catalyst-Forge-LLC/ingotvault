@@ -71,7 +71,7 @@
     "captureWorktree": {
       "type": "boolean",
       "default": false,
-      "description": "If true, snapshot dirty worktrees (including untracked files that are not gitignored) to refs/ingotvault/wip/<host>/… and push them. Opt-in; respects .gitignore. Does not change the commits-only default promise."
+      "description": "If true, snapshot dirty worktrees (including untracked files that are not gitignored) to refs/ingotvault/wip/<host>/… and push them. Opt-in. Respects .gitignore. Does not change the default covered-refs promise."
     },
     "wipRetention": {
       "type": "integer",

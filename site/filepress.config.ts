@@ -5,8 +5,8 @@ const github = 'https://github.com/Catalyst-Forge-LLC/ingotvault';
 export default defineFilepressConfig({
 	title: 'IngotVault',
 	description:
-		'Spare remotes for a workspace of Git repos. Push committed history to bare mirrors on a drive you control. Never touches origin.',
-	tagline: 'Every commit in a second place you control.',
+		'Spare remotes for a workspace of Git repos. Push covered local Git history to bare mirrors on a drive you control. Never touches origin.',
+	tagline: 'Covered local history, in a second place you control.',
 	lede: 'CLI · bare mirrors · never touches origin',
 	url: 'https://ingotvault.dev',
 	author: 'Catalyst Forge LLC',

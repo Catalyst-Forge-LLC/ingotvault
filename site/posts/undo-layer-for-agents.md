@@ -23,7 +23,7 @@ Those WIP refs are part of `refs/ingotvault/*`, which is pushed to the spare rem
 
 **.gitignore is respected.** Capture uses `git add -A` against a temporary index; ignored paths (`.env`, `service-account.json`, `.venv/`, …) are not swept into the snapshot. For anything further, set `wipExclude` pathspecs in config.
 
-Nothing in your working tree is mutated. **History refs are append-only; WIP snapshots are a rolling window.** Newest `wipRetention` (default 20) are kept; older ones are pruned locally and on the mirror. That window is the only thing IngotVault ever deletes from a mirror. The default promise stays: every commit you've made lands in a second place you control. Optionally, a snapshot of your dirty tree too.
+Nothing in your working tree is mutated. **History refs are append-only. WIP snapshots are a rolling window.** Newest `wipRetention` (default 20) are kept. Older ones are pruned locally and on the mirror. That window is the only thing IngotVault ever deletes from a mirror. The default promise stays: covered local branches and tags from a successful run land in a second place you control. Optionally, a snapshot of your dirty tree too. Work still has to be captured before it is lost.
 
 ```bash
 ingotvault --capture-worktree

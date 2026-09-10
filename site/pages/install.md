@@ -4,7 +4,7 @@ description: Install IngotVault from npm or a clone.
 order: 1
 ---
 
-Requires **Node.js 22+** and `git` on PATH. What the tool covers (and refuses) is on [Safety](/safety). Same install path as the [README](https://github.com/Catalyst-Forge-LLC/ingotvault#install).
+Requires **Node.js 22+** and `git` on PATH. What the tool covers, and what a successful run does not capture, is on [Safety](/safety). Same install path as the [README](https://github.com/Catalyst-Forge-LLC/ingotvault#install).
 
 ### From npm / pnpm
 
@@ -65,6 +65,17 @@ git clone /path/to/mirrors/notes.git notes-restored
 
 Other branches appear as `origin/<name>` until you check them out.
 
+### Restore a lost branch
+
+A disposable two-repo fixture lives in [`docs/restore-demo.md`](https://github.com/Catalyst-Forge-LLC/ingotvault/blob/main/docs/restore-demo.md). The short form:
+
+1. Capture `workspace/notes` with a `feature/parser` branch into `vault/notes.git`.
+2. Confirm with `ingotvault verify` (`ok` / `refs match`).
+3. Delete the local branch.
+4. Clone the mirror and `git switch feature/parser`.
+
+Narrow result: `parser.md` is back because that commit sat on a covered branch during the successful run. The fixture also leaves an uncommitted `scratch.txt` in the source. It is absent from the clone. Default runs do not capture uncommitted files.
+
 Restore a WIP snapshot (fetch from the mirror if needed):
 
 ```bash
@@ -91,5 +102,6 @@ Step-by-step OS setup: [`docs/encryption.md`](https://github.com/Catalyst-Forge-
 
 | Topic | Where |
 |-------|--------|
-| Exit codes & divergence | [Safety](/safety) |
+| Exit codes and divergence | [Safety](/safety) |
+| Restore a lost branch (fixture) | [restore demonstration](https://github.com/Catalyst-Forge-LLC/ingotvault/blob/main/docs/restore-demo.md) |
 | Flags, config, discovery, scheduling | [README on GitHub](https://github.com/Catalyst-Forge-LLC/ingotvault#cli) |

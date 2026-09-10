@@ -4,9 +4,9 @@
 
 # IngotVault
 
-**Every commit in a second place you control.**
+**Covered local history, in a second place you control.**
 
-A **spare remote** for a folder of Git repos: push committed history into bare mirrors on a drive you control. **Never touches `origin`.**
+A **spare remote** for a folder of Git repos: push covered local branches and tags into bare mirrors on a drive you control. **Never touches `origin`.**
 
 **Site:** [ingotvault.dev](https://ingotvault.dev). Install, Safety, and the agents write-up live there. This README is the CLI / config reference. Keep both in sync when behavior changes.
 
@@ -15,9 +15,12 @@ A **spare remote** for a folder of Git repos: push committed history into bare m
 | [Install](https://ingotvault.dev/install) | Quick start + full CLI below |
 | [Safety](https://ingotvault.dev/safety) | Guarantee summary below (same facts) |
 | [An undo layer for autonomous edits](https://ingotvault.dev/posts/undo-layer-for-agents) | [Working with coding agents](#working-with-coding-agents) |
+| Restore a lost branch | [`docs/restore-demo.md`](docs/restore-demo.md) |
 | — | [`docs/encryption.md`](docs/encryption.md), [`config.example.json`](config.example.json) |
 
-**Every commit you've made lands in a second place you control.** Not uncommitted work (unless you opt in), not LFS objects. Default push is `git push --all`, `--tags`, plus `refs/notes/*`, `refs/replace/*`, and `refs/ingotvault/*`. Optionally a snapshot of your dirty tree (`captureWorktree`). Custom namespaces (e.g. Gerrit `refs/changes`) are not covered.
+**Back up covered local Git branches and tags to a second location you control, including work you have not pushed upstream.** IngotVault preserves existing backup history by default and reports cases that need attention. Work must be captured by a successful run before it is lost. Later edits, stashes, uncommitted files, and objects that sit on no covered ref are not protected automatically.
+
+Default push is `git push --all`, `--tags`, plus `refs/notes/*`, `refs/replace/*`, and `refs/ingotvault/*`. Optionally a snapshot of your dirty tree (`captureWorktree`). Git LFS object bytes and submodule object stores are not pushed. Custom namespaces (for example Gerrit `refs/changes`) are not covered. A vault on the same physical disk as the workspace is a second Git copy on that disk, not protection against that disk failing. Details: [Safety](#safety).
 
 That gap exists even if you already have a forge **and** a file backup:
 
@@ -50,6 +53,8 @@ The product is the **guarantee set** below: what a late-night bash loop usually 
 | Linked worktrees | Discovery skips dirs whose `.git` is a file, but their **branches** live in the parent repo — `push --all` from the parent already covers committed work. With `captureWorktree`, dirty state is snapshotted for each path from `git worktree list` |
 | Submodules | Skipped (`.git` is a file). Parent stores only the gitlink SHA; submodule objects are not pushed. Restore needs each submodule's own remote (or its own IngotVault mirror) |
 | Drive pulled mid-push | Push may be partial; remount and re-run — Git usually recovers; `verify` helps confirm |
+| Backup timing | A successful run captures the covered refs that exist at that moment. Later edits wait for the next successful run. Detached commits push if a local branch or tag points at them. Commits on no covered ref, and stash refs, are not pushed |
+| Same-disk vault | A vault on the same physical disk as the workspace is a second Git copy on that disk. It is not protection against that disk failing |
 
 ## Install
 
@@ -122,9 +127,9 @@ git clone /Volumes/Backup/git-mirrors/acme/widgets.git widgets-restored
 cd widgets-restored
 ```
 
-That checks out the mirror's default branch. After each successful push, IngotVault sets bare `HEAD` from `origin/HEAD` when present, otherwise `main`/`master` / `init.defaultBranch`, and only then the current branch — so a push while you're on a feature branch does not flip the clone default. Other branches exist as `origin/<name>` until you `git checkout <name>` (or `git switch <name>`).
+That checks out the mirror's default branch. After each successful push, IngotVault sets bare `HEAD` from `origin/HEAD` when present, otherwise `main`/`master` / `init.defaultBranch`, and only then the current branch, so a push while you're on a feature branch does not flip the clone default. Other branches exist as `origin/<name>` until you `git checkout <name>` (or `git switch <name>`).
 
-Uncommitted work is **not** covered unless you opt into `--capture-worktree` (see [Working with coding agents](#working-with-coding-agents) and [Safety](#safety)).
+Uncommitted work is **not** covered unless you opt into `--capture-worktree` (see [Working with coding agents](#working-with-coding-agents) and [Safety](#safety)). A disposable fixture that restores a deleted local branch, and shows an uncommitted file that was never captured, is in [`docs/restore-demo.md`](docs/restore-demo.md).
 
 Restore a WIP snapshot (fetch from the mirror first if needed):
 
@@ -139,15 +144,22 @@ git show refs/ingotvault/wip/<host>/<slug>/<timestamp>
 
 By default IngotVault **never** force-pushes. After a rebase or amend, the bare mirror may reject updates. That repo fails with a loud `DIVERGED:` message (including moved tags) while other repos continue.
 
+Timeline:
+
+1. A successful run captures the current covered tips. The mirror holds that history.
+2. A local rewrite moves the laptop tips. The live mirror still holds the pre-rewrite tips.
+3. The next run fails that repo with `DIVERGED:` and leaves the old mirror in place. Other repos continue.
+4. Keep the old mirror. Quarantine it under `_diverged/` and re-run, or aim `--force-with-lease` at that repo after enabling it in config. Force update is never the default.
+
 The stale mirror may be the **only** copy of pre-rebase history. **Do not delete it.** Same steps: [Safety → Divergence recovery](https://ingotvault.dev/safety#divergence-recovery).
 
-**Option A — aimed force update** (keeps missing mirror tips under `refs/ingotvault/preforce/…`, then pushes `refs/ingotvault/*` to the spare remote):
+**Option A: aimed force update** (keeps missing mirror tips under `refs/ingotvault/preforce/…`, then pushes `refs/ingotvault/*` to the spare remote):
 
 ```bash
 ingotvault --force-with-lease --repo notes
 ```
 
-**Option B — quarantine the old mirror and start fresh** (prefer `_diverged/` so the live tree stays clean):
+**Option B: quarantine the old mirror and start fresh** (prefer `_diverged/` so the live tree stays clean):
 
 ```bash
 mkdir -p /Volumes/Backup/git-mirrors/_diverged
@@ -224,7 +236,7 @@ ingotvault --capture-worktree
 - Skips directory names in `excludeDirNames` (default includes `node_modules`, `.git`, `.hg`, `__ARCHIVE`).
 - Only treats a directory as a repo when `.git` is a **directory** (linked worktrees and submodules with a `.git` **file** are skipped as scan roots; see Safety for branch/WIP coverage).
 - Repos with zero commits are skipped at push time.
-- Detached HEAD: commits still push if branches exist via `push --all`; verify reports when there are no local branches.
+- Detached HEAD: commits still push if a local branch or tag points at them via `push --all`. Commits that sit on no covered ref, and stash refs, are not pushed. Verify reports when there are no local branches.
 
 ## CLI
 

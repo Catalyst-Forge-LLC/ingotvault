@@ -24,7 +24,7 @@ Point at `smellcheck` (`node_modules/smellcheck/rules/core.md`). Do not fork cor
 
 ## Protected lines
 
-- Every commit in a second place you control.
+- Covered local history, in a second place you control.
 - Never touches origin.
 - The product is the guarantee set: what a late-night bash loop usually gets wrong.
 - Earn the word. / Spray the prose, not the author. (package maxims)
