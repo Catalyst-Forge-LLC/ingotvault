@@ -8,7 +8,7 @@ pnpm dev          # local preview
 pnpm build        # → build/
 ```
 
-If [LocalBerth](https://www.npmjs.com/package/localberth) is installed, this site stays on **5183** as `ingotvault-site`.
+If [LocalSlip](https://www.npmjs.com/package/localslip) is installed, this site stays on **5183** as `ingotvault-site`.
 
 Optional: edit `theme.css` next to `filepress.config.ts`.
 
