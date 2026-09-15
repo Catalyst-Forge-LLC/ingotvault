@@ -291,9 +291,9 @@ pnpm publish       # logs in if needed; patch-bumps if this version is on npm
 
 Site: `pnpm ship` from the repo root (FilePress via npm `getfilepress`). See [`site/README.md`](site/README.md).
 
-<!-- xfacts-nutrition-label -->
+<!-- xfacts-label -->
 
-## Nutrition label
+## xFacts label
 
 - **AppFacts:** [viewer](https://appfacts.dev/v#af1.eNpVkUFrwzAMhf-K0dlttx19G4XBRtklvY0yVEdzvTq2sZSsoeS_D7dp2W5CfHrvSTrDAOZRQ8SOwICPLsmAfRDQIGOuvfXmVUlKATSwoPQMBtCKHwg0BG8pcsWeM9oDLZ6WD1fQHsGcIWB0PboKbMdMjS0-i1ZvOOC1Bg2lj-Iv9u-ppeU3g4ZDYvHRVfuQ-vYrYKGL7hjmdtPApKGlzGA-zhDBXALzTTVXy0bZ1GUfUHyKMOmZ49MM0IlsX43UtlHXUb5jPwWjC1RmtqUc0lhZSepPqmmngQd7T_EvcAFz20WxF1IYW4XMVH12Gva9D209VEZ7REefHUZ0VMdyzF1dsVBO7CWVsWqJZDarlfNy6PdLm7rVGgXDyLJ4ScXRYrNZr_68cfoFp6GiKQ) · [raw](https://github.com/Catalyst-Forge-LLC/ingotvault/blob/main/APP_FACTS.md)
 
