@@ -300,3 +300,5 @@ Site: `pnpm ship` from the repo root (FilePress via npm `getfilepress`). See [`s
 ## License
 
 Apache-2.0
+
+[See the rest of the Catalyst Forge shelf.](https://catalystforge.com/tools/)
