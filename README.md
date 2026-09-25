@@ -6,7 +6,9 @@
 
 **Covered local history, in a second place you control.**
 
-A **spare remote** for a folder of Git repos: push covered local branches and tags into bare mirrors on a drive you control. **Never touches `origin`.**
+A **spare remote** for a folder of Git repos: push covered local branches and tags into bare mirrors on a drive you control. IngotVault creates or uses the configured backup remote. It leaves origin and your other existing remotes unchanged.
+
+After the first capture, try restoring into a separate test folder. Confirm that the branch and commit you intended to protect are present. See [`docs/restore-demo.md`](docs/restore-demo.md).
 
 **Site:** [ingotvault.dev](https://ingotvault.dev). Install, Safety, and the agents write-up live there. This README is the CLI / config reference. Keep both in sync when behavior changes.
 
