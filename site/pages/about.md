@@ -1,5 +1,5 @@
 ---
-title: Spare remotes for a folder of Git repos.
+title: Back up local Git branches and tags, including work you haven't pushed.
 description: Push covered local Git history to bare mirrors on a drive you control. Never touches origin.
 order: 1
 ---
