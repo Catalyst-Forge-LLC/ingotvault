@@ -292,7 +292,7 @@ main.wrap > .hero .hero-lede {
 
 .home-page .page-header h1 {
 	font-family: var(--font-serif);
-	font-size: clamp(2.4rem, 6vw, 3.75rem);
+	font-size: clamp(2.275rem, 5.75vw, 3.625rem);
 	font-weight: 600;
 	letter-spacing: -0.035em;
 	line-height: 1.08;
