@@ -90,9 +90,14 @@ ingotvault               # ensure bare mirrors + backup remote + push
 ingotvault verify        # compare local branch/tag tips to mirror tips
 ingotvault relink        # after moving mirrorRoot: retarget the backup remote
 ingotvault --repo .      # from inside one repo: mirror that repo only
+ingotvault schedule install   # daily Task Scheduler / launchd / systemd job
 ```
 
-IngotVault does not run in the background, and it does not hook `git push`. The vault updates when you run `ingotvault`, or when something you set up runs that command. From a repo inside the workspace, `ingotvault --repo .` mirrors that repo. A daily run of `ingotvault` (Task Scheduler, cron, or launchd) covers repos nobody touched. `--scheduled` only writes a log for that run.
+IngotVault does not run in the background, and it does not hook `git push`. `init` writes the config and the vault marker. After that, a run happens only when something starts it:
+
+- You run `ingotvault` for the whole workspace, or `ingotvault --repo .` for the repo you are in.
+- `ingotvault schedule install` registers a daily job with the OS scheduler. See [Schedule](#schedule).
+- A project agent may run `ingotvault --repo .` after a commit. That and the daily job can both be on. The vault lock keeps them from overlapping.
 
 Sample `list` output:
 
@@ -258,13 +263,34 @@ ingotvault verify [--config <path>] [--repo <path|name>]
                 [--verbose] [--quiet-if-clean]
 ingotvault relink [--config <path>] [--repo <path|name>]
 ingotvault safe-dirs [--config <path>] [--list|--clean]
+ingotvault schedule [status|install|remove] [--at HH:MM] [--config <path>]
 ```
 
-`relink` updates a mismatched `backup` remote URL to the current path-tree mirror location. If the old URL still points at a bare repo on disk (e.g. flat `foo-bar.git` from an earlier naming style) and the new path is empty, it **moves** that bare repo first so history is preserved, then `git remote set-url`. Use `--dry-run` to preview.
+`relink` updates a mismatched `backup` remote URL to the current path-tree mirror location. If the old URL still points at a bare repo on disk and the new path is missing, it **moves** that bare repo first, then `git remote set-url`. An empty bare repo at the new path (no refs) is replaced by that move. If both paths already hold history, relink refuses and leaves them alone. Use `--dry-run` to preview.
 
 `--repo .` (or any `./` / `../` / absolute path) selects that directory, if the vault's scan includes it. A bare `--repo` name matches the workspace-relative path (preferred), a unique path suffix, or a unique basename. If several repos share the same leaf name, the command fails and asks for the full relative path. A path outside the vault, deeper than `maxDepth`, or excluded fails with that reason. It does not fall back to `git push`.
 
-`--scheduled` writes a timestamped log under `logDir` and prunes logs older than `logRetentionDays` (default 30; `0` = keep forever). No interactive pause; pair with your OS task scheduler. Prefer not alerting on exit `2`.
+`--scheduled` writes a timestamped log under `logDir` and prunes logs older than `logRetentionDays` (default 30; `0` = keep forever). `schedule install` adds that flag for you. Prefer not alerting on exit `2`.
+
+## Schedule
+
+```bash
+ingotvault schedule                 # installed or not, for the config this directory finds
+ingotvault schedule install         # daily at 18:00 local
+ingotvault schedule install --at 21:30
+ingotvault schedule remove
+```
+
+The job runs the same `ingotvault` binary you used to install it, with `--scheduled` and the absolute config path. It does not pass `--force-with-lease`.
+
+| OS | What gets registered | If the machine was off |
+| --- | --- | --- |
+| Windows | Task Scheduler task for the current user | Runs once when the computer is next on |
+| macOS | LaunchAgent in `~/Library/LaunchAgents` | launchd runs it after wake |
+| Linux | systemd user timer, if `systemctl --user` works | `Persistent=true` runs the missed day at next login |
+| Linux, no systemd user session | A cron line | That run is skipped |
+
+Exit `2` still means the vault drive was missing. The log file is the record. Two configs get two tasks.
 
 `ingotvault verify` compares each local branch tip to the bare mirror and reports `ok`, `behind` (mirror tip is an ancestor, N commits behind), `diverged`, or `missing-mirror`. Diverged refs are never counted as "behind." Ends with a summary (`12 ok, 2 diverged, …`). `--quiet-if-clean` prints nothing and exits `0` when everything matches.
 

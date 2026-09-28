@@ -39,7 +39,18 @@ ingotvault               # ensure bare mirrors + push
 ingotvault verify        # compare tips
 ```
 
-IngotVault does not keep running after `init`. Run `ingotvault` to update the vault. From a repo inside the workspace, `ingotvault --repo .` updates that repo. Config is the nearest `ingotvault.config.json` walking up from the current directory, then the user config file.
+IngotVault does not keep running after `init`. A run starts when you type it, when the daily OS job fires, or when an agent runs `ingotvault --repo .` in one repo. Those can all be on. The vault lock keeps two runs from overlapping. Config is the nearest `ingotvault.config.json` walking up from the current directory, then the user config file.
+
+### On a clock
+
+```bash
+ingotvault schedule            # is a daily job registered?
+ingotvault schedule install    # 18:00 local
+ingotvault schedule install --at 21:30
+ingotvault schedule remove
+```
+
+Windows uses Task Scheduler. macOS uses a LaunchAgent. Linux uses a systemd user timer, or cron if that user session is missing. The job runs `ingotvault --scheduled` with the absolute config path. It does not force-push. If the computer was off at that time, Task Scheduler, launchd, and systemd run it once later. Cron does not. Exit `2` means the drive was missing.
 
 If you change `mirrorRoot`, run `ingotvault init` against the new path (or ensure `.ingotvault-vault` exists there), then `ingotvault relink` so each repo's `backup` remote matches.
 
@@ -106,4 +117,4 @@ Step-by-step OS setup: [`docs/encryption.md`](https://github.com/Catalyst-Forge-
 |-------|--------|
 | Exit codes and divergence | [Safety](/safety) |
 | Restore a lost branch (fixture) | [restore demonstration](https://github.com/Catalyst-Forge-LLC/ingotvault/blob/main/docs/restore-demo.md) |
-| Flags, config, discovery, scheduling | [README on GitHub](https://github.com/Catalyst-Forge-LLC/ingotvault#cli) |
+| Flags, config, discovery, scheduling | [README on GitHub](https://github.com/Catalyst-Forge-LLC/ingotvault#schedule) |

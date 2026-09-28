@@ -48,7 +48,7 @@ export type AppConfig = {
 };
 
 export type CliOptions = {
-  command: "run" | "list" | "init" | "verify" | "safe-dirs" | "relink";
+  command: "run" | "list" | "init" | "verify" | "safe-dirs" | "relink" | "schedule";
   dryRun: boolean;
   verbose: boolean;
   scheduled: boolean;
@@ -69,6 +69,10 @@ export type CliOptions = {
   initMirror: string | null;
   initRemoteName: string | null;
   initMaxDepth: number | null;
+  /** schedule: status unless install or remove */
+  scheduleAction: "status" | "install" | "remove" | null;
+  /** schedule install: HH:MM, or null for 18:00 */
+  scheduleAt: string | null;
 };
 
 const fieldDefaults = {
@@ -270,6 +274,8 @@ export function parseCli(argv: string[]): CliOptions {
     initMirror: null,
     initRemoteName: null,
     initMaxDepth: null,
+    scheduleAction: null,
+    scheduleAt: null,
   };
 
   for (let i = 0; i < argv.length; i++) {
@@ -281,7 +287,16 @@ export function parseCli(argv: string[]): CliOptions {
       case "verify":
       case "safe-dirs":
       case "relink":
+      case "schedule":
         opts.command = arg;
+        break;
+      case "install":
+      case "remove":
+      case "status":
+        if (opts.command !== "schedule") {
+          throw new Error(`Unknown argument: ${arg}`);
+        }
+        opts.scheduleAction = arg;
         break;
       case "--dry-run":
         opts.dryRun = true;
@@ -362,6 +377,14 @@ export function parseCli(argv: string[]): CliOptions {
         opts.initRemoteName = value;
         break;
       }
+      case "--at": {
+        const value = argv[++i];
+        if (!value || value.startsWith("-")) {
+          throw new Error("--at requires HH:MM");
+        }
+        opts.scheduleAt = value;
+        break;
+      }
       case "--max-depth": {
         const value = argv[++i];
         if (!value || value.startsWith("-")) {
@@ -397,6 +420,7 @@ Usage:
              [--verbose] [--quiet-if-clean]
   ingotvault relink [--config <path>] [--repo <path|name>]
   ingotvault safe-dirs [--config <path>] [--list|--clean]
+  ingotvault schedule [status|install|remove] [--at HH:MM] [--config <path>] [--dry-run]
 
 Never modifies origin. Never force-pushes unless --force-with-lease.
 Force requires allowForceWithLease: true in config AND --force-with-lease
@@ -409,6 +433,13 @@ the current directory, else the user config file.
 --repo . mirrors the repo you are in. A bare name matches a workspace-relative
 path or a unique basename. IngotVault does not run in the background and does
 not hook git push.
+
+schedule install registers a daily Task Scheduler task, LaunchAgent, or
+systemd user timer (cron if systemd --user is missing). Default 18:00 local.
+The job runs this command with --scheduled and the absolute config path.
+It does not pass --force-with-lease. Exit 2 still means the drive was missing.
+A missed run is caught up on Windows, launchd, and systemd. Cron does not
+catch up. An agent may also run --repo . ; the vault lock keeps the two apart.
 
 init writes a .ingotvault-vault marker under mirrorRoot. Normal runs refuse
 (exit 2) if that marker is missing — so an unplugged volume never silently

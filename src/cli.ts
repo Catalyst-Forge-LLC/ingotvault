@@ -13,6 +13,7 @@ import { acquireMirrorLock } from "./lock.js";
 import { createLogger, pruneOldLogs, timestampForFilename } from "./log.js";
 import { formatOutcome, processRepo, type RepoOutcome } from "./push.js";
 import { relinkRepo } from "./relink.js";
+import { runSchedule } from "./schedule.js";
 import { runSafeDirs } from "./safeDirs.js";
 import {
   assertMirrorRootAvailable,
@@ -49,6 +50,28 @@ async function runMain(cli: CliOptions): Promise<number> {
   if (cli.command === "safe-dirs") {
     const mode = cli.safeDirsMode ?? "list";
     return runSafeDirs(config, mode);
+  }
+
+  if (cli.command === "schedule") {
+    if (cli.scheduleAt && cli.scheduleAction !== "install") {
+      console.error("--at is only for schedule install.");
+      return 1;
+    }
+    if (!config.configPath) {
+      console.error("No config path to bind the schedule to.");
+      return 1;
+    }
+    try {
+      return runSchedule({
+        action: cli.scheduleAction ?? "status",
+        configPath: config.configPath,
+        at: cli.scheduleAt,
+        dryRun: cli.dryRun || config.dryRun,
+      });
+    } catch (err) {
+      console.error((err as Error).message);
+      return 1;
+    }
   }
 
   const dryRun = cli.dryRun || config.dryRun;

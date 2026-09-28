@@ -46,15 +46,37 @@ describe("migrateMirrorOnDisk", () => {
     assert.equal(existsSync(path.join(nested, "HEAD")), true);
   });
 
-  it("refuses when both locations already hold bare repos", () => {
+  it("refuses when both locations already hold history", () => {
     const root = tempDir("ingotvault-relink-both-");
     const flat = path.join(root, "a-b.git");
     const nested = path.join(root, "a", "b.git");
     fakeBare(flat);
     fakeBare(nested);
+    mkdirSync(path.join(nested, "refs", "heads"), { recursive: true });
+    writeFileSync(path.join(nested, "refs", "heads", "main"), `${"a".repeat(40)}\n`);
 
     const result = migrateMirrorOnDisk(flat, nested, false);
     assert.equal(result.ok, false);
+    assert.equal(existsSync(flat), true);
+  });
+
+  it("replaces an empty destination and moves the mirror that has history", () => {
+    const root = tempDir("ingotvault-relink-empty-");
+    const oldPath = path.join(root, "forge-kit.git");
+    const desired = path.join(root, "forgetrail.git");
+    fakeBare(oldPath);
+    mkdirSync(path.join(oldPath, "refs", "heads"), { recursive: true });
+    writeFileSync(path.join(oldPath, "refs", "heads", "main"), `${"b".repeat(40)}\n`);
+    fakeBare(desired);
+
+    const result = migrateMirrorOnDisk(oldPath, desired, false);
+    assert.equal(result.ok, true);
+    assert.equal(result.ok && result.moved, true);
+    assert.equal(existsSync(oldPath), false);
+    assert.equal(
+      existsSync(path.join(desired, "refs", "heads", "main")),
+      true,
+    );
   });
 
   it("dry-run does not move", () => {

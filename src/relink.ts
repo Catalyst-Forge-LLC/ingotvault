@@ -1,4 +1,13 @@
-import { accessSync, constants, existsSync, mkdirSync, renameSync } from "node:fs";
+import {
+  accessSync,
+  constants,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+} from "node:fs";
 import path from "node:path";
 import type { AppConfig } from "./config.js";
 import type { DiscoveredRepo } from "./discover.js";
@@ -22,6 +31,27 @@ function looksLikeBareRepo(mirrorPath: string): boolean {
   }
 }
 
+/** True when the bare repo has at least one ref. An `init --bare` with no commits is false. */
+function bareRepoHasHistory(mirrorPath: string): boolean {
+  const packed = path.join(mirrorPath, "packed-refs");
+  if (existsSync(packed)) {
+    const text = readFileSync(packed, "utf8");
+    if (/^[0-9a-f]{4,}\s+\S/im.test(text)) return true;
+  }
+  const refsDir = path.join(mirrorPath, "refs");
+  const stack = [refsDir];
+  while (stack.length) {
+    const dir = stack.pop();
+    if (!dir || !existsSync(dir)) continue;
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const child = path.join(dir, entry.name);
+      if (entry.isDirectory()) stack.push(child);
+      else if (entry.isFile()) return true;
+    }
+  }
+  return false;
+}
+
 /**
  * When renaming style changes (flat `foo-bar.git` → path-tree `foo/bar.git`),
  * move the bare mirror on disk if the old path still holds history and the new
@@ -40,15 +70,29 @@ export function migrateMirrorOnDisk(
   }
 
   const currentExists = looksLikeBareRepo(currentPath);
-  const desiredExists = looksLikeBareRepo(desired);
+  let desiredExists = looksLikeBareRepo(desired);
 
-  if (currentExists && desiredExists) {
+  if (currentExists && desiredExists && bareRepoHasHistory(desired)) {
     return {
       ok: false,
       detail:
         `both mirrors exist — resolve manually before relink: ` +
         `${normalizeSlashes(currentPath)} and ${normalizeSlashes(desired)}`,
     };
+  }
+
+  if (currentExists && desiredExists && !bareRepoHasHistory(desired)) {
+    if (dryRun) {
+      return {
+        ok: true,
+        moved: true,
+        detail:
+          `[dry-run] would replace empty ${normalizeSlashes(desired)} ` +
+          `and move ${normalizeSlashes(currentPath)} -> ${normalizeSlashes(desired)}`,
+      };
+    }
+    rmSync(desired, { recursive: true, force: true });
+    desiredExists = false;
   }
 
   if (currentExists && !desiredExists) {
