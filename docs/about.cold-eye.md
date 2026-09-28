@@ -1,6 +1,6 @@
 # Cold-eye — ingotvault.dev home (`site/pages/about.md`)
 
-Read against [coldeye@0.1.14](https://www.npmjs.com/package/coldeye) and `z:\workspace\coldeye\skills\cold-eye`. Those skill files match. Subject is the shipped home page: [ingotvault.dev](https://ingotvault.dev/).
+Read against [coldeye@0.1.14](https://www.npmjs.com/package/coldeye) and `z:\workspace\coldeye\skills\cold-eye`. Those skill files match. Subject is the home page as it was on 2026-09-28, before the rewrite: [ingotvault.dev](https://ingotvault.dev/). This file stays in `docs/` so FilePress does not publish it.
 
 **Verdict:** close
 

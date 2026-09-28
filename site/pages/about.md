@@ -4,36 +4,49 @@ description: Push covered local Git history to bare mirrors on a drive you contr
 order: 1
 ---
 
-**IngotVault** scans a workspace, adds a local `backup` remote, and pushes covered local branches and tags into bare mirrors on a path you choose: USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default.
+**IngotVault** scans a workspace, adds a local `backup` remote, and pushes local branches and tags into bare mirrors on a path you choose: USB, SD, NAS, or another disk. It never modifies `origin`.
 
-It does not run in the background, and it does not hook `git push`. After `init`, a run starts when you run `ingotvault`, when `ingotvault schedule install` fires the daily OS job, or when an agent runs `ingotvault --repo .` in one repo. The daily job and the per-repo command can both be on. The vault lock keeps them from overlapping.
+It does not run in the background, and it does not hook `git push`.
 
-**Back up covered local Git branches and tags to a second location you control, including work you have not pushed upstream.** IngotVault preserves existing backup history by default and reports cases that need attention. Work must be captured by a successful run before it is lost. Later edits, stashes, uncommitted files, and objects that sit on no covered ref are not protected automatically.
+## Quick start
 
-### Coverage on a successful run
+```bash
+pnpm add -g ingotvault
+ingotvault init
+ingotvault list
+ingotvault schedule install
+ingotvault
+ingotvault verify
+```
 
-| Included | Not included by default |
-| --- | --- |
-| Local branches, tags, notes, replace refs, and IngotVault refs | Uncommitted files and stashes |
-| Opt-in WIP snapshot of a dirty tree that is not gitignored | Git LFS object bytes and submodule object stores |
+`init` asks for the workspace and the mirror path, then writes `ingotvault.config.json` in the current directory and the vault marker. `schedule install` registers a daily job at 18:00 local. You are done when `verify` reports the tips match.
 
-A run captures the covered refs that exist at that moment. Changes after that run wait for the next successful capture. A vault on the same physical disk as the workspace is a second Git copy on that disk. It is not protection against that disk failing.
+Run `ingotvault` again whenever you want another capture. An agent can run `ingotvault --repo .` in one repo. That is optional. The daily job and that command can both be on. If the drive is unplugged, that run skips.
 
-[What is covered](/safety) · [Restore a lost branch](/install#restore-a-lost-branch)
+Clone, a different clock, WIP, restore, and encrypt are on [Install](/install). Force update is on [Safety](/safety).
+
+Agents rebase, amend, reset, and delete a branch that looked stale. A branch that was already captured stays on the spare remote. [An undo layer for autonomous edits](/posts/undo-layer-for-agents).
+
+<p class="kicker">npm · pnpm · Node 22+ · Apache-2.0</p>
 
 <div class="cta-row">
   <a class="cta cta-primary" href="/install">Install IngotVault →</a>
   <a class="cta cta-secondary" href="https://github.com/Catalyst-Forge-LLC/ingotvault">View on GitHub</a>
 </div>
 
-<p class="kicker">npm · pnpm · Node 22+ · Apache-2.0</p>
+### Coverage on a successful run
 
-## When an agent rewrites history
+| Included | Not included by default |
+| --- | --- |
+| Local branches and tags | Uncommitted files and stashes |
+| `refs/notes/*`, `refs/replace/*`, `refs/ingotvault/*` | Git LFS object bytes (pointer files only) |
+| Opt-in WIP snapshot of a dirty tree that is not gitignored | Submodule object stores |
 
-<div class="mesh-panel">
-  <p>Agents rebase, amend, reset, and delete a branch that looked stale. An append-only spare remote keeps a branch that was already captured. Opt-in WIP capture snapshots dirty trees (respecting <code>.gitignore</code>) before an unattended session can wipe them.</p>
-  <p>The argument: <a href="/posts/undo-layer-for-agents"><strong>An undo layer for autonomous edits</strong></a>.</p>
-</div>
+A run captures the refs that exist at that moment. Later edits wait for the next successful run. Stashes, uncommitted files, and commits that sit on no covered ref are not protected. Deleted branches stay on the mirror. If one repo fails, the others continue.
+
+A vault on the same physical disk as the workspace is a second Git copy on that disk. It is not protection against that disk failing.
+
+[What is covered](/safety) · [Restore a lost branch](/install#restore-a-lost-branch)
 
 ## Why it exists
 
@@ -46,33 +59,5 @@ Forge remotes cover what you pushed upstream. File backups cover bytes on disk, 
 - Forge outage, lost 2FA, or losing org access
 
 A push into a bare mirror is a git operation: validated on receipt, atomic at the ref level, restorable with `git clone`, checkable with `ingotvault verify`.
-
-## Guarantees
-
-- Never touches `origin` or other remotes
-- Never force-pushes unless you aim `--force-with-lease` at a repo
-- Never prunes deleted branches. History refs only accumulate. WIP snapshots are a separate rolling window.
-- One repo fails, the others continue
-- Locked or missing vault → exit `2` (scheduled runs can skip quietly)
-
-Details and edge cases: [Safety](/safety). CLI, config resolution, and discovery: [README on GitHub](https://github.com/Catalyst-Forge-LLC/ingotvault#readme).
-
-## Quick start
-
-```bash
-pnpm add -g ingotvault
-ingotvault init
-ingotvault list
-ingotvault
-ingotvault verify
-```
-
-More install paths (clone, WIP, restore, encrypt): [Install](/install).
-
-<div class="cta-row">
-  <a class="cta cta-primary" href="/install">Get started →</a>
-  <a class="cta cta-secondary" href="/safety">Safety</a>
-  <a class="cta cta-secondary" href="/writing">Read the posts</a>
-</div>
 
 Built by [Catalyst Forge LLC](https://www.catalystforge.com).
