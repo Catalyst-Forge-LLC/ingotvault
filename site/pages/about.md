@@ -19,11 +19,11 @@ ingotvault
 ingotvault verify
 ```
 
-`init` asks for the workspace and the mirror path, then writes `ingotvault.config.json` in the current directory and the vault marker. `schedule install` registers a daily job at 18:00 local. You are done when `verify` reports the tips match.
+`init` asks for the workspace and the mirror path. Remote name and scan depth have defaults (`backup` and `3`). It writes `ingotvault.config.json` in the current directory and the vault marker. `schedule install` registers a daily job at 18:00 local. You are done when `verify` prints `ok` and `refs match`.
 
-Run `ingotvault` again whenever you want another capture. An agent can run `ingotvault --repo .` in one repo. That is optional. The daily job and that command can both be on. If the drive is unplugged, that run skips.
+Run `ingotvault` again whenever you want another capture. An agent can run `ingotvault --repo .` in one repo. That is optional. The daily job and that command can both be on. If the drive is unplugged, a scheduled run skips and a manual run stops.
 
-Clone, a different clock, WIP, restore, and encrypt are on [Install](/install). Force update is on [Safety](/safety).
+Clone, another time of day (`--at`), WIP, restore, and encrypt are on [Install](/install). Force update is on [Safety](/safety).
 
 Agents rebase, amend, reset, and delete a branch that looked stale. A branch that was already captured stays on the spare remote. [An undo layer for autonomous edits](/posts/undo-layer-for-agents).
 
