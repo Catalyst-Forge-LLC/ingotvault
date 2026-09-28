@@ -6,6 +6,8 @@ order: 1
 
 **IngotVault** scans a workspace, adds a local `backup` remote, and pushes covered local branches and tags into bare mirrors on a path you choose: USB, SD, NAS, or another disk. It never modifies `origin`. Force-push is never the default.
 
+It does not run in the background, and it does not hook `git push`. After `init`, run `ingotvault` when you want the vault updated. From inside one repo, `ingotvault --repo .` mirrors that repo.
+
 **Back up covered local Git branches and tags to a second location you control, including work you have not pushed upstream.** IngotVault preserves existing backup history by default and reports cases that need attention. Work must be captured by a successful run before it is lost. Later edits, stashes, uncommitted files, and objects that sit on no covered ref are not protected automatically.
 
 ### Coverage on a successful run

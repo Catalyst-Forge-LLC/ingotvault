@@ -95,15 +95,46 @@ export function discoverRepos(config: AppConfig): DiscoveredRepo[] {
   return found;
 }
 
+/** `.`, `./…`, `../…`, or an absolute path. Bare names stay name matches. */
+export function isPathRepoFilter(repoFilter: string): boolean {
+  if (repoFilter === "." || repoFilter === "./") return true;
+  if (path.isAbsolute(repoFilter)) return true;
+  const normalized = repoFilter.replace(/\\/g, "/");
+  return normalized.startsWith("./") || normalized.startsWith("../");
+}
+
+function sameDirectory(a: string, b: string): boolean {
+  const left = path.resolve(a);
+  const right = path.resolve(b);
+  if (process.platform === "win32") {
+    return left.toLowerCase() === right.toLowerCase();
+  }
+  return left === right;
+}
+
 /**
- * --repo matches relative path (preferred) or basename.
+ * --repo matches a path (`.` or absolute), a workspace-relative path, or a basename.
  * Basename match fails if more than one repo shares that leaf name.
+ * `.` means the repo at `fromDir`.
  */
 export function filterRepos(
   repos: DiscoveredRepo[],
   repoFilter: string | null,
+  fromDir: string = process.cwd(),
 ): FilterReposResult {
   if (!repoFilter) return { ok: true, repos };
+
+  if (isPathRepoFilter(repoFilter)) {
+    const abs = path.resolve(fromDir, repoFilter);
+    const hit = repos.filter((r) => sameDirectory(r.repoPath, abs));
+    if (hit.length === 1) return { ok: true, repos: hit };
+    return {
+      ok: false,
+      error:
+        `--repo ${repoFilter} is not a repo in this vault (${normalizeSlashes(abs)}). ` +
+        "It is outside workspaceRoot, deeper than maxDepth, or excluded.",
+    };
+  }
 
   const needle = repoFilter.replace(/\\/g, "/").toLowerCase().replace(/\/+$/, "");
   const exact = repos.filter((r) => r.relativePath.toLowerCase() === needle);

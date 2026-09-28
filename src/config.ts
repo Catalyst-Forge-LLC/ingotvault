@@ -134,8 +134,28 @@ function readJsonConfig(configPath: string): FileConfig {
   }
 }
 
-/** Resolution: --config, ./ingotvault.config.json, then user config. */
-export function resolveConfigPath(cliPath: string | null): string | null {
+const CONFIG_FILENAME = "ingotvault.config.json";
+
+/**
+ * Nearest `ingotvault.config.json` at `startDir` or a parent directory.
+ * A project-local file wins over one at the workspace root.
+ */
+export function findConfigWalkingUp(startDir: string): string | null {
+  let dir = path.resolve(startDir);
+  for (;;) {
+    const candidate = path.join(dir, CONFIG_FILENAME);
+    if (existsSync(candidate)) return candidate;
+    const parent = path.dirname(dir);
+    if (parent === dir) return null;
+    dir = parent;
+  }
+}
+
+/** Resolution: --config, nearest ingotvault.config.json walking up from cwd, then user config. */
+export function resolveConfigPath(
+  cliPath: string | null,
+  fromDir: string = process.cwd(),
+): string | null {
   if (cliPath) {
     const resolved = resolveUserPath(cliPath);
     if (!existsSync(resolved)) {
@@ -144,8 +164,8 @@ export function resolveConfigPath(cliPath: string | null): string | null {
     return resolved;
   }
 
-  const cwdConfig = path.resolve("ingotvault.config.json");
-  if (existsSync(cwdConfig)) return cwdConfig;
+  const walked = findConfigWalkingUp(fromDir);
+  if (walked) return walked;
 
   const userPath = getUserConfigPath();
   if (existsSync(userPath)) return userPath;
@@ -369,7 +389,7 @@ export function printHelp(): void {
 
 Usage:
   ingotvault init [--global] [--workspace <path>] [--mirror <path>]
-  ingotvault [run] [--config <path>] [--repo <path|name>] [--dry-run]
+  ingotvault [run] [--config <path>] [--repo .|<path|name>] [--dry-run]
              [--verbose] [--scheduled] [--capture-worktree]
              [--force-with-lease --repo <path>|--all-repos]
   ingotvault list [--config <path>] [--repo <path|name>]
@@ -382,6 +402,13 @@ Never modifies origin. Never force-pushes unless --force-with-lease.
 Force requires allowForceWithLease: true in config AND --force-with-lease
 with --repo or --all-repos. Uses ls-remote tips + explicit leases, preserving
 missing mirror tips under refs/ingotvault/preforce/… first.
+
+Config: --config, else the nearest ingotvault.config.json walking up from
+the current directory, else the user config file.
+
+--repo . mirrors the repo you are in. A bare name matches a workspace-relative
+path or a unique basename. IngotVault does not run in the background and does
+not hook git push.
 
 init writes a .ingotvault-vault marker under mirrorRoot. Normal runs refuse
 (exit 2) if that marker is missing — so an unplugged volume never silently

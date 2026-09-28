@@ -39,6 +39,8 @@ ingotvault               # ensure bare mirrors + push
 ingotvault verify        # compare tips
 ```
 
+IngotVault does not keep running after `init`. Run `ingotvault` to update the vault. From a repo inside the workspace, `ingotvault --repo .` updates that repo. Config is the nearest `ingotvault.config.json` walking up from the current directory, then the user config file.
+
 If you change `mirrorRoot`, run `ingotvault init` against the new path (or ensure `.ingotvault-vault` exists there), then `ingotvault relink` so each repo's `backup` remote matches.
 
 Mirror naming preserves workspace paths under `mirrorRoot` (`acme/widgets` → `…/acme/widgets.git`).

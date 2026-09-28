@@ -89,7 +89,10 @@ ingotvault --dry-run     # no writes
 ingotvault               # ensure bare mirrors + backup remote + push
 ingotvault verify        # compare local branch/tag tips to mirror tips
 ingotvault relink        # after moving mirrorRoot: retarget the backup remote
+ingotvault --repo .      # from inside one repo: mirror that repo only
 ```
+
+IngotVault does not run in the background, and it does not hook `git push`. The vault updates when you run `ingotvault`, or when something you set up runs that command. From a repo inside the workspace, `ingotvault --repo .` mirrors that repo. A daily run of `ingotvault` (Task Scheduler, cron, or launchd) covers repos nobody touched. `--scheduled` only writes a log for that run.
 
 Sample `list` output:
 
@@ -113,7 +116,7 @@ ingotvault init --global --workspace ~/code --mirror /Volumes/Backup/git-mirrors
 Resolution order (first found wins):
 
 1. `--config <path>`
-2. `./ingotvault.config.json`
+2. The nearest `ingotvault.config.json`, walking up from the current directory (a file in the repo wins over one at the workspace root)
 3. User config: `~/.config/ingotvault/config.json` (Windows: `%APPDATA%\ingotvault\config.json`)
 
 `workspaceRoot` and `mirrorRoot` are required. `~` is expanded. See [`config.example.json`](config.example.json) (includes `"$schema"` for editor autocomplete) and [`schema/ingotvault.config.schema.json`](schema/ingotvault.config.schema.json).
@@ -212,6 +215,8 @@ Do **not** use `--unset-all safe.directory` — that deletes unrelated entries y
 
 Agents tend to fail by **rewriting** history (rebase, amend, `reset --hard`, deleting a "stale" branch), not by quietly losing whole directories. An append-only spare remote that never force-pushes and never prunes deleted branches is a **ratchet**: the mirror still has the branch the agent removed.
 
+The command is `ingotvault --repo .` from that repo. Do not `git push` the `backup` remote. A raw push skips the vault marker, the lock, and divergence handling. If `ingotvault` is missing or exits `2`, stop.
+
 Longer argument: [An undo layer for autonomous edits](https://ingotvault.dev/posts/undo-layer-for-agents).
 
 The usual agent-shaped loss is **uncommitted** work (`checkout .`, `clean -fd`, hard reset on a dirty tree). Enable WIP capture at session boundaries:
@@ -245,7 +250,7 @@ ingotvault --capture-worktree
 ```text
 ingotvault init [--global] [--workspace <path>] [--mirror <path>]
                 [--remote-name backup] [--max-depth 3]
-ingotvault [run] [--config <path>] [--repo <path|name>] [--dry-run]
+ingotvault [run] [--config <path>] [--repo .|<path|name>] [--dry-run]
                 [--verbose] [--scheduled] [--capture-worktree]
                 [--force-with-lease --repo <path>|--all-repos]
 ingotvault list  [--config <path>] [--repo <path|name>]
@@ -257,7 +262,7 @@ ingotvault safe-dirs [--config <path>] [--list|--clean]
 
 `relink` updates a mismatched `backup` remote URL to the current path-tree mirror location. If the old URL still points at a bare repo on disk (e.g. flat `foo-bar.git` from an earlier naming style) and the new path is empty, it **moves** that bare repo first so history is preserved, then `git remote set-url`. Use `--dry-run` to preview.
 
-`--repo` matches the workspace-relative path (preferred), a unique path suffix, or a unique basename. If several repos share the same leaf name, the command fails and asks for the full relative path.
+`--repo .` (or any `./` / `../` / absolute path) selects that directory, if the vault's scan includes it. A bare `--repo` name matches the workspace-relative path (preferred), a unique path suffix, or a unique basename. If several repos share the same leaf name, the command fails and asks for the full relative path. A path outside the vault, deeper than `maxDepth`, or excluded fails with that reason. It does not fall back to `git push`.
 
 `--scheduled` writes a timestamped log under `logDir` and prunes logs older than `logRetentionDays` (default 30; `0` = keep forever). No interactive pause; pair with your OS task scheduler. Prefer not alerting on exit `2`.
 
