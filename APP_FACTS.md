@@ -1,6 +1,6 @@
 ---
 app_facts_version: 0.1.0
-name: ingotvault
+name: IngotVault
 type: CLI tool
 status: active
 license: Apache-2.0
@@ -29,7 +29,7 @@ generated:
   inputs_fingerprint: 8f78c272c4bfa38a
 ---
 
-# ingotvault
+# IngotVault
 
 `CLI tool` · **active** · Apache-2.0
 
@@ -65,4 +65,4 @@ Curated stack label for this repository — aimed at an under-a-minute skim.
 ---
 *Generated with [AppFacts](https://appfacts.dev) · Scan `APP_FACTS.png` or open the [visual label][appfacts-label]*
 
-[appfacts-label]: https://appfacts.dev/v#af1.eNpVkcFqwzAMhl_F6Oym246-jcJgo-yS3kYZqqM5Xh3b2ErWUPLuw03adTcjPun7JZ9hAPUowWNHoMB6E3jA3jFI4DGW2mb7KjgEBxIyI_cZFKBmOxBIcFaTzwV7jqhbWj1VDzOoj6DO4NCbHk0BdmOkWicbWYo3HHB-g4TUe7YX_XtoqPrOIKENma03Re9C33w5THSZO7qlXNcwSWgoZlAfZ_CgLoHzdWosylro0EXrkG3wMMmFy6cFoBPpvojErhZza75hPwm9cZQWtqHowlhYDuIu1bSXkAd9S_EvcAJ13UVkyyTQNwJzpuLZSzj01jXlUBH1EQ19dujRUGmLPnZlxTZ0FOcTtswxq_X675uqhoaioRiy5ZDGO8pYbvtDpUO33iCjGzOvXkIytNpuN3czYPoFRJau4g
+[appfacts-label]: https://appfacts.dev/v#af1.eNpVkUFrwzAMhf-K0dlNtx19G4XBRtklZZdRhupojlfHNrGcNZT89-EmLd1NiE_vPUlnGEA9SvDYESh49SbwB2bHIIHHWHqb7avgEBxISIycEyhAzXYgkOCsJp8K9hxRt7R6qh5mUB9BncGhNxlNAXZjpFr3NrIUbzjgXIOEPnu2F_v30FD1k0BCGxJbb4q9C7n5dtjTRXd0S7uuYZLQUEygPs_gQV0Cp6tqLJa10KGL1iHb4GGSC5dOC0An0rkYiV0t5tF0w3579MZRv7ANRRfGwnIQd6mmvYQ06FuKf4F7UNddRLJMAn0jMCUqPnsJh2xdUw4VUR_R0FeHHg2VsehjV1ZsQ0dxPmHLHJNar21501DeVDU0FBuKIVkO_XhHGcttPlQ6dOsNMrox8eol9IZW2-3mTgOmP8dnrqI

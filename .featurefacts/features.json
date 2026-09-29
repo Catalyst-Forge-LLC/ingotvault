@@ -2,7 +2,7 @@
   "schemaVersion": "0.2.0",
   "scan_id": "scan-init",
   "product": {
-    "name": "ingotvault",
+    "name": "IngotVault",
     "type": "unknown",
     "status": "unknown"
   },

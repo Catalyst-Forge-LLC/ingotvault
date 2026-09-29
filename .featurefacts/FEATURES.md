@@ -1,4 +1,4 @@
-# Feature register: ingotvault
+# Feature register: IngotVault
 
 Scan `scan-init`. Candidates are not confirmed capabilities.
 

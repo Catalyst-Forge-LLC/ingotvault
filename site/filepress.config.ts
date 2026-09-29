@@ -30,6 +30,6 @@ export default defineFilepressConfig({
 		{ label: 'RSS', href: '/rss.xml' },
 		{ label: 'Topics', href: '/topics' },
 		{ label: 'GitHub', href: github, icon: 'github' },
-		{ label: 'AppFacts', href: 'https://appfacts.dev/v#af1.eNpVkUFrwzAMhf-K0dlttx19G4XBRtklvY0yVEdzvTq2sZSsoeS_D7dp2W5CfHrvSTrDAOZRQ8SOwICPLsmAfRDQIGOuvfXmVUlKATSwoPQMBtCKHwg0BG8pcsWeM9oDLZ6WD1fQHsGcIWB0PboKbMdMjS0-i1ZvOOC1Bg2lj-Iv9u-ppeU3g4ZDYvHRVfuQ-vYrYKGL7hjmdtPApKGlzGA-zhDBXALzTTVXy0bZ1GUfUHyKMOmZ49MM0IlsX43UtlHXUb5jPwWjC1RmtqUc0lhZSepPqmmngQd7T_EvcAFz20WxF1IYW4XMVH12Gva9D209VEZ7REefHUZ0VMdyzF1dsVBO7CWVsWqJZDarlfNy6PdLm7rVGgXDyLJ4ScXRYrNZr_68cfoFp6GiKQ' }
+		{ label: 'AppFacts', href: 'https://appfacts.dev/v#af1.eNpVkUFrwzAMhf-K0dlNtx19G4XBRtklZZdRhupojlfHNrGcNZT89-EmLd1NiE_vPUlnGEA9SvDYESh49SbwB2bHIIHHWHqb7avgEBxISIycEyhAzXYgkOCsJp8K9hxRt7R6qh5mUB9BncGhNxlNAXZjpFr3NrIUbzjgXIOEPnu2F_v30FD1k0BCGxJbb4q9C7n5dtjTRXd0S7uuYZLQUEygPs_gQV0Cp6tqLJa10KGL1iHb4GGSC5dOC0An0rkYiV0t5tF0w3579MZRv7ANRRfGwnIQd6mmvYQ06FuKf4F7UNddRLJMAn0jMCUqPnsJh2xdUw4VUR_R0FeHHg2VsehjV1ZsQ0dxPmHLHJNar21501DeVDU0FBuKIVkO_XhHGcttPlQ6dOsNMrox8eol9IZW2-3mTgOmP8dnrqI' }
 	]
 });
