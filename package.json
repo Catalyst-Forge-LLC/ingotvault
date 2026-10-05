@@ -1,6 +1,6 @@
 {
   "name": "ingotvault",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "IngotVault: spare remotes for a workspace of Git repos. Push covered local branches and tags to bare mirrors on a drive you control. Never touches origin.",
   "type": "module",
   "license": "Apache-2.0",
