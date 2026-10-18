@@ -4,7 +4,25 @@ description: "IngotVault captures local Git branches and tags in bare mirrors on
 order: 1
 ---
 
-<section class="value-hero" aria-label="IngotVault overview"><div class="value-intro"><p class="value-kind">Local Git backup command-line tool</p><h1>Keep a second copy of work you have not pushed.</h1><p class="value-lede">IngotVault captures local Git branches and tags in bare mirrors on a drive you control. Recover captured history after an unwanted edit or branch deletion, while leaving origin unchanged.</p><div class="cta-row"><a class="cta cta-primary" href="/install">Install IngotVault</a><a class="cta cta-secondary" href="#coverage-on-a-successful-run">Check what is covered</a></div><p class="value-limit">Uncommitted files and stashes are excluded by default. A second copy on the same disk does not protect against that disk failing.</p></div><figure class="value-proof"><figcaption>Illustrative example</figcaption><p><strong>Starting point</strong><br>A local branch is captured, then later deleted from the working repository.</p><div class="value-result"><p><strong>What you get</strong><br>The captured branch remains in the backup mirror.</p></div><p>Inspect the mirror and restore the history you intended to keep.</p><p class="value-note">Illustrative recovery. Only history captured by a successful run is available.</p></figure></section>
+<section class="value-hero" aria-label="IngotVault overview"><div class="value-intro"><div class="value-headline"><p class="value-kind">Local Git backup command-line tool</p><h1>Keep a second copy of work you have not pushed.</h1></div><div class="value-pitch"><p class="value-lede">IngotVault captures local Git branches and tags in bare mirrors on a drive you control. Recover captured history after an unwanted edit or branch deletion, while leaving origin unchanged.</p><div class="cta-row"><a class="cta cta-primary" href="/install">Install IngotVault</a><a class="cta cta-secondary" href="#recovery-example">See a named branch recovered</a></div><p class="value-limit">Uncommitted files and stashes are excluded by default. A second copy on the same disk does not protect against that disk failing.</p></div></div>
+<figure class="value-proof worked-example" id="recovery-example" tabindex="-1">
+<figcaption>Recover feature/parser after the local branch is deleted</figcaption>
+<p class="example-context">From the disposable restore demonstration. The branch and its committed parser.md were captured successfully before the local branch was deleted.</p>
+<section class="example-step" aria-labelledby="example-step-1">
+<h2 id="example-step-1"><span>1 · Successful capture</span> The unpushed branch has a second copy</h2>
+<pre><code>workspace/notes/&#10;  main&#10;  feature/parser → parser.md&#10;&#10;vault/notes.git&#10;  main&#10;  feature/parser → parser.md</code></pre><p><code>ingotvault</code> captured the covered refs; <code>ingotvault verify</code> reported <code>refs match</code>.</p>
+</section>
+<section class="example-step example-report" aria-labelledby="example-step-2">
+<h2 id="example-step-2"><span>2 · Later branch deletion</span> The vault still has the captured branch</h2>
+<pre><code>workspace/notes/&#10;  main&#10;&#10;vault/notes.git&#10;  main&#10;  feature/parser → parser.md</code></pre><p>The source no longer has <code>feature/parser</code>. Its captured history remains in the mirror.</p>
+</section>
+<section class="example-step" aria-labelledby="example-step-3">
+<h2 id="example-step-3"><span>3 · You recover the branch</span> Clone the mirror and switch to it</h2>
+<p>From the demonstration’s root folder:</p><pre><code>git clone ./vault/notes.git ./notes-restored&#10;cd ./notes-restored&#10;git switch feature/parser</code></pre><p class="example-payoff"><code>parser.md</code> is present again because its commit was on the captured branch.</p>
+</section>
+<p class="value-note">The demonstration’s uncommitted scratch.txt is absent from the restored clone: default capture did not include it. Only successfully captured history is recoverable.</p>
+<p class="example-links"><a href="/install#restore-a-lost-branch">Follow the complete restore demonstration</a></p>
+</figure></section>
 
 Captures run when you invoke the command or install the documented schedule. IngotVault does not hook `git push`.
 
