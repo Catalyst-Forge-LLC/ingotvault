@@ -1,12 +1,12 @@
 ---
-title: Back up local Git branches and tags, including work you haven't pushed.
-description: Push covered local Git history to bare mirrors on a drive you control. Never touches origin.
+title: "Keep a second copy of work you have not pushed."
+description: "IngotVault captures local Git branches and tags in bare mirrors on a drive you control. Recover captured history after an unwanted edit or branch deletion, while leaving origin unchanged."
 order: 1
 ---
 
-**IngotVault** scans a workspace, adds a local `backup` remote, and pushes local branches and tags into bare mirrors on a path you choose: USB, SD, NAS, or another disk. It never modifies `origin`.
+<section class="value-hero" aria-label="IngotVault overview"><div class="value-intro"><p class="value-kind">Local Git backup command-line tool</p><h1>Keep a second copy of work you have not pushed.</h1><p class="value-lede">IngotVault captures local Git branches and tags in bare mirrors on a drive you control. Recover captured history after an unwanted edit or branch deletion, while leaving origin unchanged.</p><div class="cta-row"><a class="cta cta-primary" href="/install">Install IngotVault</a><a class="cta cta-secondary" href="#coverage-on-a-successful-run">Check what is covered</a></div><p class="value-limit">Uncommitted files and stashes are excluded by default. A second copy on the same disk does not protect against that disk failing.</p></div><figure class="value-proof"><figcaption>Illustrative example</figcaption><p><strong>Starting point</strong><br>A local branch is captured, then later deleted from the working repository.</p><div class="value-result"><p><strong>What you get</strong><br>The captured branch remains in the backup mirror.</p></div><p>Inspect the mirror and restore the history you intended to keep.</p><p class="value-note">Illustrative recovery. Only history captured by a successful run is available.</p></figure></section>
 
-It does not run in the background, and it does not hook `git push`.
+Captures run when you invoke the command or install the documented schedule. IngotVault does not hook `git push`.
 
 ## Quick start
 
