@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="site/static/logo.png" alt="IngotVault" width="128" height="128" />
+  <img src="https://ingotvault.dev/logo.png" alt="IngotVault" width="128" height="128" />
 </p>
 
 # IngotVault
@@ -37,6 +37,18 @@ Unlike a file copy of a live `.git`, a push into a bare mirror is a **git** oper
 **Not for** one or two repos you already push everywhere with no unpushed branches.
 
 The product is the **guarantee set** below: what a late-night bash loop usually gets wrong. Readable form: [Safety on the site](https://ingotvault.dev/safety).
+
+## Recover a branch captured before it was lost
+
+The [disposable restore demonstration](docs/restore-demo.md) has a local `feature/parser` branch that was never pushed upstream.
+
+| Step | What survives |
+| --- | --- |
+| Run IngotVault successfully | The spare mirror holds `main` and `feature/parser` at their captured commits. |
+| The local `feature/parser` branch is later deleted | The mirror keeps that branch; default backups do not prune it. |
+| Clone the mirror to a separate folder and switch to `feature/parser` | `parser.md` is available again at the captured revision. |
+
+The demonstration also leaves `scratch.txt` uncommitted. It is absent from the restored clone because the default run never captured it. The benefit is recovery of covered work after a successful backup, with explicit limits on what was saved. [Run the isolated example and inspect its output](docs/restore-demo.md).
 
 ## Safety
 
