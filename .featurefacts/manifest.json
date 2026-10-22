@@ -1,0 +1,744 @@
+{
+  "schemaVersion": "0.2.0",
+  "scan_id": "scan-1afb10aa053c",
+  "tool": "featurefacts",
+  "tool_version": "0.2.6",
+  "generated_at": "2026-10-22T03:16:24.966Z",
+  "root": ".",
+  "status": "complete",
+  "scope": {
+    "include": [
+      "package.json",
+      "README.md",
+      "CHANGELOG.md",
+      "src/**",
+      "app/**",
+      "lib/**",
+      "bin/**",
+      "docs/**",
+      "tests/**",
+      "test/**"
+    ],
+    "exclude": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/.git/**",
+      "**/.env",
+      "**/.env.*",
+      "**/*.pem",
+      "**/*.key",
+      ".featurefacts/**",
+      "FEATURE_FACTS.md",
+      "site/**",
+      "examples/**",
+      "skill/**",
+      "tests/fixtures/**",
+      "docs/featurefacts-spec-v0.2.0-with-review/**",
+      "docs/haulout-*.md"
+    ],
+    "supported_ecosystems": [
+      "typescript-node"
+    ],
+    "files": [
+      {
+        "path": "docs/about.cold-eye.md",
+        "sha256": "0de6c14ad54d6e355f5ff4f5589c6360394b28d6b3f55a27a466813fde9d6561",
+        "bytes": 3897,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "markdown-document"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "markdown-document"
+        ]
+      },
+      {
+        "path": "docs/about.craftassay/2026-09-28/coverage.md",
+        "sha256": "39614c0c5d87c80617504dac24009c331061ce7845f88e45931d5c881cbbcc73",
+        "bytes": 2601,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "markdown-document"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "markdown-document"
+        ]
+      },
+      {
+        "path": "docs/about.craftassay/2026-09-28/findings.md",
+        "sha256": "3a8d3b7fe9fc98f3fecbf6a4bfe3e03da1457b2a7a5b0e41161dfe215109a772",
+        "bytes": 3224,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "markdown-document"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "markdown-document"
+        ]
+      },
+      {
+        "path": "docs/about.craftassay/2026-09-28/report.md",
+        "sha256": "af9b940620744bac16336fd09e4bd6cf38992dad5c733537c3b35226d55b0671",
+        "bytes": 6915,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "markdown-document"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "markdown-document"
+        ]
+      },
+      {
+        "path": "docs/about.craftassay/2026-09-28/scorecard.md",
+        "sha256": "5f17c361641d5cc09495616cfba9f7806d9d35908231c01e879adf143fc5d6c1",
+        "bytes": 1286,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "markdown-document"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "markdown-document"
+        ]
+      },
+      {
+        "path": "docs/encryption.md",
+        "sha256": "aaa208c188ca7b8636183a6ac06f037228f9aaaebd19b8b5e6f751d07677a5f3",
+        "bytes": 2457,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "markdown-document"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "markdown-document"
+        ]
+      },
+      {
+        "path": "docs/restore-demo.md",
+        "sha256": "74de6e5f1bcaf833d0d1fd53fee4a58e111f34c198ba1bde3d051b4506e08ebf",
+        "bytes": 3622,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "markdown-document"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "markdown-document"
+        ]
+      },
+      {
+        "path": "docs/smellcheck-overlay.md",
+        "sha256": "e8cfde1397a43132ff00bc81d29cfeb7bb90e96f97ac823ae9c174ca929e3682",
+        "bytes": 2391,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "markdown-document"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "markdown-document"
+        ]
+      },
+      {
+        "path": "package.json",
+        "sha256": "7ed9efe03ca79535f60ab185d67081f0a11804aba314fd2b0e9386360dcc5a26",
+        "bytes": 1674,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "README.md",
+        "sha256": "fa8d779b14a8a337b6307a5ee9375a0346fa72bafdafb1d0dc82176dedde0002",
+        "bytes": 22999,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "markdown-document"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "markdown-document"
+        ]
+      },
+      {
+        "path": "src/cli.ts",
+        "sha256": "ec25dde8e071cc0222c2505e1b535289643cc0e25a844890f1c173506682d2d2",
+        "bytes": 8626,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/config.ts",
+        "sha256": "15a43ba09f6af24b46f3fa50346487ca9abded526ae71c60706cb7397985a2f6",
+        "bytes": 14094,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/discover.ts",
+        "sha256": "2417c8ec2f35a040d4668893765ca0470840674e044a23a61f82ab5dffc4257f",
+        "bytes": 5293,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/ensureBackup.ts",
+        "sha256": "ca6e04bea548034bed8230650bc6f1161548d6ba1ccf8149c89d58b9fe90b995",
+        "bytes": 4567,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/git.ts",
+        "sha256": "4f454191eeba57a928846c2f34b5f9f97e928e46e0b932973e5ba8c01791f3e6",
+        "bytes": 1845,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/helm-bridge.test.ts",
+        "sha256": "5233312cbc35f624bb0ace6241acd180257f88920d1a5d070599337bca923107",
+        "bytes": 463,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-test"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-test"
+        ]
+      },
+      {
+        "path": "src/init.ts",
+        "sha256": "957354825edc8a68911a87a5fc0e0a62f0fed962f1f3374fda39c95b377fa69d",
+        "bytes": 3136,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/integration.test.ts",
+        "sha256": "2b2fdf104639472efe321bd099d5542f7f5f3e3904475d21605b2c85b7040333",
+        "bytes": 5866,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-test"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-test"
+        ]
+      },
+      {
+        "path": "src/lock.ts",
+        "sha256": "9e3ab40dec76ffc0415160450131715cdfb9df875361b9bd663fa0a2fb350238",
+        "bytes": 2932,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/log.ts",
+        "sha256": "8f16176f1092c78bf0cc5ccff19d308e573fc722cdece5ecdb6aa2ff4d6e167a",
+        "bytes": 1739,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/paths.ts",
+        "sha256": "00914b1f7137b2dfb45ac306559794a4da699d82b718584d9fec7e8b4fc6a939",
+        "bytes": 699,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/publish-gate.test.ts",
+        "sha256": "c55afff52feec52dba3e0b797ad092005a43b23ccc1765b0960223d9e0a61e67",
+        "bytes": 1432,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-test"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-test"
+        ]
+      },
+      {
+        "path": "src/push.ts",
+        "sha256": "5497e0e6d097c06e3135df6652838a179f68b9f988f14a76483309937a468784",
+        "bytes": 16599,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/relink.test.ts",
+        "sha256": "58d84fb9a4246ddd022cb18595cf3918b127f7d86e7cfbcd5d2477a3d8908edb",
+        "bytes": 3142,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-test"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-test"
+        ]
+      },
+      {
+        "path": "src/relink.ts",
+        "sha256": "85b1930683a0564309bf261a5a40ea71c37b69e7c6fc62ae5d8788542a4caef7",
+        "bytes": 5577,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/repo-select.test.ts",
+        "sha256": "c7f234138080be05f0db25acdd463fe2945eaf4b109168af3f293c81dbaaff60",
+        "bytes": 3158,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-test"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-test"
+        ]
+      },
+      {
+        "path": "src/safeDirs.ts",
+        "sha256": "cf738c0ac7f1d616314c3f56b7d42fb20a09e0d5daa2796ea2c7876920fd791b",
+        "bytes": 2518,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/schedule.test.ts",
+        "sha256": "ffe81a0daa3098288837d6186c04feea17aca24f484032126261b087e93a6922",
+        "bytes": 2263,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-test"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-test"
+        ]
+      },
+      {
+        "path": "src/schedule.ts",
+        "sha256": "b4fc6124e1b0f5e483fb5dab71df2977f1c9c4e3c8e4718d62d21e3b4d03aaf8",
+        "bytes": 13663,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/vault.test.ts",
+        "sha256": "2fb860c11b8eeb8daabc85d06423fa61b847d16b5e154c28be9b6ae04cd537c4",
+        "bytes": 1915,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-test"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-test"
+        ]
+      },
+      {
+        "path": "src/vault.ts",
+        "sha256": "dd4d851f71b8e248b05af122df3456e08ac7dd8d14d0053a4c58d5cfea9424a7",
+        "bytes": 2419,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/verify.ts",
+        "sha256": "b7ad25f1626591ee77dd5f3f48c35a43b9d302dda2a255ed4df57c96bd7186d6",
+        "bytes": 6544,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      },
+      {
+        "path": "src/wip.test.ts",
+        "sha256": "30d991056550646890c8a46795eb06979b5fd2b2ee67abb07732972a846821f9",
+        "bytes": 1747,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-test"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-test"
+        ]
+      },
+      {
+        "path": "src/wip.ts",
+        "sha256": "402fd3e651e1c6330f07ffc1fabb5ce1ea536a367822df8dd22805643f71be0c",
+        "bytes": 8240,
+        "eligible_adapter_ids": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ],
+        "inspected_by": [
+          "typescript-tree",
+          "typescript-node-surface"
+        ]
+      }
+    ],
+    "exclusions": [
+      {
+        "path": ".featurefacts",
+        "reason": "exclude-pattern"
+      },
+      {
+        "path": ".git",
+        "reason": "exclude-pattern"
+      },
+      {
+        "path": "dist",
+        "reason": "exclude-pattern"
+      },
+      {
+        "path": "FEATURE_FACTS.md",
+        "reason": "exclude-pattern"
+      },
+      {
+        "path": "node_modules",
+        "reason": "exclude-pattern"
+      },
+      {
+        "path": "site",
+        "reason": "exclude-pattern"
+      }
+    ]
+  },
+  "adapters": [
+    {
+      "id": "typescript-tree",
+      "version": "0.2.0",
+      "kind": "tree",
+      "state": "completed",
+      "eligible_files": [
+        "docs/about.cold-eye.md",
+        "docs/about.craftassay/2026-09-28/coverage.md",
+        "docs/about.craftassay/2026-09-28/findings.md",
+        "docs/about.craftassay/2026-09-28/report.md",
+        "docs/about.craftassay/2026-09-28/scorecard.md",
+        "docs/encryption.md",
+        "docs/restore-demo.md",
+        "docs/smellcheck-overlay.md",
+        "package.json",
+        "README.md",
+        "src/cli.ts",
+        "src/config.ts",
+        "src/discover.ts",
+        "src/ensureBackup.ts",
+        "src/git.ts",
+        "src/helm-bridge.test.ts",
+        "src/init.ts",
+        "src/integration.test.ts",
+        "src/lock.ts",
+        "src/log.ts",
+        "src/paths.ts",
+        "src/publish-gate.test.ts",
+        "src/push.ts",
+        "src/relink.test.ts",
+        "src/relink.ts",
+        "src/repo-select.test.ts",
+        "src/safeDirs.ts",
+        "src/schedule.test.ts",
+        "src/schedule.ts",
+        "src/vault.test.ts",
+        "src/vault.ts",
+        "src/verify.ts",
+        "src/wip.test.ts",
+        "src/wip.ts"
+      ],
+      "inspected_files": [
+        "docs/about.cold-eye.md",
+        "docs/about.craftassay/2026-09-28/coverage.md",
+        "docs/about.craftassay/2026-09-28/findings.md",
+        "docs/about.craftassay/2026-09-28/report.md",
+        "docs/about.craftassay/2026-09-28/scorecard.md",
+        "docs/encryption.md",
+        "docs/restore-demo.md",
+        "docs/smellcheck-overlay.md",
+        "package.json",
+        "README.md",
+        "src/cli.ts",
+        "src/config.ts",
+        "src/discover.ts",
+        "src/ensureBackup.ts",
+        "src/git.ts",
+        "src/helm-bridge.test.ts",
+        "src/init.ts",
+        "src/integration.test.ts",
+        "src/lock.ts",
+        "src/log.ts",
+        "src/paths.ts",
+        "src/publish-gate.test.ts",
+        "src/push.ts",
+        "src/relink.test.ts",
+        "src/relink.ts",
+        "src/repo-select.test.ts",
+        "src/safeDirs.ts",
+        "src/schedule.test.ts",
+        "src/schedule.ts",
+        "src/vault.test.ts",
+        "src/vault.ts",
+        "src/verify.ts",
+        "src/wip.test.ts",
+        "src/wip.ts"
+      ],
+      "diagnostics": []
+    },
+    {
+      "id": "typescript-node-surface",
+      "version": "0.2.2",
+      "kind": "surface",
+      "state": "completed",
+      "eligible_files": [
+        "package.json",
+        "src/cli.ts",
+        "src/config.ts",
+        "src/discover.ts",
+        "src/ensureBackup.ts",
+        "src/git.ts",
+        "src/init.ts",
+        "src/lock.ts",
+        "src/log.ts",
+        "src/paths.ts",
+        "src/push.ts",
+        "src/relink.ts",
+        "src/safeDirs.ts",
+        "src/schedule.ts",
+        "src/vault.ts",
+        "src/verify.ts",
+        "src/wip.ts"
+      ],
+      "inspected_files": [
+        "package.json",
+        "src/cli.ts",
+        "src/config.ts",
+        "src/discover.ts",
+        "src/ensureBackup.ts",
+        "src/git.ts",
+        "src/init.ts",
+        "src/lock.ts",
+        "src/log.ts",
+        "src/paths.ts",
+        "src/push.ts",
+        "src/relink.ts",
+        "src/safeDirs.ts",
+        "src/schedule.ts",
+        "src/vault.ts",
+        "src/verify.ts",
+        "src/wip.ts"
+      ],
+      "diagnostics": []
+    },
+    {
+      "id": "markdown-document",
+      "version": "0.2.0",
+      "kind": "document",
+      "state": "completed",
+      "eligible_files": [
+        "docs/about.cold-eye.md",
+        "docs/about.craftassay/2026-09-28/coverage.md",
+        "docs/about.craftassay/2026-09-28/findings.md",
+        "docs/about.craftassay/2026-09-28/report.md",
+        "docs/about.craftassay/2026-09-28/scorecard.md",
+        "docs/encryption.md",
+        "docs/restore-demo.md",
+        "docs/smellcheck-overlay.md",
+        "README.md"
+      ],
+      "inspected_files": [
+        "docs/about.cold-eye.md",
+        "docs/about.craftassay/2026-09-28/coverage.md",
+        "docs/about.craftassay/2026-09-28/findings.md",
+        "docs/about.craftassay/2026-09-28/report.md",
+        "docs/about.craftassay/2026-09-28/scorecard.md",
+        "docs/encryption.md",
+        "docs/restore-demo.md",
+        "docs/smellcheck-overlay.md",
+        "README.md"
+      ],
+      "diagnostics": []
+    },
+    {
+      "id": "typescript-test",
+      "version": "0.2.0",
+      "kind": "test",
+      "state": "completed",
+      "eligible_files": [
+        "src/helm-bridge.test.ts",
+        "src/integration.test.ts",
+        "src/publish-gate.test.ts",
+        "src/relink.test.ts",
+        "src/repo-select.test.ts",
+        "src/schedule.test.ts",
+        "src/vault.test.ts",
+        "src/wip.test.ts"
+      ],
+      "inspected_files": [
+        "src/helm-bridge.test.ts",
+        "src/integration.test.ts",
+        "src/publish-gate.test.ts",
+        "src/relink.test.ts",
+        "src/repo-select.test.ts",
+        "src/schedule.test.ts",
+        "src/vault.test.ts",
+        "src/wip.test.ts"
+      ],
+      "diagnostics": []
+    }
+  ],
+  "rules_version": "featurefacts-core@0.2.0",
+  "fingerprints": {
+    "source": "f96647d18b3f667caa4e727c7f2728ed58b67908af92954b53726da19652985a",
+    "config": "0778aff434cfcbd601f90006830e8eda97bd08acd9ccb215b657aadd1520a3ed",
+    "adapters": "9a62745dc3fd15d7c60f9f44d5f62ca8329b8c59dbe3360efbdd40c289da135e",
+    "rules": "c7f728a22bf07a27d20f2b0ba60c59d2528cf27f6b218a22272fcbbe465f8971",
+    "registry": "57ab8899323860e58f7eedd73652dc703477cff86e394e60336d84b82e6ba4bf",
+    "projection": "aac806054227e366834df8cbc78cd9cbd4ffe29443b0ff878f09b997c87674a7"
+  },
+  "artifacts": [
+    {
+      "path": ".featurefacts/config.yaml",
+      "sha256": "4b9aa8ecb044467d074ab05dc5313864c0ab7e59ac62581074f0323a01024db2"
+    },
+    {
+      "path": ".featurefacts/docs-index.json",
+      "sha256": "471db75923eb9a69be12cf8ac69db32c6dd90189468a95a218d330fd4776b215"
+    },
+    {
+      "path": ".featurefacts/features.json",
+      "sha256": "ec3c49557d56075f50cd4ebf95a2de27a590c6fc82abc8899d539fee4687e259"
+    },
+    {
+      "path": ".featurefacts/FEATURES.md",
+      "sha256": "1a665433a59bb49ac4b7411c8783dfda55b363a5fef30b6867fa13833163d7f2"
+    },
+    {
+      "path": ".featurefacts/features.yaml",
+      "sha256": "a20a8fac46efba595e81446fd1b9f0e712c63f5edb085fdb1586589431f52417"
+    },
+    {
+      "path": ".featurefacts/gaps.yaml",
+      "sha256": "de94fbb4d29d3db0521612754f1a249deb05cafe9d9d249c97ceddab730cb51b"
+    },
+    {
+      "path": ".featurefacts/surfaces.json",
+      "sha256": "9ebea5d9e6a9d730d7d24707be0778603bb89421792220d7b3a88f474686813b"
+    },
+    {
+      "path": ".featurefacts/test-index.json",
+      "sha256": "9f608d09ba900ee38e3360998f3a8dae39020ee92101a227b3f4f83b42c2626d"
+    },
+    {
+      "path": "FEATURE_FACTS.md",
+      "sha256": "1c5a6bc3586ce0090f23f149c33f50ed50a449586a6e9789e40506074573d10e"
+    }
+  ],
+  "diagnostics": []
+}

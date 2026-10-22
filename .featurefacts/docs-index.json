@@ -1,6 +1,162 @@
 {
   "schemaVersion": "0.2.0",
-  "scan_id": "scan-init",
+  "scan_id": "scan-1afb10aa053c",
   "kind": "docs",
-  "assessments": []
+  "assessments": [
+    {
+      "feature_id": "cmd-init",
+      "assessment": {
+        "state": "partial",
+        "result": "linked-evidence",
+        "adapter_ids": [
+          "markdown-document"
+        ],
+        "links": [
+          {
+            "surface_id": "doc-docs-about-cold-eye",
+            "association": "static-reference"
+          },
+          {
+            "surface_id": "doc-docs-about-craftassay-2026-09-28-coverage",
+            "association": "static-reference"
+          },
+          {
+            "surface_id": "doc-docs-about-craftassay-2026-09-28-report",
+            "association": "static-reference"
+          },
+          {
+            "surface_id": "doc-docs-restore-demo",
+            "association": "static-reference"
+          },
+          {
+            "surface_id": "doc-readme",
+            "association": "static-reference"
+          }
+        ],
+        "reason": "A document names this capability in a heading or code span. That is a sign. It does not mean the documentation is adequate."
+      }
+    },
+    {
+      "feature_id": "cmd-list",
+      "assessment": {
+        "state": "partial",
+        "result": "linked-evidence",
+        "adapter_ids": [
+          "markdown-document"
+        ],
+        "links": [
+          {
+            "surface_id": "doc-docs-about-cold-eye",
+            "association": "static-reference"
+          },
+          {
+            "surface_id": "doc-readme",
+            "association": "static-reference"
+          }
+        ],
+        "reason": "A document names this capability in a heading or code span. That is a sign. It does not mean the documentation is adequate."
+      }
+    },
+    {
+      "feature_id": "cmd-relink",
+      "assessment": {
+        "state": "partial",
+        "result": "linked-evidence",
+        "adapter_ids": [
+          "markdown-document"
+        ],
+        "links": [
+          {
+            "surface_id": "doc-readme",
+            "association": "static-reference"
+          }
+        ],
+        "reason": "A document names this capability in a heading or code span. That is a sign. It does not mean the documentation is adequate."
+      }
+    },
+    {
+      "feature_id": "cmd-run",
+      "assessment": {
+        "state": "unassessed",
+        "result": "unknown",
+        "adapter_ids": [
+          "markdown-document"
+        ],
+        "links": [],
+        "reason": "No explicit documentation association. Filename resemblance is not an accepted link."
+      }
+    },
+    {
+      "feature_id": "cmd-safe-dirs",
+      "assessment": {
+        "state": "unassessed",
+        "result": "unknown",
+        "adapter_ids": [
+          "markdown-document"
+        ],
+        "links": [],
+        "reason": "No explicit documentation association. Filename resemblance is not an accepted link."
+      }
+    },
+    {
+      "feature_id": "cmd-schedule",
+      "assessment": {
+        "state": "partial",
+        "result": "linked-evidence",
+        "adapter_ids": [
+          "markdown-document"
+        ],
+        "links": [
+          {
+            "surface_id": "doc-readme",
+            "association": "static-reference"
+          }
+        ],
+        "reason": "A document names this capability in a heading or code span. That is a sign. It does not mean the documentation is adequate."
+      }
+    },
+    {
+      "feature_id": "cmd-verify",
+      "assessment": {
+        "state": "partial",
+        "result": "linked-evidence",
+        "adapter_ids": [
+          "markdown-document"
+        ],
+        "links": [
+          {
+            "surface_id": "doc-docs-about-cold-eye",
+            "association": "static-reference"
+          },
+          {
+            "surface_id": "doc-docs-about-craftassay-2026-09-28-coverage",
+            "association": "static-reference"
+          },
+          {
+            "surface_id": "doc-docs-about-craftassay-2026-09-28-report",
+            "association": "static-reference"
+          },
+          {
+            "surface_id": "doc-docs-restore-demo",
+            "association": "static-reference"
+          },
+          {
+            "surface_id": "doc-readme",
+            "association": "static-reference"
+          }
+        ],
+        "reason": "A document names this capability in a heading or code span. That is a sign. It does not mean the documentation is adequate."
+      }
+    },
+    {
+      "feature_id": "ingotvault",
+      "assessment": {
+        "state": "unassessed",
+        "result": "unknown",
+        "adapter_ids": [],
+        "links": [],
+        "reason": "Documentation was not assessed."
+      }
+    }
+  ]
 }

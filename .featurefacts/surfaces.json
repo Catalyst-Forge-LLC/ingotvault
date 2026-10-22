@@ -1,5 +1,453 @@
 {
   "schemaVersion": "0.2.0",
-  "scan_id": "scan-init",
-  "surfaces": []
+  "scan_id": "scan-1afb10aa053c",
+  "surfaces": [
+    {
+      "id": "cmd-ingotvault",
+      "kind": "command",
+      "ref": "bin ingotvault",
+      "title": "ingotvault",
+      "locator": {
+        "path": "package.json",
+        "content_sha256": "7ed9efe03ca79535f60ab185d67081f0a11804aba314fd2b0e9386360dcc5a26",
+        "symbol": "bin.ingotvault"
+      },
+      "provenance": {
+        "adapter_id": "typescript-node-surface",
+        "adapter_version": "0.2.2",
+        "origin": "deterministic",
+        "method": "package-json-bin"
+      },
+      "state": "current"
+    },
+    {
+      "id": "cmd-init",
+      "kind": "command",
+      "ref": "init",
+      "title": "init",
+      "locator": {
+        "path": "src/cli.ts",
+        "content_sha256": "ec25dde8e071cc0222c2505e1b535289643cc0e25a844890f1c173506682d2d2",
+        "start_line": 30,
+        "end_line": 30,
+        "symbol": "init"
+      },
+      "provenance": {
+        "adapter_id": "typescript-node-surface",
+        "adapter_version": "0.2.2",
+        "origin": "deterministic",
+        "method": "argv-command"
+      },
+      "state": "current"
+    },
+    {
+      "id": "cmd-list",
+      "kind": "command",
+      "ref": "list",
+      "title": "list",
+      "locator": {
+        "path": "src/cli.ts",
+        "content_sha256": "ec25dde8e071cc0222c2505e1b535289643cc0e25a844890f1c173506682d2d2",
+        "start_line": 116,
+        "end_line": 116,
+        "symbol": "list"
+      },
+      "provenance": {
+        "adapter_id": "typescript-node-surface",
+        "adapter_version": "0.2.2",
+        "origin": "deterministic",
+        "method": "argv-command"
+      },
+      "state": "current"
+    },
+    {
+      "id": "cmd-relink",
+      "kind": "command",
+      "ref": "relink",
+      "title": "relink",
+      "locator": {
+        "path": "src/cli.ts",
+        "content_sha256": "ec25dde8e071cc0222c2505e1b535289643cc0e25a844890f1c173506682d2d2",
+        "start_line": 169,
+        "end_line": 169,
+        "symbol": "relink"
+      },
+      "provenance": {
+        "adapter_id": "typescript-node-surface",
+        "adapter_version": "0.2.2",
+        "origin": "deterministic",
+        "method": "argv-command"
+      },
+      "state": "current"
+    },
+    {
+      "id": "cmd-run",
+      "kind": "command",
+      "ref": "run",
+      "title": "run",
+      "locator": {
+        "path": "src/cli.ts",
+        "content_sha256": "ec25dde8e071cc0222c2505e1b535289643cc0e25a844890f1c173506682d2d2",
+        "start_line": 87,
+        "end_line": 87,
+        "symbol": "run"
+      },
+      "provenance": {
+        "adapter_id": "typescript-node-surface",
+        "adapter_version": "0.2.2",
+        "origin": "deterministic",
+        "method": "argv-command"
+      },
+      "state": "current"
+    },
+    {
+      "id": "cmd-safe-dirs",
+      "kind": "command",
+      "ref": "safe-dirs",
+      "title": "safe-dirs",
+      "locator": {
+        "path": "src/cli.ts",
+        "content_sha256": "ec25dde8e071cc0222c2505e1b535289643cc0e25a844890f1c173506682d2d2",
+        "start_line": 50,
+        "end_line": 50,
+        "symbol": "safe-dirs"
+      },
+      "provenance": {
+        "adapter_id": "typescript-node-surface",
+        "adapter_version": "0.2.2",
+        "origin": "deterministic",
+        "method": "argv-command"
+      },
+      "state": "current"
+    },
+    {
+      "id": "cmd-schedule",
+      "kind": "command",
+      "ref": "schedule",
+      "title": "schedule",
+      "locator": {
+        "path": "src/cli.ts",
+        "content_sha256": "ec25dde8e071cc0222c2505e1b535289643cc0e25a844890f1c173506682d2d2",
+        "start_line": 55,
+        "end_line": 55,
+        "symbol": "schedule"
+      },
+      "provenance": {
+        "adapter_id": "typescript-node-surface",
+        "adapter_version": "0.2.2",
+        "origin": "deterministic",
+        "method": "argv-command"
+      },
+      "state": "current"
+    },
+    {
+      "id": "cmd-verify",
+      "kind": "command",
+      "ref": "verify",
+      "title": "verify",
+      "locator": {
+        "path": "src/cli.ts",
+        "content_sha256": "ec25dde8e071cc0222c2505e1b535289643cc0e25a844890f1c173506682d2d2",
+        "start_line": 85,
+        "end_line": 85,
+        "symbol": "verify"
+      },
+      "provenance": {
+        "adapter_id": "typescript-node-surface",
+        "adapter_version": "0.2.2",
+        "origin": "deterministic",
+        "method": "argv-command"
+      },
+      "state": "current"
+    },
+    {
+      "id": "doc-docs-about-cold-eye",
+      "kind": "document",
+      "ref": "docs/about.cold-eye.md",
+      "title": "docs/about.cold-eye.md",
+      "locator": {
+        "path": "docs/about.cold-eye.md",
+        "content_sha256": "0de6c14ad54d6e355f5ff4f5589c6360394b28d6b3f55a27a466813fde9d6561"
+      },
+      "provenance": {
+        "adapter_id": "markdown-document",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "document-file"
+      },
+      "state": "current"
+    },
+    {
+      "id": "doc-docs-about-craftassay-2026-09-28-coverage",
+      "kind": "document",
+      "ref": "docs/about.craftassay/2026-09-28/coverage.md",
+      "title": "docs/about.craftassay/2026-09-28/coverage.md",
+      "locator": {
+        "path": "docs/about.craftassay/2026-09-28/coverage.md",
+        "content_sha256": "39614c0c5d87c80617504dac24009c331061ce7845f88e45931d5c881cbbcc73"
+      },
+      "provenance": {
+        "adapter_id": "markdown-document",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "document-file"
+      },
+      "state": "current"
+    },
+    {
+      "id": "doc-docs-about-craftassay-2026-09-28-findings",
+      "kind": "document",
+      "ref": "docs/about.craftassay/2026-09-28/findings.md",
+      "title": "docs/about.craftassay/2026-09-28/findings.md",
+      "locator": {
+        "path": "docs/about.craftassay/2026-09-28/findings.md",
+        "content_sha256": "3a8d3b7fe9fc98f3fecbf6a4bfe3e03da1457b2a7a5b0e41161dfe215109a772"
+      },
+      "provenance": {
+        "adapter_id": "markdown-document",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "document-file"
+      },
+      "state": "current"
+    },
+    {
+      "id": "doc-docs-about-craftassay-2026-09-28-report",
+      "kind": "document",
+      "ref": "docs/about.craftassay/2026-09-28/report.md",
+      "title": "docs/about.craftassay/2026-09-28/report.md",
+      "locator": {
+        "path": "docs/about.craftassay/2026-09-28/report.md",
+        "content_sha256": "af9b940620744bac16336fd09e4bd6cf38992dad5c733537c3b35226d55b0671"
+      },
+      "provenance": {
+        "adapter_id": "markdown-document",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "document-file"
+      },
+      "state": "current"
+    },
+    {
+      "id": "doc-docs-about-craftassay-2026-09-28-scorecard",
+      "kind": "document",
+      "ref": "docs/about.craftassay/2026-09-28/scorecard.md",
+      "title": "docs/about.craftassay/2026-09-28/scorecard.md",
+      "locator": {
+        "path": "docs/about.craftassay/2026-09-28/scorecard.md",
+        "content_sha256": "5f17c361641d5cc09495616cfba9f7806d9d35908231c01e879adf143fc5d6c1"
+      },
+      "provenance": {
+        "adapter_id": "markdown-document",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "document-file"
+      },
+      "state": "current"
+    },
+    {
+      "id": "doc-docs-encryption",
+      "kind": "document",
+      "ref": "docs/encryption.md",
+      "title": "docs/encryption.md",
+      "locator": {
+        "path": "docs/encryption.md",
+        "content_sha256": "aaa208c188ca7b8636183a6ac06f037228f9aaaebd19b8b5e6f751d07677a5f3"
+      },
+      "provenance": {
+        "adapter_id": "markdown-document",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "document-file"
+      },
+      "state": "current"
+    },
+    {
+      "id": "doc-docs-restore-demo",
+      "kind": "document",
+      "ref": "docs/restore-demo.md",
+      "title": "docs/restore-demo.md",
+      "locator": {
+        "path": "docs/restore-demo.md",
+        "content_sha256": "74de6e5f1bcaf833d0d1fd53fee4a58e111f34c198ba1bde3d051b4506e08ebf"
+      },
+      "provenance": {
+        "adapter_id": "markdown-document",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "document-file"
+      },
+      "state": "current"
+    },
+    {
+      "id": "doc-docs-smellcheck-overlay",
+      "kind": "document",
+      "ref": "docs/smellcheck-overlay.md",
+      "title": "docs/smellcheck-overlay.md",
+      "locator": {
+        "path": "docs/smellcheck-overlay.md",
+        "content_sha256": "e8cfde1397a43132ff00bc81d29cfeb7bb90e96f97ac823ae9c174ca929e3682"
+      },
+      "provenance": {
+        "adapter_id": "markdown-document",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "document-file"
+      },
+      "state": "current"
+    },
+    {
+      "id": "doc-readme",
+      "kind": "document",
+      "ref": "README.md",
+      "title": "README.md",
+      "locator": {
+        "path": "README.md",
+        "content_sha256": "fa8d779b14a8a337b6307a5ee9375a0346fa72bafdafb1d0dc82176dedde0002"
+      },
+      "provenance": {
+        "adapter_id": "markdown-document",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "document-file"
+      },
+      "state": "current"
+    },
+    {
+      "id": "test-src-helm-bridge-test",
+      "kind": "test",
+      "ref": "src/helm-bridge.test.ts",
+      "title": "src/helm-bridge.test.ts",
+      "locator": {
+        "path": "src/helm-bridge.test.ts",
+        "content_sha256": "5233312cbc35f624bb0ace6241acd180257f88920d1a5d070599337bca923107"
+      },
+      "provenance": {
+        "adapter_id": "typescript-test",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "test-filename"
+      },
+      "state": "current"
+    },
+    {
+      "id": "test-src-integration-test",
+      "kind": "test",
+      "ref": "src/integration.test.ts",
+      "title": "src/integration.test.ts",
+      "locator": {
+        "path": "src/integration.test.ts",
+        "content_sha256": "2b2fdf104639472efe321bd099d5542f7f5f3e3904475d21605b2c85b7040333"
+      },
+      "provenance": {
+        "adapter_id": "typescript-test",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "test-filename"
+      },
+      "state": "current"
+    },
+    {
+      "id": "test-src-publish-gate-test",
+      "kind": "test",
+      "ref": "src/publish-gate.test.ts",
+      "title": "src/publish-gate.test.ts",
+      "locator": {
+        "path": "src/publish-gate.test.ts",
+        "content_sha256": "c55afff52feec52dba3e0b797ad092005a43b23ccc1765b0960223d9e0a61e67"
+      },
+      "provenance": {
+        "adapter_id": "typescript-test",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "test-filename"
+      },
+      "state": "current"
+    },
+    {
+      "id": "test-src-relink-test",
+      "kind": "test",
+      "ref": "src/relink.test.ts",
+      "title": "src/relink.test.ts",
+      "locator": {
+        "path": "src/relink.test.ts",
+        "content_sha256": "58d84fb9a4246ddd022cb18595cf3918b127f7d86e7cfbcd5d2477a3d8908edb"
+      },
+      "provenance": {
+        "adapter_id": "typescript-test",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "test-filename"
+      },
+      "state": "current"
+    },
+    {
+      "id": "test-src-repo-select-test",
+      "kind": "test",
+      "ref": "src/repo-select.test.ts",
+      "title": "src/repo-select.test.ts",
+      "locator": {
+        "path": "src/repo-select.test.ts",
+        "content_sha256": "c7f234138080be05f0db25acdd463fe2945eaf4b109168af3f293c81dbaaff60"
+      },
+      "provenance": {
+        "adapter_id": "typescript-test",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "test-filename"
+      },
+      "state": "current"
+    },
+    {
+      "id": "test-src-schedule-test",
+      "kind": "test",
+      "ref": "src/schedule.test.ts",
+      "title": "src/schedule.test.ts",
+      "locator": {
+        "path": "src/schedule.test.ts",
+        "content_sha256": "ffe81a0daa3098288837d6186c04feea17aca24f484032126261b087e93a6922"
+      },
+      "provenance": {
+        "adapter_id": "typescript-test",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "test-filename"
+      },
+      "state": "current"
+    },
+    {
+      "id": "test-src-vault-test",
+      "kind": "test",
+      "ref": "src/vault.test.ts",
+      "title": "src/vault.test.ts",
+      "locator": {
+        "path": "src/vault.test.ts",
+        "content_sha256": "2fb860c11b8eeb8daabc85d06423fa61b847d16b5e154c28be9b6ae04cd537c4"
+      },
+      "provenance": {
+        "adapter_id": "typescript-test",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "test-filename"
+      },
+      "state": "current"
+    },
+    {
+      "id": "test-src-wip-test",
+      "kind": "test",
+      "ref": "src/wip.test.ts",
+      "title": "src/wip.test.ts",
+      "locator": {
+        "path": "src/wip.test.ts",
+        "content_sha256": "30d991056550646890c8a46795eb06979b5fd2b2ee67abb07732972a846821f9"
+      },
+      "provenance": {
+        "adapter_id": "typescript-test",
+        "adapter_version": "0.2.0",
+        "origin": "deterministic",
+        "method": "test-filename"
+      },
+      "state": "current"
+    }
+  ]
 }

@@ -1,9 +1,15 @@
 # Feature register: IngotVault
 
-Scan `scan-init`. Candidates are not confirmed capabilities.
+Scan `scan-1afb10aa053c`. Candidates are not confirmed capabilities.
 
 | ID | Name | Recognition | Lifecycle | Availability | Docs | Tests | Observation |
 |---|---|---|---|---|---|---|---|
-
-No feature records yet. Run a scan, then review candidates before confirming anything.
+| `cmd-init` | Init | confirmed | implemented | unknown | linked-evidence | unknown | current |
+| `cmd-list` | List | confirmed | implemented | unknown | linked-evidence | unknown | current |
+| `cmd-relink` | Relink | confirmed | implemented | unknown | linked-evidence | linked-evidence | current |
+| `cmd-run` | Run | confirmed | implemented | unknown | unknown | unknown | current |
+| `cmd-safe-dirs` | Safe Dirs | confirmed | implemented | unknown | unknown | unknown | current |
+| `cmd-schedule` | Schedule | confirmed | implemented | unknown | linked-evidence | linked-evidence | current |
+| `cmd-verify` | Verify | confirmed | implemented | unknown | linked-evidence | unknown | current |
+| `ingotvault` | ingotvault | candidate | unknown | unknown | unknown | unknown | stale |
 
