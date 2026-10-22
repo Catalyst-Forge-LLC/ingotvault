@@ -1,6 +1,6 @@
 # Feature register: IngotVault
 
-Scan `scan-f6ac1c539c36`. Candidates are not confirmed capabilities.
+Scan `scan-34a043fed82a`. Candidates are not confirmed capabilities.
 
 | ID | Name | Recognition | Lifecycle | Availability | Docs | Tests | Observation |
 |---|---|---|---|---|---|---|---|

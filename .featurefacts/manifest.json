@@ -1,9 +1,9 @@
 {
   "schemaVersion": "0.2.0",
-  "scan_id": "scan-f6ac1c539c36",
+  "scan_id": "scan-34a043fed82a",
   "tool": "featurefacts",
   "tool_version": "0.2.6",
-  "generated_at": "2026-10-22T08:55:02.638-04:00",
+  "generated_at": "2026-10-22T13:48:27.305-04:00",
   "root": ".",
   "status": "complete",
   "scope": {
@@ -593,7 +593,7 @@
     },
     {
       "id": "typescript-node-surface",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "kind": "surface",
       "state": "completed",
       "eligible_files": [
@@ -697,9 +697,9 @@
   "fingerprints": {
     "source": "f96647d18b3f667caa4e727c7f2728ed58b67908af92954b53726da19652985a",
     "config": "0778aff434cfcbd601f90006830e8eda97bd08acd9ccb215b657aadd1520a3ed",
-    "adapters": "04d451e412ce42b8c594b784923933b2dba060dfc0acaafcafd74c212714058d",
+    "adapters": "bfa59a2c62e4f45e5bade6f848e11727f03db8c185a16f19beaa6f857876c223",
     "rules": "c7f728a22bf07a27d20f2b0ba60c59d2528cf27f6b218a22272fcbbe465f8971",
-    "registry": "1d6ff0713eb975d0de76eaafdb5e48f1d27399e1bfa28d3372fa5b8bd8182f39",
+    "registry": "05f40e7d151163b9a4777e614f69e10071205f1be16d34542432c62336ed059e",
     "projection": "aac806054227e366834df8cbc78cd9cbd4ffe29443b0ff878f09b997c87674a7"
   },
   "artifacts": [
@@ -709,31 +709,31 @@
     },
     {
       "path": ".featurefacts/docs-index.json",
-      "sha256": "375d430c342320162979a064bf224ad5e6286558adeeb3e64f7b68daf7e6e8d7"
+      "sha256": "395f16c052f59518d4a220489c85f426ad9d2fda933e0c30b038a4eff5014bd1"
     },
     {
       "path": ".featurefacts/features.json",
-      "sha256": "3f46fe9a68140c4ff9a703b77567ac2863bf66b25462c5c6e52f34e3e1692776"
+      "sha256": "8284089f354ba6ade91c72a2bd8576b2a46be4d25ff076c8016a15e578f596c5"
     },
     {
       "path": ".featurefacts/FEATURES.md",
-      "sha256": "2d506363ed49653110301581bf0e7d8802ba0054c2196e82e7662b8444d9500d"
+      "sha256": "0fb7d76e81aee90065ba0e50077bb74343b63b76c5300c7a456dff279ed0b021"
     },
     {
       "path": ".featurefacts/features.yaml",
-      "sha256": "33eec3d6f74091b948f3428fe2317db61696ac2215cebe8793e434887a85b1d3"
+      "sha256": "57bdc0b70912ee5b3ef32ca61e272ea35162f0fae85b4b030098a443e01656ba"
     },
     {
       "path": ".featurefacts/gaps.yaml",
-      "sha256": "b83d12e54099e11dbd7885a59cc142c33b699cac80ebf4d972b85f1ac732a88f"
+      "sha256": "bef021cf7f29ad4fcc79fff2f1331aeafe14bf167afc6e1c8b85870ebfddb207"
     },
     {
       "path": ".featurefacts/surfaces.json",
-      "sha256": "762097819c384ff4b7e659bf76c805a8871ad02d32b9a9d790e3471d476027e3"
+      "sha256": "22c0c28ff37d78ef60b7b7b144eeaf1416f9868e236609ba8f076c63e6b411c0"
     },
     {
       "path": ".featurefacts/test-index.json",
-      "sha256": "40a06b04cc7a3234ab6731884b9d823d95d7bd72a938325f710cfccdb466312b"
+      "sha256": "17557c5259c86709cf8a91c5f25592289cea222b79a780ef6594731547640516"
     },
     {
       "path": "FEATURE_FACTS.md",
