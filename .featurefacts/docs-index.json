@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.2.0",
-  "scan_id": "scan-1afb10aa053c",
+  "scan_id": "scan-f09f1bb95819",
   "kind": "docs",
   "assessments": [
     {
@@ -146,16 +146,6 @@
           }
         ],
         "reason": "A document names this capability in a heading or code span. That is a sign. It does not mean the documentation is adequate."
-      }
-    },
-    {
-      "feature_id": "ingotvault",
-      "assessment": {
-        "state": "unassessed",
-        "result": "unknown",
-        "adapter_ids": [],
-        "links": [],
-        "reason": "Documentation was not assessed."
       }
     }
   ]

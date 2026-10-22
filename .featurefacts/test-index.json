@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.2.0",
-  "scan_id": "scan-1afb10aa053c",
+  "scan_id": "scan-f09f1bb95819",
   "kind": "tests",
   "assessments": [
     {
@@ -95,16 +95,6 @@
         ],
         "links": [],
         "reason": "No explicit test association. A similar test filename is only a proposal."
-      }
-    },
-    {
-      "feature_id": "ingotvault",
-      "assessment": {
-        "state": "unassessed",
-        "result": "unknown",
-        "adapter_ids": [],
-        "links": [],
-        "reason": "Tests were not assessed."
       }
     }
   ]
