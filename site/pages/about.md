@@ -1,10 +1,10 @@
 ---
-title: "Keep a second copy of work you have not pushed."
-description: "IngotVault captures local Git branches and tags in bare mirrors on a drive you control. Recover captured history after an unwanted edit or branch deletion, while leaving origin unchanged."
+title: "Keep a second copy of your local Git history."
+description: "Back up local branches and tags, including commits you have not pushed upstream, to a drive you control. IngotVault keeps them in bare Git mirrors so you can recover captured history after a branch deletion or unwanted change, while leaving origin unchanged."
 order: 1
 ---
 
-<section class="value-hero" aria-label="IngotVault overview"><div class="value-intro"><div class="value-headline"><p class="value-kind">Local Git backup command-line tool</p><h1>Keep a second copy of work you have not pushed.</h1></div><div class="value-pitch"><p class="value-lede">IngotVault captures local Git branches and tags in bare mirrors on a drive you control. Recover captured history after an unwanted edit or branch deletion, while leaving origin unchanged.</p><div class="cta-row"><a class="cta cta-primary" href="/install">Install IngotVault</a><a class="cta cta-secondary" href="#recovery-example">See a named branch recovered</a></div><p class="value-limit">Uncommitted files and stashes are excluded by default. A second copy on the same disk does not protect against that disk failing.</p></div></div>
+<section class="value-hero" aria-label="IngotVault overview"><div class="value-intro"><div class="value-headline"><p class="value-kind">Local Git backup command-line tool</p><h1>Keep a second copy of your local Git history.</h1></div><div class="value-pitch"><p class="value-lede">Back up local branches and tags, including commits you have not pushed upstream, to a drive you control. IngotVault keeps them in bare Git mirrors so you can recover captured history after a branch deletion or unwanted change, while leaving origin unchanged.</p><div class="cta-row"><a class="cta cta-primary" href="/install">Install IngotVault</a><a class="cta cta-secondary" href="#recovery-example">See a named branch recovered</a></div><p class="value-limit">Uncommitted files and stashes are excluded by default. A second copy on the same disk does not protect against that disk failing.</p></div></div>
 <figure class="value-proof worked-example" id="recovery-example" tabindex="-1">
 <figcaption>Recover feature/parser after the local branch is deleted</figcaption>
 <p class="example-context">From the disposable restore demonstration. The branch and its committed parser.md were captured successfully before the local branch was deleted.</p>

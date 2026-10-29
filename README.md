@@ -4,7 +4,7 @@
 
 # IngotVault
 
-**Covered local history, in a second place you control.**
+**Keep a second copy of your local Git history.**
 
 A **spare remote** for a folder of Git repos: push covered local branches and tags into bare mirrors on a drive you control. IngotVault creates or uses the configured backup remote. It leaves origin and your other existing remotes unchanged.
 
@@ -20,7 +20,7 @@ After the first capture, try restoring into a separate test folder. Confirm that
 | Restore a lost branch | [`docs/restore-demo.md`](docs/restore-demo.md) |
 | — | [`docs/encryption.md`](docs/encryption.md), [`config.example.json`](config.example.json) |
 
-**Back up covered local Git branches and tags to a second location you control, including work you have not pushed upstream.** IngotVault preserves existing backup history by default and reports cases that need attention. Work must be captured by a successful run before it is lost. Later edits, stashes, uncommitted files, and objects that sit on no covered ref are not protected automatically.
+**Back up covered local Git branches and tags to a second location you control, including commits you have not pushed upstream.** IngotVault preserves existing backup history by default and reports cases that need attention. Work must be captured by a successful run before it is lost. Later edits, stashes, uncommitted files, and objects that sit on no covered ref are not protected automatically.
 
 Default push is `git push --all`, `--tags`, plus `refs/notes/*`, `refs/replace/*`, and `refs/ingotvault/*`. Optionally a snapshot of your dirty tree (`captureWorktree`). Git LFS object bytes and submodule object stores are not pushed. Custom namespaces (for example Gerrit `refs/changes`) are not covered. A vault on the same physical disk as the workspace is a second Git copy on that disk, not protection against that disk failing. Details: [Safety](#safety).
 

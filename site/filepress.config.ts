@@ -4,7 +4,7 @@ const github = 'https://github.com/Catalyst-Forge-LLC/ingotvault';
 
 export default defineFilepressConfig({
 	title: 'IngotVault',
-	description: "IngotVault captures local Git branches and tags in bare mirrors on a drive you control. Recover captured history after an unwanted edit or branch deletion, while leaving origin unchanged.",
+	description: "Back up local branches and tags, including commits you have not pushed upstream, to a drive you control. IngotVault keeps them in bare Git mirrors so you can recover captured history after a branch deletion or unwanted change, while leaving origin unchanged.",
 	tagline: 'Local history, in a second place you control.',
 	lede: "Local Git backup command-line tool",
 	url: 'https://ingotvault.dev',
